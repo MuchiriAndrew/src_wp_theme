@@ -1,0 +1,8 @@
+.DS_Store
+*.log
+*.sql
+.env
+.env.*
+node_modules/
+vendor/
+coverage/
