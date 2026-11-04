@@ -179,3 +179,13 @@ Forms need actual handlers and admin visibility: contact and partner enquiries; 
 ## Business inputs required before live payment
 
 Confirmed prices and whether each open programme is paid or free; KES/tax treatment; cohort dates and capacities; refund/cancellation policy; required applicant fields and consent wording; M-Pesa sandbox/live credentials and shortcode; sender email/domain configuration; newsletter destination; final media/annual report PDF; verified social and legal links. Implementation can proceed with clearly marked draft values while those inputs are collected. No `[TBC]` value becomes a charge.
+
+
+## Implementation progress (4 November 2026)
+
+- **Homepage hero:** migrated to the exported video/poster/watermark treatment and four database-driven enrolling cards.
+- **Impact grid:** added the six v3 metric tiles with editable `impact_metric` records, count-up, and expandable detail panels.
+- **Footprint:** retained the Africa-first map and country selection behavior; exposed all seven configured country terms with their assigned published programme links. Country map configuration remains editable in the Programme Countries taxonomy controls.
+- **Project folders:** replaced the homepage’s legacy individual project tiles with folders generated from `programme_theme`. The modal provides Overview, Impact & Results, Programmes, and Get Involved tabs; the programme list links to each matching programme page.
+- Desktop and 390px mobile layouts were reviewed locally. Country selection and project tab links were manually exercised.
+- **Next:** continue with the exported home sections in order, then About/Our Work/Programmes and other routes; align all states and viewport breakpoints, then continue WooCommerce product, cart, checkout, account, and M-Pesa sandbox integration work.

@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.1.0');
+define('SRC_VERSION', '3.2.0');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -309,11 +309,6 @@ function src_get_footprint_countries() {
             'post_status' => 'publish',
             'posts_per_page' => -1,
             'orderby' => ['menu_order' => 'ASC', 'title' => 'ASC'],
-            'meta_query' => [[
-                'key' => '_src_v3_imported',
-                'value' => '1',
-                'compare' => '=',
-            ]],
             'tax_query' => [[
                 'taxonomy' => 'programme_country',
                 'field' => 'term_id',

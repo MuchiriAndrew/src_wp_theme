@@ -619,3 +619,12 @@ V3 post metadata uses an underscore prefix. For example, the admin field `progra
 The supplied gateway was copied to the local SRC plugin directory from `/Users/muchiriandrew/Sites/enkatawatches/wp-content/plugins/mpesa-gateway`. The SRC copy is **not activated**. Credential defaults were removed, credential fields use password inputs, the default gateway state is disabled with sandbox as the default environment, sensitive phone logging was reduced, and callback handling now checks a configured token, stored request IDs, KES currency, amount, and receipt before completing an order.
 
 The plugin copy is outside this theme repository and must be released/versioned separately. These changes do not prove provider-side callback authenticity. Before production, independently review provider verification/reconciliation, run sandbox success/failure/cancel/duplicate/timeout scenarios, and deploy the reviewed plugin release separately from the theme. Never treat a browser return or customer click as payment confirmation.
+
+
+### Current v3 homepage progress — 4 November 2026
+
+- The homepage hero and interactive impact grid have been migrated to the v3 export and are driven by WordPress records.
+- The footprint map now lists all seven configured country terms with assigned published programmes, including older programme records. Country map codes, summaries, marker order, HQ state, and zoom offsets remain editable from the Programme Countries taxonomy screen. Country selection reveals programme links generated from the taxonomy relationships.
+- Homepage project cards now group published programmes by the `programme_theme` taxonomy. Each card opens the existing accessible tabbed dialog, with an Overview, Impact & Results, Programmes, and Get Involved tab. The Programmes tab lists the matching programme pages as links. Editing a programme’s theme changes its folder membership automatically.
+- The legacy `project` CPT records and archive remain available for the existing Our Work archive while the homepage uses the v3 theme folders.
+- Local browser QA verified the seven country controls and a selected Tanzania programme link, the project modal tabs and programme destinations, and the five theme groups at desktop and mobile widths.

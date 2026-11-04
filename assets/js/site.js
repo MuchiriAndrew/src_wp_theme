@@ -370,7 +370,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dialog.querySelector('.project-panel-location').textContent = project.location;
     dialog.querySelector('.project-panel-description').textContent = project.description;
     dialog.querySelectorAll('.project-inline-title').forEach((node) => { node.textContent = project.title; });
-    dialog.querySelector('.project-external-link').href = project.externalUrl || project.url;
+    const externalLink = dialog.querySelector('.project-external-link');
+    if (externalLink) externalLink.href = project.externalUrl || project.url;
 
     const stats = dialog.querySelector('.project-stats');
     stats.replaceChildren();
@@ -385,11 +386,16 @@ document.addEventListener('DOMContentLoaded', () => {
       stats.append(item);
     });
 
-    const impactList = dialog.querySelector('.project-impact-list');
-    impactList.replaceChildren();
-    project.impacts.forEach(([title, copy]) => {
-      const item = document.createElement('div');
+    const renderProjectEntries = (impactList, entries, linked) => {
+      if (!impactList) return;
+      impactList.replaceChildren();
+      entries.forEach(([title, copy, url]) => {
+      const item = document.createElement(linked && url ? 'a' : 'div');
       item.className = 'project-impact-item';
+      if (linked && url) {
+        item.href = url;
+        item.setAttribute('aria-label', `View ${title}`);
+      }
       const body = document.createElement('div');
       const strong = document.createElement('strong');
       strong.textContent = title;
@@ -397,8 +403,18 @@ document.addEventListener('DOMContentLoaded', () => {
       paragraph.textContent = copy;
       body.append(strong, paragraph);
       item.append(body);
+      if (linked && url) {
+        const arrow = document.createElement('span');
+        arrow.className = 'project-programme-arrow';
+        arrow.setAttribute('aria-hidden', 'true');
+        arrow.textContent = '↗';
+        item.append(arrow);
+      }
       impactList.append(item);
-    });
+      });
+    };
+    renderProjectEntries(dialog.querySelector('.project-impact-list'), project.impacts || [], false);
+    renderProjectEntries(dialog.querySelector('.project-programme-links'), project.programmes || [], true);
   };
   const openProject = (trigger) => {
     const project = projects[Number(trigger.dataset.projectIndex)];

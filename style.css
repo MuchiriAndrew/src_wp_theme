@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.0.0
+Version: 3.2.0
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -1407,3 +1407,17 @@ body.nav-locked { overflow: hidden; overscroll-behavior: none; }
   .map-dot span,
   .map-hover-label { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* V3 project folders are grouped by the editable programme theme taxonomy. */
+.project-theme-grid .project-tile { min-height: 270px; }
+.project-theme-grid .project-tile-content strong { display: block; font-family: var(--serif); font-size: clamp(24px, 3vw, 38px); line-height: 1; }
+.project-theme-name { display: block; margin-top: 7px; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.project-open-label { position: absolute; right: 20px; bottom: 22px; color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .2s; }
+.project-theme-grid .project-tile:hover .project-open-label, .project-theme-grid .project-tile:focus-visible .project-open-label { opacity: 1; transform: none; }
+.project-programme-links { display: grid; gap: 8px; }
+.project-programme-links .project-impact-item { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 15px 18px; border: 1px solid rgba(28,28,28,.1); color: inherit; text-decoration: none; transition: background .2s, border-color .2s, color .2s; }
+.project-programme-links .project-impact-item strong { font-family: var(--serif); font-size: 17px; }
+.project-programme-links .project-impact-item p { margin: 5px 0 0; color: rgba(28,28,28,.56); font-size: 11px; line-height: 1.5; }
+.project-programme-arrow { flex: none; color: var(--red); font-size: 20px; }
+@media (hover:hover) { .project-programme-links .project-impact-item:hover { border-color: var(--red); background: var(--red-soft); color: var(--red); } }
+@media (max-width: 620px) { .project-theme-grid .project-tile { min-height: 210px; } .project-open-label { opacity: 1; transform: none; } }
