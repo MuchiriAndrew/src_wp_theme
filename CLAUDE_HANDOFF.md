@@ -14,7 +14,7 @@ This document is the implementation and deployment handoff for the Smart Regiona
 - GitHub repository: `https://github.com/MuchiriAndrew/src_wp_theme`
 - Repository purpose: deployable SRC theme source and project documentation, not WordPress core or production secrets
 - Active theme stylesheet slug: `smartregionalconsultants`
-- Theme asset version: `3.0.0`
+- Theme asset version: `3.1.0`
 - Local WordPress version at handoff: `7.1.1`
 - Local database name: `smartregionalconsultants`
 - Local database host: `localhost`
@@ -56,6 +56,7 @@ The repository root is the theme directory, not the full local WordPress install
 - `functions.php` contains theme setup, legacy CPT/taxonomy registration, page settings, seed data, map data assembly, and helper functions.
 - `inc/v3-content-model.php` registers the v3 CPTs, taxonomies, metadata, custom admin fields, and programme archive query rules.
 - `inc/cli/import-programmes.php` provides the idempotent `wp src import-programmes` command.
+- `data/impact-metrics-v3.json` and `inc/cli/import-impact.php` provide the idempotent `wp src import-impact` command for the homepage impact tiles.
 - `inc/commerce/programme-products.php` synchronizes eligible programme records to hidden WooCommerce products and enforces one programme per order.
 - `assets/js/programmes.js` handles programme archive filter submissions.
 
@@ -91,7 +92,8 @@ These are intentionally not public-facing URLs. They appear as editable admin me
 | Homepage Pillars | `src_pillar_item` | Three dark pillar cards |
 | Homepage Audiences | `src_audience_item` | Who We Serve tiles |
 | Homepage Partners | `src_partner_item` | Leading Donors/Partners grid |
-| Homepage Stats | `src_stat_item` | Homepage metrics band |
+| Homepage Stats | `src_stat_item` | Legacy stats content; the v3 impact section uses `impact_metric` |
+| Impact Metrics | `impact_metric` | Six interactive v3 homepage tiles and their expanding detail panels |
 
 ### Taxonomies
 
@@ -230,6 +232,8 @@ Edit under `Homepage Partners`. This is the data source for the Leading Donors, 
 ### Homepage stats
 
 Edit under `Homepage Stats`.
+
+The v3 impact tiles are managed under `Impact Metrics`. Each record controls the number/prefix/suffix, label, support line, image key or URL, layout position, expanded context, detail bullets, related link, and order. The bundled source records can be seeded with `wp src import-impact`; importer-managed fields are protected from accidental overwrite unless `--overwrite` is passed.
 
 | Field | Type/use |
 | --- | --- |
@@ -579,6 +583,8 @@ This is the current project state; older v2-specific field descriptions above ar
 - The programme archive supports status, theme, and signature filters, preserves filter state in the URL, and renders an explicit no-results state. Programme detail pages use structured fields, county terms/map, related programmes, and status-aware CTAs.
 - A Media Library featured image overrides the imported source image. Programme theme, county, and country relationships use native WordPress taxonomy controls.
 - The Africa footprint only includes imported v3 programmes, preventing the preserved legacy content from inflating programme counts.
+- The v3 hero now uses the exported video, poster, watermark, and four database-driven enrolment cards. `impact_metric` drives the six homepage impact tiles and expandable panels; use `wp src import-impact --dry-run` to preview and `wp src import-impact` to seed the bundled records. Desktop and mobile hero states and the mobile impact accordion were compared in Chrome against the published reference.
+- The sections after Impact on the homepage and most remaining v3 routes still use older templates and require the planned migration. Do not describe the site as complete or at 100% parity yet.
 
 ### v3 admin data model
 
@@ -595,7 +601,7 @@ All custom post type, taxonomy, and field registration is in theme code; no CPT 
 | Project Folders | `src_project_folder` and `project_theme` | Summary, funders, order, CTA URL, theme, body, and featured image. |
 | Publications | `src_publication` | Year, PDF URL, flipbook URL, featured flag, body, and cover image. |
 | Portfolio Companies | `portfolio_company` | Sector, location, website, order, body, and featured image. |
-| Impact Metrics | `impact_metric` | Value, prefix/suffix, label, expanded context, detail bullets, link, and order. |
+| Impact Metrics | `impact_metric` | Value, prefix/suffix, label, support line, image key/URL, layout position, expanded context, detail bullets, related link, and order. |
 | Partners | Existing `src_partner_item` and `partner_category` | Existing tile type/name/logo/color/span/order/link controls plus native grouping taxonomy. |
 
 V3 post metadata uses an underscore prefix. For example, the admin field `programme_status` is saved as `_programme_status`. Taxonomy relationships use WordPress term relationships. The CLI importer adds `_src_v3_imported` and `_src_v3_import_hash`, and never deletes legacy posts.

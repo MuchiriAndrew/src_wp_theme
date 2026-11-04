@@ -25,9 +25,11 @@ Implementation began locally on branch `codex/src-v3-implementation`. A database
 
 The first implementation slice is in place: 21 v3 programmes are imported without deleting the six legacy programme records; v3 programme fields/taxonomies and additional content CPTs are registered; programme archive/detail templates, filters, county map, related cards, and WooCommerce page wrappers/styles are added. A hidden product is synchronized only for a published, current, open programme with an explicit whole-shilling KES price or an explicit free label. The four currently open source records still have `[TBC]` fees and remain non-purchasable. The archive and detail flow, filter/empty state, and detail map were inspected manually in the local browser.
 
+The next implementation slice is underway: the v3 homepage hero now uses the exported livestock video/poster and SRC watermark assets, its four enrolment cards are queried from published current/open programme records and link to their respective programme pages, and the impact tiles are backed by the `impact_metric` CPT. `wp src import-impact` seeds the six exported metric records; their copy, values, images, order, facts and links are editable in WordPress. The hero and impact section were compared visually in Chrome against the published reference at desktop and mobile widths; hover/tap expansion, counter animation and programme links are implemented. The homepage sections after Impact still need migration from the older SRC layout.
+
 The M-Pesa plugin copy has been hardened locally by removing credential defaults, disabling it by default, defaulting to sandbox, reducing sensitive logging, and adding callback token/request-ID/amount checks. It remains inactive. Provider-side callback authenticity/reconciliation and sandbox acceptance still require a separate review; live payment is not ready.
 
-The theme work is not yet committed or pushed. The previously staged `PRODUCTION_RUNBOOK.md` user change must remain isolated from implementation commits. Broad parity work on the homepage and remaining v3 routes is still outstanding; this is an implementation checkpoint, not a completion claim.
+The foundation milestone is committed and pushed to `codex/src-v3-implementation`; this homepage follow-up is in progress. The previously staged `PRODUCTION_RUNBOOK.md` user change must remain isolated from implementation commits. Broad parity work on the homepage and remaining v3 routes is still outstanding; this is an implementation checkpoint, not a completion claim.
 
 ## Architectural decisions
 

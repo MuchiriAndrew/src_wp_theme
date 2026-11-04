@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "money-unlocked",
+    "value": 10,
+    "prefix": "KES 2M → ",
+    "suffix": "M+",
+    "label": "Money Unlocked",
+    "detail": "Livestock Trade · Debt Finance",
+    "image": "photo-1593114638431-5805138c696e",
+    "area": "money",
+    "context": "Finance mobilised for SMEs and cooperatives.",
+    "facts": ["Livestock trade", "Debt finance", "[Confirm breakdown]"],
+    "link": "/programmes/?theme=investment-export-readiness"
+  },
+  {
+    "slug": "jobs-created",
+    "value": 680,
+    "suffix": "+",
+    "label": "Jobs Created",
+    "detail": "Direct and sustained livelihoods",
+    "image": "photo-1637997840862-9aafaf835eed",
+    "area": "jobs",
+    "context": "Dignified work for youth and women.",
+    "facts": ["CASHA is working toward 200,000 jobs by 2030", "[Add other figures]"],
+    "link": "/programmes/?theme=livestock-agribusiness"
+  },
+  {
+    "slug": "enterprises-supported",
+    "value": 2500,
+    "suffix": "+",
+    "label": "Enterprises Supported",
+    "detail": "Active · early-stage to growth scale",
+    "image": "photo-1637149217780-c7fcbd5f5094",
+    "area": "ent",
+    "context": "From micro-businesses to investor-ready SMEs.",
+    "facts": ["3,650+ green micro-enterprises (LIFT-NK)", "800+ youth-led enterprises (SEED)"],
+    "link": "/programmes/?theme=resilience-livelihoods"
+  },
+  {
+    "slug": "cooperatives-value-chains",
+    "value": 60,
+    "suffix": "+",
+    "label": "Cooperatives & Value Chains",
+    "detail": "Governance, finance and market access",
+    "image": "photo-1746401809231-4c1ad2c1e161",
+    "area": "coop",
+    "context": "Stronger producer groups across the ASALs.",
+    "facts": ["Livestock cooperatives in 5 counties (KCB Mifugo ni Mali)", "[Add value chains]"],
+    "link": "/programmes/?theme=livestock-agribusiness"
+  },
+  {
+    "slug": "regional-reach",
+    "value": 10,
+    "label": "Countries · Regional Reach",
+    "detail": "Kenya · Tanzania · Malawi · Zambia · South Africa · Senegal",
+    "image": "photo-1547496727-11c450fe4e7f",
+    "area": "ctry",
+    "context": "Regional reach from our Nairobi HQ.",
+    "facts": ["Kenya, Tanzania, Malawi, Zambia, South Africa, Senegal, [+4]"],
+    "link": "#footprint"
+  },
+  {
+    "slug": "associates-partners",
+    "value": 35,
+    "suffix": "+",
+    "label": "Associates & Partners",
+    "detail": "Specialists across enterprise systems",
+    "image": "photo-1654027678170-2f16d4e87787",
+    "area": "assoc",
+    "context": "Delivered with donors, banks and consortia.",
+    "facts": ["Mastercard Foundation, CARE, BOMA, KCB Foundation, Cherie Blair Foundation, FCDO"],
+    "link": "#partners"
+  }
+]

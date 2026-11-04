@@ -111,8 +111,10 @@ function src_v3_meta_schema() {
         ],
         'impact_metric' => [
             'metric_value' => ['Target number', 'number'], 'metric_prefix' => ['Prefix', 'text'],
-            'metric_suffix' => ['Suffix', 'text'], 'metric_label' => ['Label', 'text'],
+            'metric_suffix' => ['Suffix', 'text'], 'metric_label' => ['Label', 'text'], 'metric_detail' => ['Small supporting line', 'text'],
             'metric_context' => ['Expanded explanation', 'textarea'], 'metric_facts' => ['Detail bullets (one per line)', 'lines'],
+            'metric_image' => ['Background image key or URL', 'text'],
+            'metric_area' => ['Layout position', 'select', ['money' => 'Money unlocked', 'jobs' => 'Jobs created', 'ent' => 'Enterprises supported', 'coop' => 'Cooperatives & value chains', 'ctry' => 'Countries', 'assoc' => 'Associates & partners']],
             'metric_link' => ['Related link', 'url'], 'metric_order' => ['Display order', 'number'],
         ],
     ];

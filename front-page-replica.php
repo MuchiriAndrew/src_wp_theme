@@ -16,11 +16,58 @@ $country_details = src_get_footprint_countries();
 $africa_svg = file_get_contents(get_template_directory() . '/assets/africa.svg');
 $africa_svg = preg_replace('/^.*?<svg/s', '<svg', $africa_svg);
 $africa_svg = preg_replace('/<svg/', '<svg class="africa-map-svg" aria-hidden="true" focusable="false"', $africa_svg, 1);
+$hero_programmes_query = new WP_Query([
+    'post_type' => 'programme', 'posts_per_page' => 4, 'orderby' => 'meta_value_num', 'meta_key' => '_programme_home_order', 'order' => 'ASC',
+    'meta_query' => [['key' => '_src_v3_imported', 'value' => '1'], ['key' => '_programme_status', 'value' => 'current'], ['key' => '_programme_enrolment', 'value' => 'open']],
+]);
+$hero_programmes = $hero_programmes_query->posts;
+$hero_priority = ['investor-readiness' => 1, 'export-readiness' => 2, 'herventure' => 3, 'webinar-series' => 4];
+usort($hero_programmes, static function ($a, $b) use ($hero_priority) {
+  $a_order = $hero_priority[$a->post_name] ?? (100 + (int) src_field('programme_home_order', $a->ID, 0));
+  $b_order = $hero_priority[$b->post_name] ?? (100 + (int) src_field('programme_home_order', $b->ID, 0));
+  return $a_order <=> $b_order;
+});
+$asset_uri = get_template_directory_uri() . '/assets/';
+$programme_logo_url = static function ($post_id) use ($asset_uri) {
+  $logos = (array) src_field('programme_logos', $post_id, []);
+  $key = sanitize_key($logos[0] ?? 'src');
+  if ($key === 'herventure') return $asset_uri . 'her-venture-transparent.svg';
+  return $asset_uri . 'src-logo.png';
+};
 ?>
 <main>
-  <section class="hero ref-hero"><img class="hero-media" src="<?php echo esc_url($settings['hero_image_url']); ?>" alt="Woman entrepreneur running a shop in East Africa"><div class="hero-watermark" aria-hidden="true"><span>SRC</span></div><div class="container hero-content" data-reveal="left"><p class="hero-meta"><?php echo esc_html($settings['hero_meta']); ?></p><h1 class="display"><?php foreach ($hero_title as $line) : $line = trim($line); if ($line === '') continue; ?><span class="hero-title-line<?php echo strcasecmp($line, trim($settings['hero_accent_line'] ?? 'From Good')) === 0 ? ' hero-accent-line' : ''; ?>"><?php echo esc_html($line); ?></span><?php endforeach; ?></h1><p class="hero-copy"><?php echo esc_html($settings['hero_copy']); ?></p><div class="hero-actions"><a class="button" href="<?php echo esc_url(get_post_type_archive_link('programme')); ?>">Our programmes</a><a class="watch-story" href="#our-story"><span class="watch-icon">▶</span><span>Watch our story</span></a></div></div><div class="hero-stamp">Est.<br>2012</div><div class="scroll-hint">Scroll<i></i></div></section>
+  <section class="hero ref-hero v3-home-hero">
+    <img class="hero-media v3-hero-poster" src="<?php echo esc_url($asset_uri . 'hero-man-with-camels-poster.png'); ?>" alt="Pastoral livestock crossing arid land">
+    <video class="hero-media v3-hero-video" autoplay muted playsinline loop preload="metadata" poster="<?php echo esc_url($asset_uri . 'hero-man-with-camels-poster.png'); ?>" aria-hidden="true"><source src="<?php echo esc_url($asset_uri . 'hero-man-with-camels.mp4'); ?>" type="video/mp4"></video>
+    <div class="v3-hero-watermark" aria-hidden="true"><img class="v3-watermark-mark" src="<?php echo esc_url($asset_uri . 'src-logo-mark.png'); ?>" alt=""><img class="v3-watermark-letters" src="<?php echo esc_url($asset_uri . 'src-logo-letters.png'); ?>" alt=""></div>
+    <div class="container hero-content" data-reveal="left"><p class="hero-meta"><?php echo esc_html($settings['hero_meta']); ?></p><h1 class="display"><?php foreach ($hero_title as $line) : $line = trim($line); if ($line === '') continue; ?><span class="hero-title-line<?php echo strcasecmp($line, trim($settings['hero_accent_line'] ?? 'From Good')) === 0 ? ' hero-accent-line' : ''; ?>"><?php echo esc_html($line); ?></span><?php if (strcasecmp($line, trim($settings['hero_accent_line'] ?? 'From Good')) === 0) echo '&nbsp;'; ?><?php endforeach; ?></h1><p class="hero-copy"><?php echo esc_html($settings['hero_copy']); ?></p><div class="hero-actions"><a class="button" href="<?php echo esc_url(get_post_type_archive_link('programme')); ?>">Our Programmes</a><a class="watch-story" href="#our-story"><span class="watch-icon">▷</span><span>Watch Our Story</span></a></div></div>
+    <?php if ($hero_programmes) : ?><div class="v3-hero-enrolments container"><p class="v3-enrolment-label">Now Enrolling</p><div class="v3-enrolment-grid"><?php foreach ($hero_programmes as $programme) : $cohort = src_field('programme_next_cohort_label', $programme->ID, 'TBC'); ?><a class="v3-enrol-card" href="<?php echo esc_url(get_permalink($programme)); ?>"><div class="v3-enrol-card-top"><span class="v3-enrol-logo"><img src="<?php echo esc_url($programme_logo_url($programme->ID)); ?>" alt=""></span><span class="v3-enrol-badge"><i></i> Enrolling now</span></div><h2><?php echo esc_html(src_field('programme_hero_title', $programme->ID, get_the_title($programme))); ?></h2><p class="v3-enrol-next">Next cohort <?php echo esc_html($cohort === 'TBC' ? 'opening soon' : $cohort); ?></p><div class="v3-countdown" aria-label="Cohort countdown not announced"><span><b>00</b><small>Days</small></span><span><b>00</b><small>Hrs</small></span><span><b>00</b><small>Min</small></span><span><b>00</b><small>Sec</small></span></div><span class="v3-enrol-cta">Enroll now</span></a><?php endforeach; ?></div></div><?php endif; ?>
+  </section>
+  <?php wp_reset_postdata(); ?>
 
-  <section class="stats-band ref-stats"><div class="container stats-grid"><?php foreach ($stats as $stat) : ?><div class="stat" data-reveal><div class="stat-number"><?php echo esc_html(src_field('stat_value', $stat->ID)); ?></div><div class="stat-label"><?php echo esc_html(src_field('stat_label', $stat->ID, $stat->post_title)); ?></div></div><?php endforeach; ?></div></section>
+  <?php $impact_metrics = src_ordered_posts('impact_metric', 'metric_order'); ?>
+  <?php if ($impact_metrics) : ?><section id="impact" class="v3-impact-section"><div class="v3-impact-inner"><header class="v3-impact-heading"><p class="eyebrow">Our Impact</p><h2 class="display">Growth you can see.<br><em>Change you can measure.</em></h2></header><div class="impact-grid">
+    <?php foreach ($impact_metrics as $metric) :
+      $area = sanitize_html_class(src_field('metric_area', $metric->ID, 'money'));
+      $value = max(0, (int) src_field('metric_value', $metric->ID, 0));
+      $prefix = (string) src_field('metric_prefix', $metric->ID, '');
+      $suffix = (string) src_field('metric_suffix', $metric->ID, '');
+      $label = src_field('metric_label', $metric->ID, $metric->post_title);
+      $detail = src_field('metric_detail', $metric->ID, '');
+      $image_key = (string) src_field('metric_image', $metric->ID, '');
+      $image = preg_match('/^photo-[a-zA-Z0-9-]+$/', $image_key) ? 'https://images.unsplash.com/' . rawurlencode($image_key) . '?w=1100&h=800&fit=crop&auto=format&q=82' : $image_key;
+      $facts = (array) src_field('metric_facts', $metric->ID, []);
+      $target_link = (string) src_field('metric_link', $metric->ID, get_post_type_archive_link('programme'));
+      if (strpos($target_link, '#') === 0) $target_link = home_url('/') . $target_link;
+      $panel_id = 'impact-panel-' . $area;
+    ?>
+      <article class="impact-tile impact-tile--<?php echo esc_attr($area); ?>">
+        <button class="impact-tile-trigger" type="button" aria-expanded="false" aria-controls="<?php echo esc_attr($panel_id); ?>" aria-label="More about <?php echo esc_attr($label); ?>"><img src="<?php echo esc_url($image); ?>" alt="" loading="lazy"><span class="impact-tile-shade"></span></button>
+        <div class="impact-stat"><div class="impact-number"><span class="impact-prefix"><?php echo esc_html($prefix); ?></span><span data-impact-count="<?php echo esc_attr($value); ?>">0</span><span><?php echo esc_html($suffix); ?></span></div><div class="impact-label"><?php echo esc_html($label); ?></div><?php if ($detail !== '') : ?><div class="impact-detail"><?php echo esc_html($detail); ?></div><?php endif; ?></div>
+        <div class="impact-panel" id="<?php echo esc_attr($panel_id); ?>" inert><p class="impact-panel-context"><?php echo esc_html(src_field('metric_context', $metric->ID, '')); ?></p><ul class="impact-panel-facts"><?php foreach ($facts as $fact) : ?><li><?php echo esc_html($fact); ?></li><?php endforeach; ?></ul><a class="impact-panel-link" href="<?php echo esc_url($target_link); ?>">See the programmes →</a></div>
+      </article>
+    <?php endforeach; ?>
+  </div></div></section><?php endif; ?>
 
   <section id="our-story" class="sector-showcase"><div class="container"><div class="sector-layout"><div class="sector-intro" data-reveal="left"><p class="eyebrow"><?php echo esc_html($settings['sector_eyebrow']); ?></p><h2 class="display display-md"><?php echo $line_breaks($settings['sector_heading']); ?></h2><p><?php echo esc_html($settings['sector_intro']); ?></p><div class="sector-list"><?php foreach ($sectors as $i => $sector) : ?><button class="<?php echo $i === $active ? 'is-active' : ''; ?>" type="button" data-sector-index="<?php echo esc_attr($i); ?>"><span class="sector-index"><?php echo esc_html($sector['number']); ?></span><span class="sector-name"><?php echo esc_html($sector['title']); ?></span><span class="sector-rule"></span></button><?php endforeach; ?></div></div><div class="sector-stage" data-reveal="right"><div class="sector-visual"><img class="sector-image" id="sector-image" src="<?php echo esc_url($sectors[$active]['image']); ?>" alt="<?php echo esc_attr($sectors[$active]['title']); ?>"><span class="sector-tint"></span><span class="sector-number" id="sector-number"><?php echo esc_html($sectors[$active]['number']); ?></span></div><div class="sector-caption" id="sector-caption"><h3><?php echo esc_html($sectors[$active]['title']); ?></h3><p><?php echo esc_html($sectors[$active]['description']); ?></p><a class="text-cta" href="<?php echo esc_url($sectors[$active]['link']); ?>">Explore this sector →</a></div></div></div></div><script type="application/json" id="sector-data"><?php echo wp_json_encode($sectors); ?></script></section>
 

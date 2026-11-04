@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 128" role="img" aria-labelledby="title">
+  <title id="title">HerVenture</title>
+  <defs>
+    <linearGradient id="chevron-a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9D5BFF"/>
+      <stop offset="0.48" stop-color="#ED3C88"/>
+      <stop offset="1" stop-color="#FF8A00"/>
+    </linearGradient>
+    <linearGradient id="chevron-b" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F04472"/>
+      <stop offset="1" stop-color="#FF9D00"/>
+    </linearGradient>
+  </defs>
+  <text x="0" y="88" fill="#fff" font-family="Montserrat, Arial, sans-serif" font-size="72" font-weight="700" letter-spacing="-3">HER</text>
+  <path d="M210 28 L252 64 L210 100" fill="none" stroke="url(#chevron-a)" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M249 15 L306 64 L249 113" fill="none" stroke="url(#chevron-b)" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="330" y="88" fill="#fff" font-family="Montserrat, Arial, sans-serif" font-size="72" font-weight="500" letter-spacing="-3">VENTURE</text>
+</svg>

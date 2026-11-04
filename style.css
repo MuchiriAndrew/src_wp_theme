@@ -1208,6 +1208,105 @@ body.nav-locked { overflow: hidden; overscroll-behavior: none; }
 .site-header .header-cta:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .site-header .mobile-nav-close:active { transform: translateY(1px); }
 .site-header .header-cta:active { transform: translateY(1px); }
+.v3-home-hero { min-height: 760px; height: 100vh; height: 100svh; align-items: stretch; }
+.v3-home-hero::before { z-index: 1; background: linear-gradient(90deg,rgba(20,17,16,.62),rgba(20,17,16,.28) 52%,rgba(20,17,16,.08)); }
+.v3-home-hero::after { z-index: 1; background: rgba(36,22,17,.08); mix-blend-mode: multiply; }
+.v3-home-hero .v3-hero-poster { z-index: 0; opacity: 1; filter: none; }
+.v3-home-hero .v3-hero-video { z-index: 0; opacity: 1; filter: none; }
+.v3-home-hero .hero-content { z-index: 3; width: min(1124px,calc(100% - 48px)); margin-inline: auto; padding-top: 110px; padding-bottom: 0; }
+.v3-home-hero h1 { max-width: 850px; margin-bottom: 20px; font-size: clamp(48px,5.5vw,82px); line-height: .99; }
+.v3-home-hero .hero-copy { max-width: 620px; margin-bottom: 16px; font-size: 17px; line-height: 1.45; }
+.v3-home-hero .hero-meta { margin-bottom: 20px; }
+.v3-home-hero .hero-title-line { display: inline; }
+.v3-home-hero .hero-title-line:first-child { display: block; }
+.v3-home-hero .hero-title-line:not(:first-child) { display: inline; }
+.v3-home-hero .hero-actions { gap: 12px; }
+.v3-home-hero .hero-actions .button { min-height: 48px; border-radius: 0; }
+.v3-home-hero .watch-story { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; border-radius: 30px; background: rgba(255,255,255,.12); backdrop-filter: blur(8px); font-size: 13px; font-weight: 700; }
+.v3-home-hero .watch-story .watch-icon { display: inline-grid; width: auto; height: auto; border: 0; font-size: 15px; }
+.v3-hero-watermark { position: absolute; z-index: 2; right: -6vw; bottom: 14vh; width: min(38vw,730px); aspect-ratio: 1; pointer-events: none; }
+.v3-hero-watermark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.v3-watermark-mark { opacity: .45; }
+.v3-watermark-letters { opacity: .92; }
+.v3-hero-enrolments { position: absolute; z-index: 4; right: 0; bottom: 36px; left: 0; width: min(1124px,calc(100% - 48px)); margin-inline: auto; }
+.v3-enrolment-label { margin: 0 0 8px; color: rgba(255,255,255,.74); font-size: 9px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
+.v3-enrolment-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
+.v3-enrol-card { display: block; min-width: 0; min-height: 228px; padding: 16px; border: 1px solid rgba(255,255,255,.5); border-radius: 21px; background: rgba(57,49,46,.48); box-shadow: 0 14px 34px rgba(0,0,0,.18); color: #fff; backdrop-filter: blur(15px); transition: background .2s ease,transform .2s ease,border-color .2s ease; }
+.v3-enrol-card:hover,.v3-enrol-card:focus-visible { transform: translateY(-3px); border-color: rgba(255,255,255,.82); background: rgba(57,49,46,.64); }
+.v3-enrol-card:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.v3-enrol-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.v3-enrol-logo { display: grid; width: 40px; height: 40px; flex: 0 0 40px; place-items: center; padding: 8px; border-radius: 50%; background: rgba(255,255,255,.22); }
+.v3-enrol-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.v3-enrol-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 30px; background: rgba(42,133,86,.45); color: #d2ffe4; font-size: 8px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.v3-enrol-badge i { width: 6px; height: 6px; border-radius: 50%; background: #a4f3c3; }
+.v3-enrol-card h2 { min-height: 20px; margin: 0 0 5px; font-family: var(--serif); font-size: 16px; font-weight: 700; line-height: 1.25; }
+.v3-enrol-next { min-height: 16px; margin: 0 0 8px; color: rgba(255,255,255,.66); font-size: 9px; text-align: center; }
+.v3-countdown { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 5px; }
+.v3-countdown span { display: grid; min-height: 39px; align-content: center; border-radius: 9px; background: rgba(255,255,255,.12); text-align: center; }
+.v3-countdown b { font-size: 13px; line-height: 1; }
+.v3-countdown small { margin-top: 4px; color: rgba(255,255,255,.5); font-size: 7px; text-transform: uppercase; }
+.v3-enrol-cta { display: block; margin-top: 9px; padding: 8px 10px; border-radius: 20px; background: rgba(255,255,255,.88); color: var(--charcoal); font-size: 8px; font-weight: 800; letter-spacing: .13em; text-align: center; text-transform: uppercase; transition: background .2s ease; }
+.v3-enrol-card:hover .v3-enrol-cta { background: #fff; }
+.site-header:not(.is-scrolled) .header-inner { width: min(1400px,calc(100% - 48px)); min-height: 74px; margin: 16px auto 0; padding: 0 38px; border: 1px solid rgba(255,255,255,.25); border-radius: 42px; background: rgba(80,65,54,.42); backdrop-filter: blur(15px); }
+.site-header:not(.is-scrolled) .brand { transform: scale(.9); transform-origin: left center; }
+@media (max-width: 1050px) {
+  .v3-home-hero .hero-content { padding-top: 130px; }
+  .v3-hero-watermark { right: -12vw; bottom: 14vh; width: 46vw; }
+  .v3-hero-enrolments { bottom: 24px; }
+  .v3-enrolment-grid { gap: 10px; }
+  .v3-enrol-card { padding: 12px; }
+  .site-header:not(.is-scrolled) .header-inner { width: calc(100% - 32px); padding: 0 24px; }
+}
+@media (max-width: 700px) {
+  .v3-home-hero { height: 100svh; min-height: 820px; }
+  .v3-home-hero::before { background: rgba(61,9,14,.55); }
+  .v3-home-hero .hero-content { width: calc(100% - 40px); padding-top: 116px; padding-bottom: 300px; }
+  .v3-home-hero h1 { max-width: 560px; font-size: clamp(42px,11vw,62px); }
+  .v3-home-hero .hero-meta { max-width: 275px; line-height: 1.8; }
+  .v3-home-hero .hero-copy { display: -webkit-box; overflow: hidden; font-size: 14px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .v3-hero-watermark { right: -28vw; bottom: 26vh; width: 90vw; opacity: .75; }
+  .v3-hero-enrolments { bottom: 20px; width: calc(100% - 40px); }
+  .v3-enrolment-grid { display: flex; gap: 10px; overflow-x: auto; padding: 2px 1px 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .v3-enrolment-grid::-webkit-scrollbar { display: none; }
+  .v3-enrol-card { width: min(82vw,330px); flex: 0 0 min(82vw,330px); scroll-snap-align: start; }
+  .site-header:not(.is-scrolled) .header-inner { width: calc(100% - 28px); min-height: 66px; margin-top: 10px; padding: 0 16px; border-radius: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .v3-hero-video { display: none; } .v3-enrol-card,.v3-enrol-cta { transition: none; } }
+.v3-impact-section { overflow: hidden; padding: 92px 0 104px; background: var(--cream); }
+.v3-impact-inner { width: min(1124px,calc(100% - 48px)); margin-inline: auto; }
+.v3-impact-heading { max-width: 560px; margin: 0 0 80px; }
+.v3-impact-heading .eyebrow { margin-bottom: 14px; color: var(--red); }
+.v3-impact-heading h2 { margin: 0; color: var(--charcoal); font-size: clamp(38px,5vw,64px); line-height: 1.06; }
+.v3-impact-heading h2 em { color: var(--red); font-style: italic; }
+.impact-grid { display: grid; grid-template-areas: 'money money jobs ent' 'money money coop coop' 'ctry ctry assoc assoc'; grid-template-columns: repeat(4,minmax(0,1fr)); grid-template-rows: repeat(3,260px); gap: 20px; }
+.impact-tile { position: relative; overflow: hidden; border-radius: 24px; box-shadow: 0 10px 28px rgba(28,28,28,.13); transition: transform .35s ease; }
+.impact-tile--money { grid-area: money; }
+.impact-tile--jobs { grid-area: jobs; }
+.impact-tile--ent { grid-area: ent; }
+.impact-tile--coop { grid-area: coop; }
+.impact-tile--ctry { grid-area: ctry; }
+.impact-tile--assoc { grid-area: assoc; }
+.impact-tile-trigger { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: var(--charcoal); text-align: left; cursor: pointer; }
+.impact-tile-trigger img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.8); transition: filter .35s ease,transform .45s ease; }
+.impact-tile-shade { position: absolute; inset: 0; background: linear-gradient(0deg,rgba(10,10,10,.8),rgba(0,0,0,.03) 75%); }
+.impact-tile:hover { transform: scale(1.03); }
+.impact-tile:hover .impact-tile-trigger img,.impact-tile--open .impact-tile-trigger img { filter: brightness(1); transform: scale(1.04); }
+.impact-stat { position: absolute; z-index: 2; right: 0; bottom: 0; left: 0; padding: 24px; color: #fff; pointer-events: none; transition: bottom .45s ease-out,padding .45s ease-out; }
+.impact-number { font-family: var(--serif); font-size: clamp(30px,3vw,48px); font-weight: 700; line-height: 1; white-space: nowrap; }
+.impact-prefix { font-size: .56em; }
+.impact-label { margin-top: 7px; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.impact-detail { margin-top: 5px; color: rgba(255,255,255,.72); font-size: 9px; }
+.impact-panel { position: absolute; z-index: 3; right: 0; bottom: 0; left: 0; height: 55%; padding: 20px 24px; overflow-y: auto; border-radius: 18px 18px 0 0; background: rgba(110,22,28,.84); color: white; backdrop-filter: blur(10px); transform: translateY(100%); transition: transform .45s ease-out; pointer-events: none; }
+.impact-tile--open .impact-stat { bottom: calc(55% + 8px); padding-bottom: 0; }
+.impact-tile--open .impact-panel { transform: translateY(0); pointer-events: auto; }
+.impact-panel-context { margin: 0; font-size: 11px; font-weight: 700; line-height: 1.4; }
+.impact-panel-facts { margin: 8px 0 0; padding-left: 15px; color: rgba(255,255,255,.8); font-size: 9px; line-height: 1.45; list-style: disc; }
+.impact-panel-link { display: inline-block; margin-top: 9px; color: white; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-decoration: underline; text-underline-offset: 3px; text-transform: uppercase; }
+.impact-panel-link:hover,.impact-panel-link:focus-visible { color: #ffd7d7; }
+.impact-tile-trigger:focus-visible { outline: 3px solid var(--orange); outline-offset: -5px; }
+@media (min-width: 640px) and (max-width: 1023px) { .impact-grid { grid-template-areas: 'money money' 'jobs ent' 'coop coop' 'ctry assoc'; grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: repeat(4,260px); } }
+@media (max-width: 639px) { .v3-impact-section { padding: 80px 0 76px; } .v3-impact-inner { width: calc(100% - 40px); } .v3-impact-heading { margin-bottom: 55px; } .v3-impact-heading h2 { font-size: 38px; } .impact-grid { grid-template-areas: 'money' 'jobs' 'ent' 'coop' 'ctry' 'assoc'; grid-template-columns: minmax(0,1fr); grid-template-rows: repeat(6,220px); gap: 16px; } .impact-number { font-size: 42px; } .impact-panel { padding: 18px 20px; } }
+@media (prefers-reduced-motion: reduce) { .impact-tile,.impact-stat,.impact-panel,.impact-tile-trigger img { transition: none; } }
 .site-header .mobile-nav-close:disabled,
 .site-header .header-cta[aria-disabled="true"],
 .map-dot:disabled,

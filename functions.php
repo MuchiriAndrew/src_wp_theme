@@ -1,10 +1,11 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.0.0');
+define('SRC_VERSION', '3.1.0');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
+require_once get_template_directory() . '/inc/cli/import-impact.php';
 require_once get_template_directory() . '/inc/commerce/programme-products.php';
 
 function src_setup() {
@@ -22,6 +23,7 @@ function src_assets() {
     if (is_post_type_archive('programme')) {
         wp_enqueue_script('src-programmes', get_template_directory_uri() . '/assets/js/programmes.js', [], SRC_VERSION, true);
     }
+    if (is_front_page()) wp_enqueue_script('src-home-v3', get_template_directory_uri() . '/assets/js/home-v3.js', [], SRC_VERSION, true);
 }
 add_action('wp_enqueue_scripts', 'src_assets');
 
@@ -226,7 +228,7 @@ function src_settings_fields() {
 }
 function src_settings_defaults() {
     return [
-        'hero_meta' => 'Est. 2012 · Nairobi, Kenya · 15+ Counties', 'hero_title' => "Building\nEnterprises\nFrom Good\nto Great.", 'hero_accent_line' => 'From Good', 'hero_copy' => 'SRC partners with donors, financial institutions and commercial enterprises to unlock growth for SMEs and cooperatives across Kenya and East Africa.', 'hero_image_url' => 'https://images.unsplash.com/photo-1687422808311-a776f467a468?w=1800&h=1000&fit=crop&auto=format', 'header_cta_kicker' => 'Start a conversation', 'header_cta_label' => 'Partner with us',
+        'hero_meta' => 'Est. 2012 · Nairobi, Kenya · 15+ Counties', 'hero_title' => "Building Enterprises\nFrom Good\nto Great.", 'hero_accent_line' => 'From Good', 'hero_copy' => 'SRC partners with donors, financial institutions and commercial enterprises to unlock growth for SMEs and cooperatives across Kenya and East Africa.', 'hero_image_url' => 'https://images.unsplash.com/photo-1687422808311-a776f467a468?w=1800&h=1000&fit=crop&auto=format', 'header_cta_kicker' => 'Start a conversation', 'header_cta_label' => 'Partner with us',
         'sector_eyebrow' => 'Value chains', 'sector_heading' => 'Sectors We\nWork Across', 'sector_intro' => "From dairy and poultry to livestock markets — SRC brings deep sector knowledge to enterprise development across Kenya's arid and semi-arid counties.",
         'audience_eyebrow' => 'Thematic focus', 'audience_heading' => 'Who We Serve', 'footprint_eyebrow' => 'Where we work', 'footprint_heading' => 'Our Footprint', 'partners_eyebrow' => 'Trusted by', 'partners_heading' => 'Leading donors, NGOs and enterprises', 'projects_eyebrow' => 'Impact in action', 'projects_heading' => 'Our Projects', 'team_eyebrow' => 'The people behind SRC', 'team_heading' => 'Meet the Team', 'programmes_eyebrow' => 'Build your business', 'programmes_heading' => "Ongoing & Upcoming\nProgrammes", 'quote_eyebrow' => 'From our programmes', 'quote_text' => '“SRC helped us go from a struggling cooperative to a bankable enterprise — in 18 months.”', 'quote_attribution' => 'Women-led dairy cooperative, Isiolo County', 'quote_summary' => 'SRC has supported 2,500+ women entrepreneurs, unlocked $2M+ in SME financing, and operated across 5 African countries.',
         'newsletter_eyebrow' => 'Stay connected', 'newsletter_heading' => "Building enterprises from Good to Great\nsince 2012.", 'site_description' => 'Nairobi-based enterprise support organisation. Building SMEs from Good to Great across Kenya and East Africa.', 'county_footprint' => 'Nairobi · Mombasa · Kisumu · Nakuru · Garissa · Marsabit · Turkana · Wajir · Mandera · Isiolo · Samburu · Laikipia · Tana River · Kwale · Kajiado', 'contact_city' => 'Nairobi, Kenya', 'contact_email' => 'info@srctech.co.ke', 'contact_phone' => '+254 (0) 20 000 0000', 'social_linkedin' => '', 'social_x' => '', 'social_facebook' => '', 'social_youtube' => '',
