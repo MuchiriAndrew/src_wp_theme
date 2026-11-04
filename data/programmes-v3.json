@@ -1,0 +1,958 @@
+[
+  {
+    "slug": "sheconnects",
+    "name": "SheConnects",
+    "shortName": "SheConnects",
+    "heroTitle": "SheConnects",
+    "status": "current",
+    "enrolment": "partner",
+    "type": "partner",
+    "pillar": "ml",
+    "theme": "Digital & Learning",
+    "tags": [
+      "Women",
+      "Digital Inclusion",
+      "ASAL"
+    ],
+    "funders": [
+      "CARE"
+    ],
+    "partners": [
+      "SRC",
+      "HerVenture"
+    ],
+    "logos": [
+      "sheconnects",
+      "care",
+      "herventure"
+    ],
+    "counties": [
+      "county-isiolo",
+      "county-marsabit"
+    ],
+    "reach": "Isiolo & Marsabit",
+    "audience": "Rural women micro-entrepreneurs and women in trade in Isiolo and Marsabit counties.",
+    "outcomes": "Meaningful digital adoption; onboarding women onto e-commerce and digital platform tools; unlocking digital financial and marketing inclusion.",
+    "duration": "15 months",
+    "dates": "Current",
+    "delivery": "Mobile-first tools (HerVenture app) plus localised training networks.",
+    "journey": [
+      "Ecosystem Engagement",
+      "Digital Literacy & App Onboarding",
+      "Business Model Optimisation",
+      "Market Links & Financial Access"
+    ],
+    "fee": null,
+    "image": "photo-1662850886700-4ec19bd30d11",
+    "published": true
+  },
+  {
+    "slug": "casha",
+    "name": "CASHA — Creating Shared Value with Young People in the Livestock Sector in Kenya's Arid and Semi-Arid Lands",
+    "shortName": "CASHA",
+    "heroTitle": "CASHA",
+    "heroSubtitle": "Creating Shared Value with Young People in the Livestock Sector in Kenya's Arid and Semi-Arid Lands",
+    "status": "current",
+    "enrolment": "partner",
+    "type": "partner",
+    "pillar": "ml",
+    "theme": "Livestock & Agribusiness",
+    "tags": [
+      "Youth",
+      "Women",
+      "Livestock",
+      "ASAL"
+    ],
+    "funders": [
+      "Mastercard Foundation"
+    ],
+    "partners": [
+      "FAO",
+      "SNV",
+      "BOMA",
+      "ILRI",
+      "E4Impact",
+      "KLMC",
+      "SRC"
+    ],
+    "logos": [
+      "mastercard-foundation",
+      "boma-project"
+    ],
+    "counties": [
+      "county-garissa",
+      "county-mandera",
+      "county-tana-river",
+      "county-wajir",
+      "county-isiolo",
+      "county-laikipia",
+      "county-marsabit",
+      "county-samburu",
+      "county-baringo",
+      "county-turkana",
+      "county-west-pokot",
+      "county-kajiado",
+      "county-kitui",
+      "county-makueni",
+      "county-taita-taveta"
+    ],
+    "reach": "15 ASAL counties",
+    "audience": "Unemployed pastoralist youth and young women aged 18–35, including refugees and persons with disabilities, across 15 Kenyan ASAL counties.",
+    "outcomes": "Target of 200,000 dignified and fulfilling jobs; climate-smart agri-entrepreneurship; long-term financial inclusion.",
+    "duration": "5 years",
+    "dates": "June 2025 – November 2030",
+    "delivery": "Consortium-led livestock skills, enterprise development, financial access and market linkage support.",
+    "journey": [
+      "Registration & Baseline Profiling",
+      "TVET & Livestock Skills Training",
+      "Financial Access & Venture Launch",
+      "Cooperative Hubs & Market Links"
+    ],
+    "fee": null,
+    "image": "photo-1695303883050-c8a75e448b5a",
+    "published": true,
+    "note": "Delivered across Kenya's ASAL counties"
+  },
+  {
+    "slug": "kcb-mifugo-ni-mali",
+    "name": "KCB Mifugo ni Mali",
+    "shortName": "Mifugo ni Mali",
+    "heroTitle": "Mifugo ni Mali",
+    "heroSubtitle": "A KCB Foundation programme",
+    "status": "current",
+    "enrolment": "partner",
+    "type": "partner",
+    "pillar": "irf",
+    "theme": "Livestock & Agribusiness",
+    "tags": [
+      "Livestock",
+      "Cooperatives",
+      "ASAL",
+      "AgTech"
+    ],
+    "funders": [
+      "KCB Foundation"
+    ],
+    "partners": [
+      "SRC",
+      "Veterinary experts",
+      "County agriculture departments"
+    ],
+    "logos": [
+      "kcb-foundation"
+    ],
+    "counties": [
+      "county-garissa",
+      "county-isiolo",
+      "county-samburu",
+      "county-lamu",
+      "county-tana-river"
+    ],
+    "reach": "Garissa, Isiolo, Samburu, Lamu & Tana River",
+    "audience": "Pastoralist communities, Farmer Producer Organisations and livestock cooperatives in Garissa, Isiolo, Samburu, Lamu and Tana River.",
+    "outcomes": "Digital herd tracking (RFID); hydroponic fodder infrastructure; KCB asset financing and export offtake pipelines.",
+    "duration": "12 months",
+    "dates": "2026 cohort from February 2026",
+    "delivery": "Field-based cooperative development, AgTech deployment, financial preparation and offtake linkage.",
+    "journey": [
+      "Feb–Apr Cooperative Governance & RFID Audit",
+      "May–Jul AgTech & Fodder Scaling",
+      "Aug–Oct Financial Literacy & KCB Credit Prep",
+      "Nov–Jan Market Linkages & Offtake Contracts"
+    ],
+    "fee": null,
+    "image": "photo-1766409873467-255e2ecd1cec",
+    "published": true
+  },
+  {
+    "slug": "investor-readiness",
+    "name": "Investor Readiness Program",
+    "shortName": "Investor Readiness",
+    "heroTitle": "Investor Readiness",
+    "heroSubtitle": "An SRC Signature Programme",
+    "status": "current",
+    "enrolment": "open",
+    "type": "signature",
+    "pillar": "irf",
+    "theme": "Investment & Export Readiness",
+    "tags": [
+      "SMEs",
+      "Investment",
+      "Paid"
+    ],
+    "funders": [],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [
+      "src"
+    ],
+    "counties": [],
+    "reach": "Kenya-wide · Hybrid",
+    "audience": "Growth-stage SMEs across all sectors in Kenya raising commercial, impact or equity capital.",
+    "outcomes": "Investor-readiness status; compliance-vetted financial models; direct pitch pipelines to active funding networks.",
+    "duration": "8 weeks",
+    "dates": "Recurring yearly cohort",
+    "delivery": "Hybrid: digital LMS modules, weekly 1-on-1 expert advisory, peer breakout cohorts.",
+    "journey": [
+      "Weeks 1–2 Diagnostic & Valuation",
+      "Weeks 3–4 Financial Modelling",
+      "Weeks 5–6 Data Room & Pitching",
+      "Weeks 7–8 Investor Matchmaking"
+    ],
+    "fee": "[TBC]",
+    "image": "photo-1573167507387-6b4b98cb7c13",
+    "published": true,
+    "code": "IRP",
+    "nextCohortDate": null,
+    "nextCohortLabel": "TBC"
+  },
+  {
+    "slug": "export-readiness",
+    "name": "Export Readiness Program",
+    "shortName": "Export Readiness",
+    "heroTitle": "Export Readiness",
+    "heroSubtitle": "An SRC Signature Programme",
+    "status": "current",
+    "enrolment": "open",
+    "type": "signature",
+    "pillar": "ml",
+    "theme": "Investment & Export Readiness",
+    "tags": [
+      "Women",
+      "Export",
+      "Trade",
+      "Paid"
+    ],
+    "funders": [],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [
+      "src"
+    ],
+    "counties": [],
+    "reach": "Kenya-wide · Hybrid",
+    "audience": "Growth-stage women-led SMEs and female founders with stable domestic traction, scaling into regional or international markets.",
+    "outcomes": "Export-compliance certification; gender-inclusive cross-border logistics; direct links to international buyers and female-focused trade finance.",
+    "duration": "3 months plus a hands-on exporting workshop",
+    "dates": "Recurring yearly cohort",
+    "delivery": "Hybrid: trade-compliance LMS, weekly 1-on-1 export advisory, peer accountability circles for women founders.",
+    "journey": [
+      "Month 1 Export Audit & Market Selection",
+      "Month 2 Compliance & Women-in-Trade Certification",
+      "Month 3A Logistics & Trade Finance",
+      "Month 3B B2B Matchmaking & Networks"
+    ],
+    "fee": "[TBC]",
+    "image": "photo-1596733430284-f7437764b1a9",
+    "published": true,
+    "code": "ERP",
+    "nextCohortDate": null,
+    "nextCohortLabel": "TBC"
+  },
+  {
+    "slug": "webinar-series",
+    "name": "Webinar Series",
+    "shortName": "Webinar Series",
+    "heroTitle": "Webinar Series",
+    "status": "current",
+    "enrolment": "open",
+    "type": "signature",
+    "pillar": "bms",
+    "theme": "Digital & Learning",
+    "tags": [
+      "Women",
+      "SMEs",
+      "Compliance",
+      "Virtual"
+    ],
+    "funders": [],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [
+      "src"
+    ],
+    "counties": [],
+    "reach": "Virtual",
+    "audience": "Growth-stage SMEs, mainly women entrepreneurs, institutionalising their internal operating structures.",
+    "outcomes": "Formal internal operating set-ups; regulatory and statutory compliance; digital workflows; investor readiness.",
+    "duration": "Continuous, recurring yearly; webinars once or twice a month",
+    "dates": "Year-round",
+    "delivery": "Interactive virtual webinars, downloadable templates and toolkits, virtual Q&A clinics.",
+    "journey": [],
+    "fee": "[TBC]",
+    "image": "photo-1614023342667-6f060e9d1e04",
+    "published": true,
+    "code": "WEB",
+    "nextCohortDate": null,
+    "nextCohortLabel": "TBC"
+  },
+  {
+    "slug": "herventure",
+    "name": "HerVenture — Mobile Learning App",
+    "shortName": "HerVenture",
+    "heroTitle": "HerVenture",
+    "heroSubtitle": "Mobile learning app for women entrepreneurs",
+    "status": "current",
+    "enrolment": "open",
+    "type": "signature",
+    "pillar": "bms",
+    "theme": "Digital & Learning",
+    "tags": [
+      "Women",
+      "Digital Inclusion",
+      "Mobile"
+    ],
+    "funders": [
+      "Cherie Blair Foundation for Women"
+    ],
+    "partners": [
+      "HerVenture",
+      "SRC"
+    ],
+    "logos": [
+      "herventure",
+      "cherie-blair-foundation"
+    ],
+    "counties": [],
+    "reach": "Kenya-wide · Mobile + field",
+    "audience": "Women micro-entrepreneurs.",
+    "outcomes": "Rapid digital adoption; foundational business literacy (marketing, bookkeeping, cash flow); moving micro operations into formal businesses.",
+    "duration": "Self-paced year-round, plus 3–6 months of active SRC cohort support",
+    "dates": "Year-round",
+    "delivery": "Kiswahili HerVenture app with bite-sized offline modules, reinforced by virtual and field training circles.",
+    "journey": [
+      "App Onboarding & Digital Safety",
+      "Core Business Foundations",
+      "Market Access & E-Commerce",
+      "Financial Links & Capital Match"
+    ],
+    "fee": "[TBC]",
+    "image": "photo-1508002366005-75a695ee2d17",
+    "published": true,
+    "code": "HVA",
+    "nextCohortDate": null,
+    "nextCohortLabel": "TBC"
+  },
+  {
+    "slug": "road-to-markets",
+    "name": "Road to Markets",
+    "shortName": "Road to Markets",
+    "heroTitle": "Road to Markets",
+    "status": "upcoming",
+    "enrolment": "closed",
+    "type": "partner",
+    "pillar": "ml",
+    "theme": "Women's Enterprise",
+    "tags": [
+      "Women",
+      "Trade",
+      "Market Access"
+    ],
+    "funders": [
+      "Cherie Blair Foundation for Women",
+      "DHL Express"
+    ],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [
+      "cherie-blair-foundation",
+      "dhl"
+    ],
+    "counties": [],
+    "reach": "Kenya-wide · Hybrid",
+    "audience": "Established women-led MSMEs in Kenya, operating 3+ years, scaling their geographic or digital footprint.",
+    "outcomes": "A structured 6–12-month market growth plan; cross-border trade and border compliance; links to regional corporate procurement.",
+    "duration": "6 months, about 10 hours/month",
+    "dates": "[TBC]",
+    "delivery": "3 months of masterclasses plus 3 months of mentoring and market placement.",
+    "journey": [
+      "Market Research & Product Adaptation",
+      "E-Commerce & Logistics",
+      "Legal, Border Compliance & Procurement",
+      "Digital Marketing & Outreach",
+      "Access to Finance & Mentorship Match"
+    ],
+    "fee": null,
+    "image": "photo-1596733430284-f7437764b1a9",
+    "published": true
+  },
+  {
+    "slug": "road-to-growth",
+    "name": "Road to Growth",
+    "shortName": "Road to Growth",
+    "heroTitle": "Road to Growth",
+    "status": "upcoming",
+    "enrolment": "closed",
+    "type": "partner",
+    "pillar": "bms",
+    "theme": "Women's Enterprise",
+    "tags": [
+      "Women",
+      "SMEs",
+      "Finance"
+    ],
+    "funders": [
+      "Cherie Blair Foundation for Women",
+      "DHL Express"
+    ],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [
+      "cherie-blair-foundation",
+      "dhl"
+    ],
+    "counties": [],
+    "reach": "Kenya-wide · Hybrid",
+    "audience": "Growth-stage women founders of registered SMEs facing structural or financial barriers to growth.",
+    "outcomes": "Business management skills; financial literacy; peer accountability networks; investment readiness.",
+    "duration": "7-week intensive accelerator",
+    "dates": "[TBC]",
+    "delivery": "Blended: online training, physical masterclasses, group coaching.",
+    "journey": [
+      "Weeks 1–2 Knowing Your Market & Benchmarking",
+      "Weeks 3–4 Financial Literacy & Capital Relationships",
+      "Weeks 5–6 Digital Marketing & Brand Visibility",
+      "Week 7 Growth Plan & Graduation"
+    ],
+    "fee": null,
+    "image": "photo-1573497019418-b400bb3ab074",
+    "published": true
+  },
+  {
+    "slug": "lift-nk",
+    "name": "LIFT-NK — Livelihoods and Inclusion for Transformation, Northern Kenya",
+    "shortName": "LIFT-NK",
+    "heroTitle": "LIFT-NK",
+    "heroSubtitle": "Livelihoods and Inclusion for Transformation – Northern Kenya",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "pillar": "bms",
+    "theme": "Resilience & Livelihoods",
+    "tags": [
+      "Women",
+      "Youth",
+      "Refugees",
+      "ASAL",
+      "Green Enterprise"
+    ],
+    "funders": [],
+    "partners": [
+      "BOMA Project (Green REAP model)",
+      "SRC (business bootcamps)"
+    ],
+    "logos": [
+      "boma-project"
+    ],
+    "counties": [
+      "county-marsabit",
+      "county-samburu",
+      "county-turkana"
+    ],
+    "reach": "Marsabit, Samburu & Turkana (Kakuma/Kalobeyei)",
+    "audience": "Vulnerable women, youth and refugees in extreme poverty in forest-adjacent areas and refugee settlements in Northern Kenya.",
+    "outcomes": "3,650+ green micro-enterprises; investor readiness for 4,000 growing businesses; 93,000+ people lifted out of extreme poverty.",
+    "duration": "August 2022 – December 2025",
+    "dates": "Aug 2022 – Dec 2025",
+    "delivery": "Green enterprise training, seed funding, business bootcamps and market integration.",
+    "journey": [
+      "Targeting & Vulnerability Mapping",
+      "Green Capacity & Skills Training",
+      "Seed Funding & Launch",
+      "Investor Readiness & Market Integration"
+    ],
+    "fee": null,
+    "image": "photo-1766409874040-d4b233e92089",
+    "published": true,
+    "note": "Delivered across Kenya's ASAL counties"
+  },
+  {
+    "slug": "kuza-jamii",
+    "name": "Kuza Jamii I & II",
+    "shortName": "Kuza Jamii",
+    "heroTitle": "Kuza Jamii",
+    "heroSubtitle": "Phases I & II",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "pillar": "bms",
+    "theme": "Resilience & Livelihoods",
+    "tags": [
+      "Women",
+      "Youth",
+      "Refugees",
+      "ASAL",
+      "Social Protection"
+    ],
+    "funders": [
+      "UK Government (FCDO)"
+    ],
+    "partners": [
+      "Village Enterprise",
+      "BOMA",
+      "GENCAD",
+      "CHASP",
+      "ENAF",
+      "SRC"
+    ],
+    "logos": [
+      "boma-project"
+    ],
+    "counties": [
+      "county-garissa",
+      "county-isiolo",
+      "county-mandera",
+      "county-marsabit",
+      "county-samburu",
+      "county-tana-river",
+      "county-turkana",
+      "county-wajir"
+    ],
+    "reach": "8 ASAL counties",
+    "audience": "Ultra-poor and vulnerable pastoralist households, women, youth and refugees.",
+    "outcomes": "Graduating households from cash-transfer dependency into climate-resilient businesses; financial inclusion; stronger government social-protection delivery.",
+    "duration": "Phase I: 12 months · Phase II: 6-month bridging",
+    "dates": "Phase I Apr 2024 – Mar 2025; Phase II late 2025 – Mar 2026",
+    "delivery": "Consortium-led graduation, social-protection and enterprise support.",
+    "journey": [
+      "Targeting & Social Registry",
+      "Skills & Business Capacity Building",
+      "Productive Seed Capital Grant",
+      "Market Links & Cooperative Governance"
+    ],
+    "fee": null,
+    "image": "photo-1766409874040-d4b233e92089",
+    "published": true
+  },
+  {
+    "slug": "seed",
+    "name": "SEED — Sustainable Entrepreneurship and Economic Development",
+    "shortName": "SEED",
+    "heroTitle": "SEED",
+    "heroSubtitle": "Sustainable Entrepreneurship and Economic Development",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "pillar": "bms",
+    "theme": "Resilience & Livelihoods",
+    "tags": [
+      "Youth",
+      "Women",
+      "ASAL",
+      "Green Enterprise"
+    ],
+    "funders": [],
+    "partners": [
+      "BOMA Project",
+      "SRC"
+    ],
+    "logos": [
+      "boma-project"
+    ],
+    "counties": [
+      "county-marsabit",
+      "county-isiolo"
+    ],
+    "reach": "Marsabit & Isiolo",
+    "audience": "Unemployed pastoralist youth and young women aged 18–34 in Marsabit and Isiolo, with a strict 50/50 gender balance.",
+    "outcomes": "800+ youth-led green enterprises; certified community business mentors (Training-of-Trainers); financial independence for 2,400 youth.",
+    "duration": "12-month accelerated lifecycle",
+    "dates": "Completed",
+    "delivery": "Community mobilisation, business skills, seed capital and peer mentorship.",
+    "journey": [
+      "Community Mapping & Mobilisation",
+      "Foundational Business Skills",
+      "Productive Seed Capital Launch",
+      "Market Linkages & Peer Mentorship"
+    ],
+    "fee": null,
+    "image": "photo-1695303877504-cd90c170238b",
+    "published": true
+  },
+  {
+    "slug": "ande-circularity",
+    "name": "Investor Readiness for Waste & Circular Economy SMEs",
+    "shortName": "Circularity Investor Readiness",
+    "heroTitle": "Investor Readiness: Circular Economy",
+    "heroSubtitle": "For waste, recycling and circular-economy SMEs, with ANDE",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "pillar": "irf",
+    "theme": "Investment & Export Readiness",
+    "tags": [
+      "Green Enterprises",
+      "Circular Economy",
+      "Investment"
+    ],
+    "funders": [
+      "Aspen Network of Development Entrepreneurs (ANDE)"
+    ],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [
+      "ande"
+    ],
+    "counties": [],
+    "reach": "Kenya · Virtual",
+    "audience": "Small and growing businesses and green SMEs in waste management, recycling and the circular economy.",
+    "outcomes": "Eco-enterprises structured into corporations; financial discipline; direct investor matchmaking for green capital.",
+    "duration": "12–18 months in successive cohorts",
+    "dates": "Completed",
+    "delivery": "Virtual technical assistance, investment preparation and investor matchmaking.",
+    "journey": [
+      "Circularity & Operational Audit",
+      "Structured Technical Assistance",
+      "Investment Readiness Transformation",
+      "Investor Matchmaking & Handover"
+    ],
+    "fee": null,
+    "image": "photo-1776039325172-3f2290cc5f77",
+    "published": true
+  },
+  {
+    "slug": "graca-machel-investor-readiness",
+    "name": "Investor Readiness for Women Entrepreneurs",
+    "shortName": "Women Investor Readiness",
+    "heroTitle": "Investor Readiness for Women",
+    "heroSubtitle": "With the Graça Machel Trust",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "pillar": "irf",
+    "theme": "Women's Enterprise",
+    "tags": [
+      "Women",
+      "Investment",
+      "Pan-African"
+    ],
+    "funders": [
+      "Graça Machel Trust"
+    ],
+    "partners": [
+      "Afrishela",
+      "SRC"
+    ],
+    "logos": [
+      "graca-machel-trust",
+      "afrishela"
+    ],
+    "counties": [],
+    "reach": "Africa · Virtual",
+    "audience": "Growth-oriented African women running established SMEs who want to scale.",
+    "outcomes": "Investor readiness; access to corporate supply chains; job creation.",
+    "duration": "10 months (5 months of training + 5 months of mentorship aftercare)",
+    "dates": "Completed",
+    "delivery": "Virtual training, mentorship aftercare and corporate market linkage.",
+    "journey": [
+      "Diagnostic",
+      "Optimisation",
+      "Capital Prep",
+      "Market Entry"
+    ],
+    "fee": null,
+    "image": "photo-1662850886700-4ec19bd30d11",
+    "published": true
+  },
+  {
+    "slug": "road-to-leadership",
+    "name": "Road to Leadership",
+    "heroTitle": "Road to Leadership",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "theme": "Women's Enterprise",
+    "pillar": "bms",
+    "tags": [
+      "Women",
+      "Leadership",
+      "Virtual"
+    ],
+    "funders": [
+      "Cherie Blair Foundation for Women"
+    ],
+    "partners": [
+      "DHL Express",
+      "SRC"
+    ],
+    "logos": [
+      "cherie-blair-foundation",
+      "dhl"
+    ],
+    "counties": [],
+    "reach": "Kenya-wide · Virtual",
+    "audience": "Growth-oriented Kenyan women entrepreneurs and SME owners moving from day-to-day operations into strategic business leadership.",
+    "outcomes": "Overcoming imposter syndrome, mastering the executive elevator pitch, building contract negotiation and self-advocacy skills, and a lifelong network of female business peers.",
+    "duration": "3–4-week cohort",
+    "delivery": "Fully digital: live virtual masterclasses, peer breakout circles and personal assessment workbooks.",
+    "journey": [
+      "Advocacy",
+      "Communication",
+      "Leadership"
+    ],
+    "shortName": "Road to Leadership",
+    "dates": "",
+    "fee": null,
+    "image": "photo-1637149014802-d917e6255c2d",
+    "published": true
+  },
+  {
+    "slug": "palladium-usaid",
+    "name": "Palladium (USAID-funded) Project",
+    "heroTitle": "Palladium · USAID",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "theme": "Investment & Export Readiness",
+    "pillar": "irf",
+    "tags": [
+      "Agribusiness",
+      "Investment",
+      "Finance",
+      "Women",
+      "Youth"
+    ],
+    "funders": [
+      "USAID"
+    ],
+    "partners": [
+      "Palladium",
+      "SRC"
+    ],
+    "logos": [
+      "usaid"
+    ],
+    "counties": [],
+    "reach": "Kenya-wide",
+    "audience": "High-growth agribusinesses (processors, aggregators, input suppliers) in livestock, dairy, horticulture and clean energy, with an emphasis on women- and youth-led enterprises; also local banks and financial institutions.",
+    "outcomes": "Over $630 million in private capital mobilised; banks shifting from rigid collateral to cash-flow lending; a sustainable network of local financial advisory firms.",
+    "duration": "Multi-year; each business goes through a 6–12-month capital matching and transaction cycle.",
+    "delivery": "Market-driven model with pay-for-performance incentives for advisors, Opportunities Teams preparing demand and Investment Teams de-risking supply.",
+    "journey": [
+      "Pipeline Sourcing & Mapping",
+      "Investment Prep (SRC-led governance and pitch building)",
+      "Supply-Side Risk Mitigation",
+      "Transaction Close & Drawdown"
+    ],
+    "shortName": "Palladium · USAID",
+    "dates": "",
+    "fee": null,
+    "image": "photo-1637149014802-d917e6255c2d",
+    "published": true
+  },
+  {
+    "slug": "giz-sme-loop",
+    "name": "SME Loop in Kenya",
+    "heroTitle": "SME Loop",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "theme": "Investment & Export Readiness",
+    "pillar": "bms",
+    "tags": [
+      "Youth",
+      "MSMEs",
+      "Coaching",
+      "Finance"
+    ],
+    "funders": [
+      "GIZ"
+    ],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [],
+    "counties": [
+      "county-kajiado",
+      "county-machakos"
+    ],
+    "reach": "Kajiado & Machakos",
+    "audience": "75 micro, small and medium enterprises and young enterprises in Kajiado and Machakos, focused on youth-led businesses.",
+    "outcomes": "Stronger entrepreneurial skills, direct financial linkages, better access to financial services and stronger policy framework conditions.",
+    "duration": "Multi-month cohort cycle using the GIZ SME Loop methodology.",
+    "delivery": "Implemented by SRC on behalf of GIZ: classroom business development services combined with on-site, sector-specific coaching.",
+    "journey": [
+      "Business Audit & Diagnostics",
+      "Sector-Based Training Loop",
+      "Individual Business Coaching",
+      "Financial Linkages & Policy Integration"
+    ],
+    "shortName": "SME Loop",
+    "dates": "",
+    "fee": null,
+    "image": "photo-1637149014802-d917e6255c2d",
+    "published": true
+  },
+  {
+    "slug": "giz-business-scouts",
+    "name": "GIZ Business Scouts for Development",
+    "heroTitle": "Business Scouts",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "theme": "Investment & Export Readiness",
+    "pillar": "ml",
+    "tags": [
+      "Manufacturing",
+      "Cross-border",
+      "Kenya & Uganda"
+    ],
+    "funders": [
+      "GIZ"
+    ],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [],
+    "counties": [],
+    "reach": "Kenya & Uganda (Nairobi, Thika, Kampala, Jinja)",
+    "audience": "Established manufacturing SMEs in Kenya and Uganda in food/agri-processing and cosmetics/beauty, ready to automate or expand regionally.",
+    "outcomes": "Asset financing for machinery, optimised production floors, KEBS/UNBS standards compliance, and cross-border B2B market access.",
+    "duration": "6–9-month incubation and acceleration track with multi-day technical sprints.",
+    "delivery": "Hybrid, factory-focused: virtual training, 1-on-1 on-site industrial consulting, cross-border B2B matching and manufacturing financial modelling.",
+    "journey": [
+      "Industrial Diagnostic & Compliance Audit",
+      "Costing & Financial Modelling",
+      "Market Expansion & Cross-Border B2B",
+      "Capital Pitching & Asset Financing"
+    ],
+    "shortName": "Business Scouts",
+    "dates": "",
+    "fee": null,
+    "image": "photo-1637149014802-d917e6255c2d",
+    "published": true
+  },
+  {
+    "slug": "village-capital-bds",
+    "name": "Village Capital BDS Services Program",
+    "heroTitle": "Village Capital BDS",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "theme": "Resilience & Livelihoods",
+    "pillar": "bms",
+    "tags": [
+      "Rural Enterprises",
+      "Diagnostics",
+      "ESOs"
+    ],
+    "funders": [
+      "Village Capital"
+    ],
+    "partners": [
+      "SRC"
+    ],
+    "logos": [
+      "village-capital"
+    ],
+    "counties": [],
+    "reach": "Rural counties across Kenya",
+    "audience": "A cohort of 10 rural-impacting enterprises (aggregators, off-grid solar, last-mile distributors) and the enterprise support organisations that serve them.",
+    "outcomes": "Ventures moved onto an objective milestone framework, operational gaps identified to guide business support, local hubs audited, and real community impact measured.",
+    "duration": "3–6-month tracking and diagnostic lifecycle with multi-week milestone checkpoints.",
+    "delivery": "Built around Village Capital's ABACA diagnostic tool (Levels 1–9), with on-site field data collection and data-driven coaching.",
+    "journey": [
+      "ABACA Baseline Intake",
+      "Deep Field Data Collection",
+      "Targeted BDS Gap Resolution",
+      "ESO Ecosystem Review"
+    ],
+    "shortName": "Village Capital BDS",
+    "dates": "",
+    "fee": null,
+    "image": "photo-1637149014802-d917e6255c2d",
+    "published": true
+  },
+  {
+    "slug": "usaid-acdi-voca",
+    "name": "USAID / ACDI/VOCA Livestock Markets Project",
+    "heroTitle": "ACDI/VOCA Livestock Markets",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "theme": "Livestock & Agribusiness",
+    "pillar": "ml",
+    "tags": [
+      "Livestock",
+      "Markets",
+      "ASAL"
+    ],
+    "funders": [
+      "USAID"
+    ],
+    "partners": [
+      "ACDI/VOCA",
+      "SRC"
+    ],
+    "logos": [
+      "usaid"
+    ],
+    "counties": [
+      "county-marsabit",
+      "county-isiolo"
+    ],
+    "reach": "Marsabit & Isiolo",
+    "audience": "56 selected SMEs and livestock markets: veterinary suppliers, fodder producers, aggregators and Livestock Market Associations.",
+    "outcomes": "Livestock yards upgraded into self-sustaining commercial hubs, transport chains optimised to cut transit weight loss, bookkeeping systems, commercial bank loans and local branding.",
+    "duration": "Multi-year; each enterprise cohort goes through a 6–12-month acceleration track.",
+    "delivery": "On-site advisory at enterprise premises, public-private co-management of sale yards, dryland climate risk analysis and deal matching with meat exporters.",
+    "journey": [
+      "Diagnostic Audit & Sale-Yard Mapping",
+      "Financial Restructuring & Risk Analysis",
+      "Supply Chain & Branding Optimisation",
+      "Capital Drawdown & Market Integration"
+    ],
+    "shortName": "ACDI/VOCA Livestock Markets",
+    "dates": "",
+    "fee": null,
+    "image": "photo-1637149014802-d917e6255c2d",
+    "published": true
+  },
+  {
+    "slug": "ntf-iii-it-ites",
+    "name": "Netherlands Trust Fund III (NTF III) East Africa IT & ITES Programme",
+    "heroTitle": "NTF III · IT & ITES",
+    "status": "past",
+    "enrolment": "closed",
+    "type": "partner",
+    "theme": "Investment & Export Readiness",
+    "pillar": "ml",
+    "tags": [
+      "Tech",
+      "Export",
+      "Kenya & Uganda"
+    ],
+    "funders": [
+      "Netherlands Trust Fund (NTF III)"
+    ],
+    "partners": [
+      "CBI",
+      "KITOS",
+      "SRC"
+    ],
+    "logos": [],
+    "counties": [],
+    "reach": "Kenya & Uganda (Nairobi–Kampala)",
+    "audience": "28 Kenyan and 25 Ugandan tech entrepreneurs (software developers, BPOs, digital start-ups) plus corporate buyers, telcos and tier-1 banks.",
+    "outcomes": "Cross-border tech outsourcing contracts, global standards for data security and IP protection, regional sub-contracting alliances and standard offshore pricing.",
+    "duration": "Multi-year; 6–12-month export coaching track with 3–5-day B2B matchmaking events.",
+    "delivery": "National coordination led by SRC: curated 1-on-1 deal rooms, technical portfolio prep and cross-border collaboration workshops.",
+    "journey": [
+      "IT Capability & Security Audit",
+      "Portfolio Polish & Pricing Setup",
+      "Curated B2B Sprints & Demos",
+      "SLA Signing & Project Sourcing"
+    ],
+    "shortName": "NTF III · IT & ITES",
+    "dates": "",
+    "fee": null,
+    "image": "photo-1637149014802-d917e6255c2d",
+    "published": true
+  }
+]

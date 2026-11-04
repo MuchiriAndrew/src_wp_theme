@@ -9,18 +9,20 @@ This document is the implementation and deployment handoff for the Smart Regiona
 - Local WordPress root: `/Users/muchiriandrew/Sites/smartregionalconsultants`
 - Theme root: `/Users/muchiriandrew/Sites/smartregionalconsultants/wp-content/themes/smartregionalconsultants`
 - Local Valet URL: `http://smartregionalconsultants.test/`
-- Published visual reference: `https://tool-riff-26498280.figma.site/`
-- Figma-generated source reference: `/Users/muchiriandrew/Downloads/src_figma_code`
+- Published visual reference: `https://morse-fling-58551420.figma.site/`
+- Figma-generated source reference: `/Users/muchiriandrew/Documents/SRC v3`
 - GitHub repository: `https://github.com/MuchiriAndrew/src_wp_theme`
 - Repository purpose: deployable SRC theme source and project documentation, not WordPress core or production secrets
 - Active theme stylesheet slug: `smartregionalconsultants`
-- Theme asset version: `1.2.4`
+- Theme asset version: `3.0.0`
 - Local WordPress version at handoff: `7.1.1`
 - Local database name: `smartregionalconsultants`
 - Local database host: `localhost`
 - Local table prefix: `src_`
 
-The GitHub repository is currently empty. The recommended repository root is the theme directory, not the full local WordPress installation. WordPress core, `wp-config.php`, database contents, uploads, cache, and server credentials must remain outside Git.
+The repository root is the theme directory, not the full local WordPress installation. WordPress core, `wp-config.php`, database contents, uploads, cache, and server credentials must remain outside Git. The current work is on `codex/src-v3-implementation`. `PRODUCTION_RUNBOOK.md` was already staged separately before this implementation began and should not be included in unrelated commits.
+
+> **v3 update:** The v3 source and implementation status at the end of this document supersede older v2 field descriptions and the initial GitHub/release status below. The published v3 URL and `/Users/muchiriandrew/Documents/SRC v3` export are the current references.
 
 ## Non-negotiable production requirements
 
@@ -42,13 +44,20 @@ The GitHub repository is currently empty. The recommended repository root is the
 - `header.php` renders the brand, desktop navigation, mobile offcanvas navigation, scrim, and Partner With Us CTA.
 - `footer.php` renders the newsletter/footer content and footer navigation.
 - `page.php` renders standard pages such as About, What We Do, Contact, Careers, and Get Involved using page-level SRC fields.
-- `archive.php` renders archives for Projects, Programmes, Team, and Careers.
-- `single.php` renders single Project and Programme pages plus the shared fallback single layout.
+- `archive-programme.php` renders the v3 programme catalogue, filters, empty state, and programme cards. It only lists imported v3 records marked `_src_v3_imported=1`; legacy programme records remain preserved.
+- `single-programme.php` renders imported v3 programme detail pages and falls back to `single.php` for legacy programmes.
+- `page-cart.php`, `page-checkout.php`, `page-my-account.php`, and `page-shop.php` wrap native WooCommerce blocks in the SRC layout. `woocommerce.php` is the classic WooCommerce template wrapper.
+- `archive.php` renders archives for Projects, Team, and Careers.
+- `single.php` renders single Project and legacy programme pages plus the shared fallback single layout.
 - `index.php` is the generic fallback template.
 - `style.css` contains the design system, responsive layouts, visual parity styles, map state styles, modal styles, and responsive breakpoints.
 - `assets/js/site.js` contains all client-side interactions.
 - `assets/africa.svg` is the inline SVG map. Its country path IDs are used as the country-code integration point.
-- `functions.php` contains theme setup, asset loading, CPT/taxonomy registration, admin fields, settings, seed data, map data assembly, and helper functions.
+- `functions.php` contains theme setup, legacy CPT/taxonomy registration, page settings, seed data, map data assembly, and helper functions.
+- `inc/v3-content-model.php` registers the v3 CPTs, taxonomies, metadata, custom admin fields, and programme archive query rules.
+- `inc/cli/import-programmes.php` provides the idempotent `wp src import-programmes` command.
+- `inc/commerce/programme-products.php` synchronizes eligible programme records to hidden WooCommerce products and enforces one programme per order.
+- `assets/js/programmes.js` handles programme archive filter submissions.
 
 ### Main data flow
 
@@ -551,10 +560,56 @@ Suggested viewport set: 1440×900, 1280×800, 1024×768, 768×1024, 390×844, an
 
 ## First tasks for Claude Code
 
-1. Verify the production repository checkout path and confirm it matches `MuchiriAndrew/src_wp_theme`.
-2. Create the initial commit from this theme directory and push it to `main`.
-3. Provision or verify production WordPress, database, PHP, SSL, DNS, and filesystem access.
-4. Create the deployment workflow only after confirming the production deployment transport and destination path.
-5. Deploy the theme to a staging or production-safe target.
-6. Run the deployment and visual QA checklists above.
-7. Document the final production domain, host, deploy path, secrets, rollback process, and database backup process in the production runbook. Never put secret values in this file.
+1. Verify the current feature branch and working tree. Keep the previously staged `PRODUCTION_RUNBOOK.md` change isolated from theme implementation commits.
+2. Continue the v3 page and interaction work using `/Users/muchiriandrew/Documents/SRC v3` and the published v3 URL as references. Read `SRC_V3_WORDPRESS_IMPLEMENTATION_PLAN.md` in this repository before making broad changes.
+3. Complete the remaining CMS imports/templates and verify all content ownership through WordPress admin before calling the theme complete.
+4. Version and review the M-Pesa gateway separately; do not deploy it from the theme repository or enable live payments before sandbox acceptance.
+5. Confirm the production deployment transport, destination, domain, DNS, SSL, and rollback path from `PRODUCTION_RUNBOOK.md` before creating or running CI/CD.
+6. Deploy to a staging target first if available, run the route/visual/commerce checks, then request explicit approval before production deployment.
+7. Record final production domain, host, deploy path, secrets locations, rollback, and backup process in the production runbook. Never put secret values in this file.
+
+## Current v3 implementation state (4 November 2026)
+
+This is the current project state; older v2-specific field descriptions above are historical and are superseded where they differ from the v3 schema below.
+
+- WordPress core is `7.1.1`; WooCommerce `11.2.1` is installed and active locally. Currency is KES. Shop, Cart, Checkout, and My Account pages are present.
+- Theme implementation is on branch `codex/src-v3-implementation`. Production remains untouched.
+- The v3 importer has loaded 21 published source programmes: 7 current, 2 upcoming, and 12 past. Six older programme posts remain in the database and are excluded from the v3 catalogue.
+- Run `wp src import-programmes --dry-run` to preview an import. `wp src import-programmes --overwrite` deliberately overwrites importer-managed fields and should only be used when that is intended.
+- The programme archive supports status, theme, and signature filters, preserves filter state in the URL, and renders an explicit no-results state. Programme detail pages use structured fields, county terms/map, related programmes, and status-aware CTAs.
+- A Media Library featured image overrides the imported source image. Programme theme, county, and country relationships use native WordPress taxonomy controls.
+- The Africa footprint only includes imported v3 programmes, preventing the preserved legacy content from inflating programme counts.
+
+### v3 admin data model
+
+All custom post type, taxonomy, and field registration is in theme code; no CPT or custom-field plugin is required.
+
+| Admin area | Post type / taxonomy | Editor controls |
+| --- | --- | --- |
+| Programmes | Existing `programme` CPT | V3 fields for short name, hero copy, status, enrolment, type, pillar, tags, funders/partners, reach, audience, outcomes, duration, dates, delivery, journey, fee, confirmed whole-KES price, cohort date, detail visibility, homepage visibility/order, and linked WooCommerce product. |
+| Programme themes | `programme_theme` | Group records for catalogue filters and homepage project-folder relationships. |
+| Programme pillars | `programme_pillar` | Business Model Strengthening, Investment Readiness & Finance, and Market Linkages. |
+| Programme counties/countries | `programme_county`, existing `programme_country` | Attach geography to a programme; country term metadata controls map code, label, order, marker/zoom offsets, and HQ state. |
+| Testimonials | `src_testimonial` and `testimonial_category` | Person, enterprise/location, headline, video URL, order, homepage flag, body/excerpt, and featured image. |
+| Pool of Experts | `src_expert` and `expert_category` | Specialty/role, summary, order, featured flag, category, body, and featured image. |
+| Project Folders | `src_project_folder` and `project_theme` | Summary, funders, order, CTA URL, theme, body, and featured image. |
+| Publications | `src_publication` | Year, PDF URL, flipbook URL, featured flag, body, and cover image. |
+| Portfolio Companies | `portfolio_company` | Sector, location, website, order, body, and featured image. |
+| Impact Metrics | `impact_metric` | Value, prefix/suffix, label, expanded context, detail bullets, link, and order. |
+| Partners | Existing `src_partner_item` and `partner_category` | Existing tile type/name/logo/color/span/order/link controls plus native grouping taxonomy. |
+
+V3 post metadata uses an underscore prefix. For example, the admin field `programme_status` is saved as `_programme_status`. Taxonomy relationships use WordPress term relationships. The CLI importer adds `_src_v3_imported` and `_src_v3_import_hash`, and never deletes legacy posts.
+
+### Programme commerce rules
+
+- An eligible programme is linked to one hidden virtual simple product through `_programme_product_id` and `_src_programme_id`.
+- Product sync requires a published, current, open v3 programme with an explicit whole-number KES price or an explicit `Free` fee label. Upcoming, past, partner-managed, closed, blank-fee, and `[TBC]` records are not purchasable.
+- The four current open-enrolment records still have `[TBC]` fees, so no programme products are currently purchasable. Do not replace those values with zero to simulate free enrolment.
+- Priced programme cards link into native WooCommerce Checkout. Until the fee is confirmed, the CTA routes to Contact with the programme slug in the query string.
+- The theme styles native WooCommerce pages. The M-Pesa gateway must remain disabled until sandbox configuration and callback verification are complete.
+
+### M-Pesa gateway status
+
+The supplied gateway was copied to the local SRC plugin directory from `/Users/muchiriandrew/Sites/enkatawatches/wp-content/plugins/mpesa-gateway`. The SRC copy is **not activated**. Credential defaults were removed, credential fields use password inputs, the default gateway state is disabled with sandbox as the default environment, sensitive phone logging was reduced, and callback handling now checks a configured token, stored request IDs, KES currency, amount, and receipt before completing an order.
+
+The plugin copy is outside this theme repository and must be released/versioned separately. These changes do not prove provider-side callback authenticity. Before production, independently review provider verification/reconciliation, run sandbox success/failure/cancel/duplicate/timeout scenarios, and deploy the reviewed plugin release separately from the theme. Never treat a browser return or customer click as payment confirmation.

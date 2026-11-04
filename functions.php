@@ -1,7 +1,11 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '1.2.4');
+define('SRC_VERSION', '3.0.0');
+
+require_once get_template_directory() . '/inc/v3-content-model.php';
+require_once get_template_directory() . '/inc/cli/import-programmes.php';
+require_once get_template_directory() . '/inc/commerce/programme-products.php';
 
 function src_setup() {
     add_theme_support('title-tag');
@@ -15,6 +19,9 @@ add_action('after_setup_theme', 'src_setup');
 function src_assets() {
     wp_enqueue_style('src-style', get_stylesheet_uri(), [], SRC_VERSION);
     wp_enqueue_script('src-site', get_template_directory_uri() . '/assets/js/site.js', [], SRC_VERSION, true);
+    if (is_post_type_archive('programme')) {
+        wp_enqueue_script('src-programmes', get_template_directory_uri() . '/assets/js/programmes.js', [], SRC_VERSION, true);
+    }
 }
 add_action('wp_enqueue_scripts', 'src_assets');
 
@@ -147,7 +154,20 @@ function src_save_meta($post_id) {
 }
 add_action('save_post', 'src_save_meta');
 
-function src_image_url($post_id, $fallback) { return get_the_post_thumbnail_url($post_id, 'large') ?: (get_post_meta($post_id, '_project_image_url', true) ?: get_post_meta($post_id, '_programme_image_url', true) ?: get_post_meta($post_id, '_team_image_url', true) ?: get_post_meta($post_id, '_sector_image_url', true) ?: $fallback); }
+function src_image_url($post_id, $fallback) {
+    $featured = get_the_post_thumbnail_url($post_id, 'large');
+    if ($featured) return $featured;
+    $programme_image = trim((string) get_post_meta($post_id, '_programme_image_id', true));
+    if ($programme_image !== '') {
+        if (preg_match('#^https?://#i', $programme_image)) return esc_url_raw($programme_image);
+        return 'https://images.unsplash.com/' . rawurlencode($programme_image) . '?w=1200&h=800&fit=crop&auto=format&q=82';
+    }
+    foreach (['_project_image_url', '_programme_image_url', '_team_image_url', '_sector_image_url', '_expert_image_url'] as $key) {
+        $url = trim((string) get_post_meta($post_id, $key, true));
+        if ($url !== '') return esc_url_raw($url);
+    }
+    return $fallback;
+}
 function src_page_url($slug) { $page = get_page_by_path($slug); return $page ? get_permalink($page) : home_url('/' . trim($slug, '/') . '/'); }
 function src_field($key, $post_id = null, $fallback = '') { $value = get_post_meta($post_id ?: get_the_ID(), '_' . $key, true); return $value !== '' ? $value : $fallback; }
 function src_option($key, $fallback = '') { $settings = get_option('src_settings', []); return isset($settings[$key]) && $settings[$key] !== '' ? $settings[$key] : $fallback; }
@@ -287,6 +307,11 @@ function src_get_footprint_countries() {
             'post_status' => 'publish',
             'posts_per_page' => -1,
             'orderby' => ['menu_order' => 'ASC', 'title' => 'ASC'],
+            'meta_query' => [[
+                'key' => '_src_v3_imported',
+                'value' => '1',
+                'compare' => '=',
+            ]],
             'tax_query' => [[
                 'taxonomy' => 'programme_country',
                 'field' => 'term_id',
@@ -294,13 +319,16 @@ function src_get_footprint_countries() {
             ]],
         ]);
         $programme_rows = array_map(static function ($programme) {
+            $partners = get_post_meta($programme->ID, '_programme_partners', true);
+            $funders = get_post_meta($programme->ID, '_programme_funders', true);
             return [
                 'title' => get_the_title($programme),
-                'partner' => src_field('programme_partner', $programme->ID, src_field('programme_location', $programme->ID, 'View programme details')),
+                'partner' => (is_array($partners) && $partners ? implode(', ', $partners) : (is_array($funders) && $funders ? implode(', ', $funders) : src_field('programme_partner', $programme->ID, ''))),
                 'url' => get_permalink($programme),
             ];
         }, $programmes);
         $count = count($programme_rows);
+        if (!$count) continue;
         $countries[$code] = [
             'name' => $term->name,
             'count' => sprintf(_n('%d programme', '%d programmes', $count, 'src'), $count),
