@@ -2,12 +2,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const header = document.querySelector('.site-header');
   const toggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.primary-nav');
-  const scrim = document.querySelector('.nav-scrim');
-  const closeButton = nav?.querySelector('.mobile-nav-close');
-  const navLinks = nav ? [...nav.querySelectorAll('a')] : [];
-  const isMobileNav = () => window.matchMedia('(max-width: 900px)').matches;
+  if (!header || !toggle || !nav) return;
+  const isMobileNav = () => window.matchMedia('(max-width: 1023px)').matches;
+  const focusableInNav = () => [...nav.querySelectorAll('a, button')].filter((element) =>
+    !element.disabled && !element.closest('.sub-menu[inert]') && element.getClientRects().length
+  );
+  const closeSubmenus = () => nav.querySelectorAll('.menu-item-has-children').forEach((item) => {
+    item.classList.remove('is-submenu-open');
+    const button = item.querySelector(':scope > .nav-parent-button');
+    const submenu = item.querySelector(':scope > .sub-menu');
+    button?.setAttribute('aria-expanded', 'false');
+    const indicator = button?.querySelector('.nav-parent-indicator');
+    if (indicator) indicator.textContent = '+';
+    if (submenu) {
+      submenu.setAttribute('aria-hidden', 'true');
+      submenu.inert = true;
+    }
+  });
   const setNavOpen = (open, restoreFocus = true) => {
-    if (!header || !toggle || !nav) return;
     const nextState = Boolean(open && isMobileNav());
     header.classList.toggle('nav-open', nextState);
     nav.classList.toggle('is-open', nextState);
@@ -15,41 +27,88 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle.setAttribute('aria-expanded', String(nextState));
     toggle.setAttribute('aria-label', nextState ? 'Close navigation' : 'Open navigation');
     nav.inert = isMobileNav() && !nextState;
-    document.body.classList.toggle('nav-locked', nextState);
-    if (nextState && restoreFocus) closeButton?.focus({ preventScroll: true });
+    if (!nextState) closeSubmenus();
+    if (nextState && restoreFocus) nav.querySelector('.nav-parent-button, a')?.focus({ preventScroll: true });
     if (!nextState && restoreFocus) toggle.focus({ preventScroll: true });
   };
-  if (toggle && nav) {
-    toggle.addEventListener('click', () => setNavOpen(!header?.classList.contains('nav-open')));
-    closeButton?.addEventListener('click', () => setNavOpen(false));
-    scrim?.addEventListener('click', () => setNavOpen(false));
-    navLinks.forEach((link) => link.addEventListener('click', () => setNavOpen(false, false)));
-    document.addEventListener('keydown', (event) => {
-      if (!header?.classList.contains('nav-open')) return;
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        setNavOpen(false);
-        return;
-      }
-      if (event.key !== 'Tab') return;
-      const focusable = [closeButton, ...navLinks].filter(Boolean);
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
+  toggle.addEventListener('click', () => setNavOpen(!header.classList.contains('nav-open')));
+  nav.querySelectorAll('.menu-item-has-children').forEach((item) => {
+    const button = item.querySelector(':scope > .nav-parent-button');
+    const submenu = item.querySelector(':scope > .sub-menu');
+    if (!button || !submenu) return;
+    const setSubmenu = (open) => {
+      item.classList.toggle('is-submenu-open', open);
+      button.setAttribute('aria-expanded', String(open));
+      const indicator = button.querySelector('.nav-parent-indicator');
+      if (indicator) indicator.textContent = isMobileNav() && open ? '−' : '+';
+      submenu.setAttribute('aria-hidden', String(!open));
+      submenu.inert = !open;
+    };
+    setSubmenu(false);
+    button.addEventListener('click', () => {
+      if (!isMobileNav()) return;
+      const shouldOpen = button.getAttribute('aria-expanded') !== 'true';
+      if (shouldOpen) closeSubmenus();
+      setSubmenu(shouldOpen);
     });
-    window.addEventListener('resize', () => {
-      if (!isMobileNav()) setNavOpen(false, false);
-    }, { passive: true });
-    nav.setAttribute('aria-hidden', isMobileNav() ? 'true' : 'false');
-    nav.inert = isMobileNav();
-  }
-  const updateHeader = () => header && header.classList.toggle('is-scrolled', window.scrollY > 40);
+    item.addEventListener('mouseenter', () => { if (!isMobileNav()) setSubmenu(true); });
+    item.addEventListener('mouseleave', () => { if (!isMobileNav()) setSubmenu(false); });
+    item.addEventListener('focusin', () => { if (!isMobileNav()) setSubmenu(true); });
+    item.addEventListener('focusout', (event) => {
+      if (!isMobileNav() && !item.contains(event.relatedTarget)) setSubmenu(false);
+    });
+  });
+  nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', (event) => {
+    const destination = new URL(link.href, window.location.href);
+    const samePageAnchor = destination.origin === window.location.origin
+      && destination.pathname === window.location.pathname
+      && destination.hash.length > 1;
+    const target = samePageAnchor ? document.getElementById(decodeURIComponent(destination.hash.slice(1))) : null;
+    setNavOpen(false, false);
+    if (!target) return;
+    event.preventDefault();
+    history.pushState(null, '', destination.hash);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    requestAnimationFrame(() => {
+      const top = target.getBoundingClientRect().top + window.scrollY - 112;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  }));
+  document.addEventListener('pointerdown', (event) => {
+    if (header.classList.contains('nav-open') && !header.contains(event.target)) setNavOpen(false, false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (!header.classList.contains('nav-open')) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setNavOpen(false);
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const focusable = focusableInNav();
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  });
+  window.addEventListener('resize', () => {
+    if (!isMobileNav()) setNavOpen(false, false);
+    nav.setAttribute('aria-hidden', String(isMobileNav() && !header.classList.contains('nav-open')));
+    nav.inert = isMobileNav() && !header.classList.contains('nav-open');
+  }, { passive: true });
+  nav.setAttribute('aria-hidden', String(isMobileNav()));
+  nav.inert = isMobileNav();
+  const updateHeader = () => {
+    if (!header) return;
+    const hero = document.querySelector('.v3-home-hero, .home-hero, .page-hero');
+    const pastHero = hero ? hero.getBoundingClientRect().bottom <= 96 : window.scrollY > 80;
+    header.classList.toggle('is-scrolled', pastHero);
+  };
   updateHeader(); window.addEventListener('scroll', updateHeader, { passive: true });
   const reveal = new IntersectionObserver((entries, observer) => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }), { threshold: .12 });
   document.querySelectorAll('[data-reveal]').forEach(el => reveal.observe(el));
@@ -152,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const footprint = document.querySelector('[data-footprint]');
   const dataNode = document.querySelector('#footprint-data');
   if (!footprint || !dataNode) return;
+  if (dataNode.hasAttribute('data-v3-both-views')) return;
 
   const countries = JSON.parse(dataNode.textContent);
   const controls = [...footprint.querySelectorAll('[data-country]')];

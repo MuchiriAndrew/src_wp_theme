@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 160" width="280" height="160" role="img" aria-label="Two finance officers opening the vault and checking the books"><title>Two finance officers opening the vault and checking the books</title><style>
+    .s{fill:none;stroke:#2B2B2B;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .s .fig circle{fill:#fff}
+    .acc{stroke:#F2A33A} .accf{fill:#F2A33A;stroke:#F2A33A}
+    .bub{fill:#fff;stroke:#2B2B2B;stroke-width:2.2}
+    .chair{stroke:#8A8C8F}
+    .ground{stroke:#2B2B2B;stroke-width:2;opacity:.25}
+    .b1{animation:pop1 6s ease-in-out infinite}
+    .b2{animation:pop2 6s ease-in-out infinite}
+    @keyframes pop1{0%,4%{opacity:0;transform:scale(.6)}10%,44%{opacity:1;transform:scale(1)}50%,100%{opacity:0;transform:scale(.6)}}
+    @keyframes pop2{0%,50%{opacity:0;transform:scale(.6)}56%,92%{opacity:1;transform:scale(1)}98%,100%{opacity:0;transform:scale(.6)}}
+    .talk1 .armR{animation:gest 6s ease-in-out infinite;transform-box:fill-box;transform-origin:0% 0%}
+    .talk2 .armL{animation:gest2 6s ease-in-out infinite;transform-box:fill-box;transform-origin:100% 0%}
+    @keyframes gest{0%,8%,46%,100%{transform:rotate(0)}18%,34%{transform:rotate(-12deg)}}
+    @keyframes gest2{0%,54%,96%,100%{transform:rotate(0)}66%,82%{transform:rotate(12deg)}}
+    .spin{animation:spin 6s linear infinite;transform-box:fill-box;transform-origin:50% 50%}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .bob{animation:bob 1.2s ease-in-out infinite}
+    @keyframes bob{50%{transform:translateY(-2px)}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+    </style><g class="s"><line class="ground" x1="12" y1="140" x2="268" y2="140"/><rect x="96" y="54" width="88" height="86" rx="6"/><circle cx="140" cy="97" r="22"/><g class="spin"><circle cx="140" cy="97" r="13" class="acc"/><line x1="140" y1="84" x2="140" y2="110" class="acc"/><line x1="127" y1="97" x2="153" y2="97" class="acc"/></g><g class="fig talk1"><circle cx="62" cy="60" r="10"/><line x1="62" y1="70" x2="62" y2="106"/><polyline class="armL" points="62,78 52,96 48,110"/><polyline class="armR" points="62,78 80,84 118,84"/><line x1="62" y1="106" x2="53" y2="140"/><line x1="62" y1="106" x2="71" y2="140"/></g><g class="fig talk2"><circle cx="222" cy="60" r="10"/><line x1="222" y1="70" x2="222" y2="106"/><polyline class="armL" points="222,78 206,86 194,92"/><polyline class="armR" points="222,78 232,96 236,108"/><line x1="222" y1="106" x2="213" y2="140"/><line x1="222" y1="106" x2="231" y2="140"/></g><rect x="184" y="84" width="12" height="16" rx="1.5" class="acc"/><g class="bubble b1" style="transform-origin:56px 50px"><path d="M30,10 H72 Q82,10 82,20 V26 Q82,36 72,36 H62 L56,50 L50,36 H30 Q20,36 20,26 V20 Q20,10 30,10 Z" class="bub"/><text x="51" y="28" font-family="Montserrat,Arial,sans-serif" font-size="12" font-weight="700" fill="#F2A33A" stroke="none" text-anchor="middle">KES</text></g><g class="bubble b2" style="transform-origin:220px 48px"><path d="M210,8 H242 Q252,8 252,18 V24 Q252,34 242,34 H226 L220,48 L214,34 H210 Q200,34 200,24 V18 Q200,8 210,8 Z" class="bub"/><path d="M216,21 l5,5 l10,-10" class="acc"/></g></g></svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 160" width="280" height="160" role="img" aria-label="Two field officers planning under an acacia tree"><title>Two field officers planning under an acacia tree</title><style>
+    .s{fill:none;stroke:#2B2B2B;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .s .fig circle{fill:#fff}
+    .acc{stroke:#B3262C} .accf{fill:#B3262C;stroke:#B3262C}
+    .bub{fill:#fff;stroke:#2B2B2B;stroke-width:2.2}
+    .chair{stroke:#8A8C8F}
+    .ground{stroke:#2B2B2B;stroke-width:2;opacity:.25}
+    .b1{animation:pop1 6s ease-in-out infinite}
+    .b2{animation:pop2 6s ease-in-out infinite}
+    @keyframes pop1{0%,4%{opacity:0;transform:scale(.6)}10%,44%{opacity:1;transform:scale(1)}50%,100%{opacity:0;transform:scale(.6)}}
+    @keyframes pop2{0%,50%{opacity:0;transform:scale(.6)}56%,92%{opacity:1;transform:scale(1)}98%,100%{opacity:0;transform:scale(.6)}}
+    .talk1 .armR{animation:gest 6s ease-in-out infinite;transform-box:fill-box;transform-origin:0% 0%}
+    .talk2 .armL{animation:gest2 6s ease-in-out infinite;transform-box:fill-box;transform-origin:100% 0%}
+    @keyframes gest{0%,8%,46%,100%{transform:rotate(0)}18%,34%{transform:rotate(-12deg)}}
+    @keyframes gest2{0%,54%,96%,100%{transform:rotate(0)}66%,82%{transform:rotate(12deg)}}
+    .spin{animation:spin 6s linear infinite;transform-box:fill-box;transform-origin:50% 50%}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .bob{animation:bob 1.2s ease-in-out infinite}
+    @keyframes bob{50%{transform:translateY(-2px)}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+    </style><g class="s"><line class="ground" x1="12" y1="140" x2="268" y2="140"/><line x1="140" y1="140" x2="140" y2="62"/><path d="M140,80 L122,64 M140,72 L158,58"/><path d="M96,56 Q140,30 186,52 Q140,62 96,56 Z" class="accf" style="fill-opacity:.25"/><g class="fig talk1"><circle cx="78" cy="60" r="10"/><line x1="78" y1="70" x2="78" y2="106"/><polyline class="armL" points="78,78 68,96 64,110"/><polyline class="armR" points="78,78 94,82 106,76"/><line x1="78" y1="106" x2="69" y2="140"/><line x1="78" y1="106" x2="87" y2="140"/></g><rect x="104" y="70" width="10" height="14" rx="1.5" class="acc"/><g class="fig talk2"><circle cx="206" cy="60" r="10"/><line x1="206" y1="70" x2="206" y2="106"/><polyline class="armL" points="206,78 190,80 180,72"/><polyline class="armR" points="206,78 216,96 220,108"/><line x1="206" y1="106" x2="193" y2="140"/><line x1="206" y1="106" x2="217" y2="140"/></g><g class="bob"><path d="M240,112 a7,7 0 1 1 14,0 q0,7 -7,14 q-7,-7 -7,-14 z" class="accf" style="fill-opacity:.9"/><circle cx="247" cy="112" r="2.4" fill="#fff" stroke="none"/></g><g class="bubble b1" style="transform-origin:68px 48px"><path d="M38,6 H74 Q84,6 84,16 V22 Q84,32 74,32 H72 L68,48 L60,32 H38 Q28,32 28,22 V16 Q28,6 38,6 Z" class="bub"/><circle cx="47" cy="19" r="2.6" fill="#B3262C" stroke="none"/><circle cx="56" cy="19" r="2.6" fill="#B3262C" stroke="none"/><circle cx="65" cy="19" r="2.6" fill="#B3262C" stroke="none"/></g><g class="bubble b2" style="transform-origin:204px 48px"><path d="M200,6 H232 Q242,6 242,16 V22 Q242,32 232,32 H214 L204,48 L202,32 H200 Q190,32 190,22 V16 Q190,6 200,6 Z" class="bub"/><path d="M211,16 a5,5 0 1 1 10,0 q0,5 -5,10 q-5,-5 -5,-10 z" class="accf"/></g></g></svg>

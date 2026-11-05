@@ -12,8 +12,17 @@ foreach ($all as $item) {
 $selected_status = isset($_GET['status']) ? sanitize_key(wp_unslash($_GET['status'])) : 'all';
 if (!in_array($selected_status, ['all', 'current', 'upcoming', 'past'], true)) $selected_status = 'all';
 $selected_theme = isset($_GET['theme']) ? sanitize_title(wp_unslash($_GET['theme'])) : '';
-$signature_only = isset($_GET['signature']) && $_GET['signature'] === '1';
+$signature_only = false;
 $themes = get_terms(['taxonomy' => 'programme_theme', 'hide_empty' => false]);
+$theme_order = ['resilience-livelihoods', 'livestock-agribusiness', 'womens-enterprise', 'investment-export-readiness', 'digital-learning'];
+if (!is_wp_error($themes)) {
+    usort($themes, static function ($left, $right) use ($theme_order) {
+        $left_order = array_search($left->slug, $theme_order, true);
+        $right_order = array_search($right->slug, $theme_order, true);
+        return ($left_order === false ? PHP_INT_MAX : $left_order) <=> ($right_order === false ? PHP_INT_MAX : $right_order);
+    });
+    if ($selected_theme && !in_array($selected_theme, wp_list_pluck($themes, 'slug'), true)) $selected_theme = '';
+}
 $group_labels = [
     'current' => ['Active Now', 'Current Programmes', 'Programmes currently enrolling or being delivered with our partners.'],
     'upcoming' => ['Returning Soon', 'Upcoming', 'Proven programmes preparing for their next cohort.'],
@@ -30,32 +39,29 @@ $group_labels = [
             <h1 class="display display-lg">Grow your business <em>with us.</em></h1>
             <p class="lede lede-light">Training, bootcamps and advisory designed for entrepreneurs ready for their next stage.</p>
             <div class="hero-actions">
-                <a class="button" href="#src-programme-results">View Programmes</a>
-                <a class="src-v3-hero-secondary" href="#src-programme-results"><span aria-hidden="true">→</span> How registration works</a>
+                <button class="button" type="button" data-scroll-programmes>View Programmes</button>
+                <button class="src-v3-hero-secondary" type="button" data-scroll-programmes><span aria-hidden="true">→</span> How registration works</button>
             </div>
         </div>
     </section>
 
-    <form class="src-programme-filters" method="get" action="<?php echo esc_url(get_post_type_archive_link('programme')); ?>" aria-label="Filter programmes">
-        <div class="container src-programme-filter-inner">
-            <input type="hidden" name="status" value="<?php echo esc_attr($selected_status === 'all' ? '' : $selected_status); ?>">
-            <div class="src-programme-filter-status" role="group" aria-label="Filter by status">
-                <?php foreach (['all' => 'All', 'current' => 'Current', 'upcoming' => 'Upcoming', 'past' => 'Past'] as $value => $label) : ?>
-                    <button type="button" data-programme-status="<?php echo esc_attr($value === 'all' ? '' : $value); ?>" class="src-programme-filter <?php echo $selected_status === $value ? 'is-active' : ''; ?>" <?php echo $selected_status === $value ? 'aria-current="true"' : ''; ?>><?php echo esc_html($label); ?> <span><?php echo esc_html($counts[$value]); ?></span></button>
-                <?php endforeach; ?>
-            </div>
-            <label class="src-programme-theme-select"><span class="screen-reader-text">Programme theme</span>
-                <select name="theme" aria-label="Filter by programme theme">
-                    <option value="">All themes</option>
-                    <?php if (!is_wp_error($themes)) foreach ($themes as $theme) : ?>
-                        <option value="<?php echo esc_attr($theme->slug); ?>" <?php selected($selected_theme, $theme->slug); ?>><?php echo esc_html($theme->name); ?></option>
+    <nav class="src-programme-filters" aria-label="Programme filters">
+        <div class="src-programme-filter-scroll">
+            <div class="src-programme-filter-inner">
+                <div class="src-programme-filter-status" role="group" aria-label="Filter by status">
+                    <?php foreach (['all' => 'All', 'current' => 'Current', 'upcoming' => 'Upcoming', 'past' => 'Past'] as $value => $label) :
+                        $active = $selected_status === $value || ($selected_status === 'all' && $value === 'current'); ?>
+                        <button type="button" data-programme-status="<?php echo esc_attr($value); ?>" class="src-programme-filter src-programme-filter-status-item <?php echo $active ? 'is-active' : ''; ?>"><?php echo esc_html($label); ?><span class="src-programme-filter-separator" aria-hidden="true">·</span><span class="src-programme-filter-count"><?php echo esc_html($counts[$value]); ?></span></button>
                     <?php endforeach; ?>
-                </select>
-            </label>
-            <label class="src-programme-signature"><input type="checkbox" name="signature" value="1" <?php checked($signature_only); ?>> <span>SRC Signature only</span></label>
-            <button class="src-programme-apply" type="submit">Apply filters</button>
+                </div>
+                <?php if (!is_wp_error($themes)) foreach ($themes as $theme) :
+                    $active = $selected_theme === $theme->slug; ?>
+                    <button type="button" data-programme-theme="<?php echo esc_attr($theme->slug); ?>" data-programme-theme-name="<?php echo esc_attr($theme->name); ?>" class="src-programme-filter src-programme-filter-theme <?php echo $active ? 'is-active' : ''; ?>"><?php echo esc_html($theme->name); ?></button>
+                <?php endforeach; ?>
+                <button type="button" data-programme-signature class="src-programme-filter src-programme-filter-signature" aria-pressed="false">SRC Signature only</button>
+            </div>
         </div>
-    </form>
+    </nav>
 
     <div id="src-programme-results" class="src-programme-results">
         <?php
@@ -69,10 +75,18 @@ $group_labels = [
                 return true;
             }));
             if (!$items) continue;
+            if ($status === 'current') {
+                usort($items, static function ($left, $right) {
+                    $left_open = get_post_meta($left->ID, '_programme_enrolment', true) === 'open';
+                    $right_open = get_post_meta($right->ID, '_programme_enrolment', true) === 'open';
+                    if ($left_open !== $right_open) return $left_open ? -1 : 1;
+                    return (int) $left->menu_order <=> (int) $right->menu_order;
+                });
+            }
             $found = true;
             [$eyebrow, $title, $intro] = $group_labels[$status];
             ?>
-            <section class="src-programme-section <?php echo $status === 'past' ? 'src-programme-section-past' : ''; ?>" id="<?php echo esc_attr($status); ?>">
+            <section class="src-programme-section <?php echo $status === 'past' ? 'src-programme-section-past' : ''; ?>" id="<?php echo esc_attr($status); ?>" data-programme-section="<?php echo esc_attr($status); ?>">
                 <div class="container">
                     <header class="src-programme-section-heading">
                         <p class="eyebrow"><?php echo esc_html($eyebrow); ?></p>
@@ -80,18 +94,26 @@ $group_labels = [
                         <p><?php echo esc_html($intro); ?></p>
                     </header>
                     <div class="src-v3-programme-grid">
-                        <?php foreach ($items as $programme) : setup_postdata($programme); get_template_part('template-parts/programme-card', null, ['programme' => $programme]); endforeach; wp_reset_postdata(); ?>
+                        <?php
+                        $items_total = count($items);
+                        foreach ($items as $item_index => $programme) :
+                            $span_class = '';
+                            if ($item_index === $items_total - 1) {
+                                if ($items_total % 2 === 1) $span_class .= ' src-v3-programme-card-span-md-2';
+                                $xl_span = [1 => 4, 2 => 3, 3 => 2][$items_total % 4] ?? 0;
+                                if ($xl_span) $span_class .= ' src-v3-programme-card-span-xl-' . $xl_span;
+                            }
+                            setup_postdata($programme);
+                            get_template_part('template-parts/programme-card', null, ['programme' => $programme, 'span_class' => $span_class]);
+                        endforeach;
+                        wp_reset_postdata(); ?>
                     </div>
                 </div>
             </section>
         <?php endforeach; ?>
-        <?php if (!$found) : ?>
-            <section class="src-programme-empty container" role="status">
-                <p class="eyebrow">No results</p><h2 class="display display-md">No programmes match these filters.</h2>
-                <p>Try changing the programme status or theme to see more opportunities.</p>
-                <a class="button" href="<?php echo esc_url(get_post_type_archive_link('programme')); ?>">Clear filters</a>
-            </section>
-        <?php endif; ?>
+        <section class="src-programme-empty container" role="status" <?php echo $found ? 'hidden' : ''; ?>>
+            <p>No programmes match these filters.</p>
+        </section>
     </div>
 </main>
 <?php get_footer(); ?>

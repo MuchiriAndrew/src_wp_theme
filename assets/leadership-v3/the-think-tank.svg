@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 160" width="280" height="160" role="img" aria-label="Two strategists sketching an idea on a whiteboard"><title>Two strategists sketching an idea on a whiteboard</title><style>
+    .s{fill:none;stroke:#2B2B2B;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .s .fig circle{fill:#fff}
+    .acc{stroke:#F2A33A} .accf{fill:#F2A33A;stroke:#F2A33A}
+    .bub{fill:#fff;stroke:#2B2B2B;stroke-width:2.2}
+    .chair{stroke:#8A8C8F}
+    .ground{stroke:#2B2B2B;stroke-width:2;opacity:.25}
+    .b1{animation:pop1 6s ease-in-out infinite}
+    .b2{animation:pop2 6s ease-in-out infinite}
+    @keyframes pop1{0%,4%{opacity:0;transform:scale(.6)}10%,44%{opacity:1;transform:scale(1)}50%,100%{opacity:0;transform:scale(.6)}}
+    @keyframes pop2{0%,50%{opacity:0;transform:scale(.6)}56%,92%{opacity:1;transform:scale(1)}98%,100%{opacity:0;transform:scale(.6)}}
+    .talk1 .armR{animation:gest 6s ease-in-out infinite;transform-box:fill-box;transform-origin:0% 0%}
+    .talk2 .armL{animation:gest2 6s ease-in-out infinite;transform-box:fill-box;transform-origin:100% 0%}
+    @keyframes gest{0%,8%,46%,100%{transform:rotate(0)}18%,34%{transform:rotate(-12deg)}}
+    @keyframes gest2{0%,54%,96%,100%{transform:rotate(0)}66%,82%{transform:rotate(12deg)}}
+    .spin{animation:spin 6s linear infinite;transform-box:fill-box;transform-origin:50% 50%}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .bob{animation:bob 1.2s ease-in-out infinite}
+    @keyframes bob{50%{transform:translateY(-2px)}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+    </style><g class="s"><line class="ground" x1="12" y1="140" x2="268" y2="140"/><rect x="102" y="40" width="76" height="56" rx="3"/><line x1="122" y1="96" x2="114" y2="140"/><line x1="158" y1="96" x2="166" y2="140"/><circle cx="122" cy="58" r="7" class="acc"/><rect x="146" y="70" width="18" height="12" rx="2" class="acc"/><path d="M129,60 Q146,52 152,70" class="acc"/><g class="fig talk1"><circle cx="66" cy="60" r="10"/><line x1="66" y1="70" x2="66" y2="106"/><polyline class="armL" points="66,78 56,96 52,110"/><polyline class="armR" points="66,78 84,76 100,66"/><line x1="66" y1="106" x2="57" y2="140"/><line x1="66" y1="106" x2="75" y2="140"/></g><g class="fig talk2"><circle cx="220" cy="60" r="10"/><line x1="220" y1="70" x2="220" y2="106"/><polyline class="armL" points="220,78 202,84 192,92"/><polyline class="armR" points="220,78 232,72 238,56"/><line x1="220" y1="106" x2="211" y2="140"/><line x1="220" y1="106" x2="229" y2="140"/></g><g class="bubble b2" style="transform-origin:214px 54px"><path d="M206,4 H236 Q246,4 246,14 V28 Q246,38 236,38 H220 L214,54 L208,38 H206 Q196,38 196,28 V14 Q196,4 206,4 Z" class="bub"/><g class="bob"><circle cx="221" cy="17" r="7" class="acc"/><path d="M217,24 v5 h8 v-5 M218,32 h6" class="acc"/></g></g><g class="bubble b1" style="transform-origin:60px 50px"><path d="M32,8 H70 Q80,8 80,18 V24 Q80,34 70,34 H66 L60,50 L54,34 H32 Q22,34 22,24 V18 Q22,8 32,8 Z" class="bub"/><circle cx="42" cy="21" r="2.6" fill="#F2A33A" stroke="none"/><circle cx="51" cy="21" r="2.6" fill="#F2A33A" stroke="none"/><circle cx="60" cy="21" r="2.6" fill="#F2A33A" stroke="none"/></g></g></svg>

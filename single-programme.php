@@ -61,7 +61,7 @@ $themes = wp_get_post_terms($id, 'programme_theme', ['fields' => 'names']);
             <h1 class="display display-lg"><?php echo esc_html($title); ?></h1>
             <?php if ($subtitle = get_post_meta($id, '_programme_hero_subtitle', true)) : ?><p class="lede lede-light"><?php echo esc_html($subtitle); ?></p><?php endif; ?>
             <div class="hero-actions">
-                <a class="button" href="<?php echo esc_url($cta_url); ?>"><?php echo esc_html($cta_label); ?></a>
+                <?php if ($status === 'current' && $enrolment === 'open') : ?><button class="button" type="button" data-src-open-registration="<?php echo esc_attr($post->post_name); ?>" aria-controls="src-registration-dialog"><?php echo esc_html($purchase['available'] ? 'Register' : 'Register interest'); ?></button><?php else : ?><a class="button" href="<?php echo esc_url($cta_url); ?>"><?php echo esc_html($cta_label); ?></a><?php endif; ?>
             </div>
         </div>
     </section>
@@ -84,7 +84,7 @@ $themes = wp_get_post_terms($id, 'programme_theme', ['fields' => 'names']);
                 <?php if ($tags && is_array($tags)) : ?><div class="src-v3-detail-block"><p class="eyebrow">Focus areas</p><div class="src-v3-programme-tags"><?php foreach ($tags as $tag) : ?><span><?php echo esc_html($tag); ?></span><?php endforeach; ?></div></div><?php endif; ?>
                 <?php foreach (['Funders' => $funders, 'Delivery partners' => $partners] as $heading => $items) : if (!$items || !is_array($items)) continue; ?><div class="src-v3-detail-block"><p class="eyebrow"><?php echo esc_html($heading); ?></p><ul class="src-v3-plain-list"><?php foreach ($items as $item) : ?><li><?php echo esc_html($item); ?></li><?php endforeach; ?></ul></div><?php endforeach; ?>
                 <?php if (get_post_meta($id, '_programme_type', true) === 'signature') : ?><div class="src-v3-detail-block"><p class="eyebrow">Programme type</p><strong>An SRC Signature Programme</strong></div><?php endif; ?>
-                <div class="src-v3-detail-cta"><p class="eyebrow eyebrow-light">Take the next step</p><h2 class="display display-md"><?php echo esc_html(get_post_meta($id, '_programme_next_cohort_label', true) ?: 'Interested in this programme?'); ?></h2><a class="button" href="<?php echo esc_url($cta_url); ?>"><?php echo esc_html($cta_label); ?></a><small><?php echo $purchase['available'] ? 'Secure checkout powered by WooCommerce.' : 'Programme fee and enrolment details will be confirmed by our team.'; ?></small></div>
+                <div class="src-v3-detail-cta"><p class="eyebrow eyebrow-light">Take the next step</p><h2 class="display display-md"><?php echo esc_html(get_post_meta($id, '_programme_next_cohort_label', true) ?: 'Interested in this programme?'); ?></h2><?php if ($status === 'current' && $enrolment === 'open') : ?><button class="button" type="button" data-src-open-registration="<?php echo esc_attr($post->post_name); ?>" aria-controls="src-registration-dialog">Register</button><?php else : ?><a class="button" href="<?php echo esc_url($cta_url); ?>"><?php echo esc_html($cta_label); ?></a><?php endif; ?><small><?php echo $purchase['available'] ? 'Secure checkout powered by WooCommerce.' : 'Programme fee and enrolment details will be confirmed by our team.'; ?></small></div>
             </aside>
         </div>
     </section>

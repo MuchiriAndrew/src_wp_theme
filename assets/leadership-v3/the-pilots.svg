@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 160" width="280" height="160" role="img" aria-label="A driver and a colleague heading to the field"><title>A driver and a colleague heading to the field</title><style>
+    .s{fill:none;stroke:#2B2B2B;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .s .fig circle{fill:#fff}
+    .acc{stroke:#F2A33A} .accf{fill:#F2A33A;stroke:#F2A33A}
+    .bub{fill:#fff;stroke:#2B2B2B;stroke-width:2.2}
+    .chair{stroke:#8A8C8F}
+    .ground{stroke:#2B2B2B;stroke-width:2;opacity:.25}
+    .b1{animation:pop1 6s ease-in-out infinite}
+    .b2{animation:pop2 6s ease-in-out infinite}
+    @keyframes pop1{0%,4%{opacity:0;transform:scale(.6)}10%,44%{opacity:1;transform:scale(1)}50%,100%{opacity:0;transform:scale(.6)}}
+    @keyframes pop2{0%,50%{opacity:0;transform:scale(.6)}56%,92%{opacity:1;transform:scale(1)}98%,100%{opacity:0;transform:scale(.6)}}
+    .talk1 .armR{animation:gest 6s ease-in-out infinite;transform-box:fill-box;transform-origin:0% 0%}
+    .talk2 .armL{animation:gest2 6s ease-in-out infinite;transform-box:fill-box;transform-origin:100% 0%}
+    @keyframes gest{0%,8%,46%,100%{transform:rotate(0)}18%,34%{transform:rotate(-12deg)}}
+    @keyframes gest2{0%,54%,96%,100%{transform:rotate(0)}66%,82%{transform:rotate(12deg)}}
+    .spin{animation:spin 6s linear infinite;transform-box:fill-box;transform-origin:50% 50%}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .bob{animation:bob 1.2s ease-in-out infinite}
+    @keyframes bob{50%{transform:translateY(-2px)}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+    </style><g class="s"><line class="ground" x1="12" y1="140" x2="268" y2="140"/><g class="bob"><path d="M70,126 L70,96 L92,96 L104,76 L156,76 L164,96 L178,100 L178,126 Z" class="accf" style="fill-opacity:.3"/><path d="M70,126 L70,96 L92,96 L104,76 L156,76 L164,96 L178,100 L178,126 Z"/><path d="M108,80 L118,80 L118,94 L100,94 Z"/><line x1="104" y1="70" x2="156" y2="70"/></g><circle cx="94" cy="128" r="11"/><circle cx="156" cy="128" r="11"/><circle cx="112" cy="84" r="5" class="fig"/><polyline points="112,90 100,82 92,68" class="armR wave"/><g class="fig talk2"><circle cx="226" cy="60" r="10"/><line x1="226" y1="70" x2="226" y2="106"/><polyline class="armL" points="226,78 208,82 198,76"/><polyline class="armR" points="226,78 238,82 246,76"/><line x1="226" y1="106" x2="217" y2="140"/><line x1="226" y1="106" x2="235" y2="140"/></g><rect x="196" y="70" width="12" height="10" class="acc"/><rect x="238" y="70" width="12" height="10" class="acc"/><line x1="208" y1="75" x2="238" y2="75" class="acc"/><path d="M30,136 q8,-6 16,0 q8,-6 16,0" opacity=".35"/><g class="bubble b1" style="transform-origin:124px 42px"><path d="M112,2 H146 Q156,2 156,12 V18 Q156,28 146,28 H130 L124,42 L118,28 H112 Q102,28 102,18 V12 Q102,2 112,2 Z" class="bub"/><path d="M115,15 h20 m-5,-5 l5,5 l-5,5" class="acc"/></g><g class="bubble b2" style="transform-origin:222px 56px"><path d="M214,18 H246 Q256,18 256,28 V34 Q256,44 246,44 H228 L222,56 L216,44 H214 Q204,44 204,34 V28 Q204,18 214,18 Z" class="bub"/><path d="M224,31 l5,5 l10,-10" class="acc"/></g></g></svg>

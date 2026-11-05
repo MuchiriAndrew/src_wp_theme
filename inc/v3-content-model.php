@@ -8,11 +8,13 @@ function src_v3_register_content_model() {
         'src_expert' => ['Pool of Experts', 'Expert', 'dashicons-businessperson'],
         'src_project_folder' => ['Project Folders', 'Project Folder', 'dashicons-portfolio'],
         'src_publication' => ['Publications', 'Publication', 'dashicons-media-document'],
+        'src_news_item' => ['Latest News', 'News Story', 'dashicons-media-text'],
         'portfolio_company' => ['Portfolio Companies', 'Portfolio Company', 'dashicons-store'],
         'impact_metric' => ['Impact Metrics', 'Impact Metric', 'dashicons-chart-bar'],
     ];
 
     foreach ($types as $type => [$plural, $singular, $icon]) {
+        $is_news = $type === 'src_news_item';
         register_post_type($type, [
             'labels' => [
                 'name' => __($plural, 'src'),
@@ -20,14 +22,15 @@ function src_v3_register_content_model() {
                 'add_new_item' => sprintf(__('Add %s', 'src'), $singular),
                 'edit_item' => sprintf(__('Edit %s', 'src'), $singular),
             ],
-            'public' => false,
+            'public' => $is_news,
+            'publicly_queryable' => $is_news,
             'publicly_queryable' => false,
             'show_ui' => true,
             'show_in_rest' => true,
             'menu_icon' => $icon,
             'supports' => ['title', 'editor', 'excerpt', 'thumbnail', 'page-attributes'],
-            'has_archive' => false,
-            'rewrite' => false,
+            'has_archive' => $is_news ? 'news' : false,
+            'rewrite' => $is_news ? ['slug' => 'news', 'with_front' => false] : false,
         ]);
     }
 
@@ -66,6 +69,7 @@ function src_v3_meta_schema() {
             'programme_enrolment' => ['Enrolment', 'select', ['open' => 'Open', 'partner' => 'Partner managed', 'closed' => 'Closed']],
             'programme_type' => ['Programme type', 'select', ['signature' => 'SRC Signature', 'partner' => 'Partner programme']],
             'programme_pillar' => ['Pillar key', 'select', ['bms' => 'Business Model Strengthening', 'irf' => 'Investment Readiness & Finance', 'ml' => 'Market Linkages']],
+            'programme_pillar_order' => ['Order in What We Do pillar', 'number'],
             'programme_tags' => ['Tags (one per line)', 'lines'],
             'programme_funders' => ['Funders (one per line)', 'lines'],
             'programme_partners' => ['Delivery partners (one per line)', 'lines'],
@@ -86,12 +90,20 @@ function src_v3_meta_schema() {
             'programme_detail_available' => ['Detail page available', 'checkbox'],
             'programme_home_featured' => ['Feature on homepage', 'checkbox'],
             'programme_home_order' => ['Homepage order', 'number'],
+            'programme_project_order' => ['Project folder order', 'number'],
             'programme_product_id' => ['Linked WooCommerce product ID', 'number'],
         ],
         'src_testimonial' => [
             'story_person' => ['Person name', 'text'], 'story_business' => ['Business and location', 'text'],
-            'story_headline' => ['Story headline', 'text'], 'story_video_url' => ['Video URL', 'url'],
+            'story_headline' => ['Story headline', 'text'], 'story_paragraphs' => ['Story paragraphs (one per line)', 'lines'],
+            'story_image_url' => ['Story image URL', 'url'], 'story_video_url' => ['Video URL', 'url'],
             'story_order' => ['Display order', 'number'], 'story_featured' => ['Show on homepage', 'checkbox'],
+        ],
+        'src_news_item' => [
+            'news_date_label' => ['Display date', 'text'], 'news_category' => ['News category', 'text'],
+            'news_image_url' => ['Card image URL', 'url'], 'news_order' => ['Display order', 'number'],
+            'news_featured' => ['Show on homepage', 'checkbox'], 'news_programme_slug' => ['Related programme slug', 'text'],
+            'news_url' => ['Article URL (leave blank for internal story)', 'url'],
         ],
         'src_expert' => [
             'expert_role' => ['Specialty / role', 'text'], 'expert_summary' => ['Short summary', 'textarea'],
@@ -105,9 +117,15 @@ function src_v3_meta_schema() {
             'publication_year' => ['Year', 'number'], 'publication_pdf' => ['PDF URL', 'url'],
             'publication_flipbook' => ['Flipbook URL', 'url'], 'publication_featured' => ['Featured publication', 'checkbox'],
         ],
+        'src_partner_item' => [
+            'partner_name' => ['Partner display name', 'text'], 'partner_logo_url' => ['Logo image URL', 'url'],
+            'partner_link' => ['Partner website URL', 'url'], 'partner_order' => ['Marquee order', 'number'],
+            'partner_marquee' => ['Show in homepage partner marquee', 'checkbox'],
+        ],
         'portfolio_company' => [
             'portfolio_sector' => ['Sector', 'text'], 'portfolio_location' => ['Location', 'text'],
-            'portfolio_url' => ['Company website', 'url'], 'portfolio_order' => ['Display order', 'number'],
+            'portfolio_url' => ['Company website', 'url'], 'portfolio_abbreviation' => ['Card monogram', 'text'],
+            'portfolio_order' => ['Display order', 'number'], 'portfolio_featured' => ['Show in portfolio', 'checkbox'],
         ],
         'impact_metric' => [
             'metric_value' => ['Target number', 'number'], 'metric_prefix' => ['Prefix', 'text'],

@@ -88,3 +88,56 @@ function src_v3_programme_purchase_state($programme_id) {
         'currency' => get_woocommerce_currency(),
     ];
 }
+
+/** Prepare the selected programme in the WooCommerce cart and carry checkout details in the WC customer session. */
+function src_v3_prepare_programme_checkout() {
+    check_ajax_referer('src_v3_registration', 'nonce');
+
+    $programme_id = absint($_POST['programme_id'] ?? 0);
+    $phone = preg_replace('/\D+/', '', (string) wp_unslash($_POST['phone'] ?? ''));
+    $email = sanitize_email(wp_unslash($_POST['email'] ?? ''));
+    $consent = sanitize_text_field(wp_unslash($_POST['consent'] ?? ''));
+
+    if (!$programme_id || get_post_type($programme_id) !== 'programme' || get_post_status($programme_id) !== 'publish'
+        || get_post_meta($programme_id, '_src_v3_imported', true) !== '1'
+        || get_post_meta($programme_id, '_programme_status', true) !== 'current'
+        || get_post_meta($programme_id, '_programme_enrolment', true) !== 'open') {
+        wp_send_json_error(['message' => __('This programme is not currently accepting registrations.', 'src')], 400);
+    }
+
+    if (!preg_match('/^[71][0-9]{8}$/', $phone) || !is_email($email) || $consent !== '1') {
+        wp_send_json_error(['message' => __('Enter a valid Kenyan phone number and email address, and provide consent.', 'src')], 400);
+    }
+
+    $purchase = src_v3_programme_purchase_state($programme_id);
+    if (!$purchase['available']) {
+        wp_send_json_error(['message' => __('Checkout is not open yet because SRC has not published a payable fee for this programme.', 'src')], 409);
+    }
+
+    if (!function_exists('WC') || !WC()->cart || !WC()->customer || !WC()->session) {
+        wp_send_json_error(['message' => __('Secure checkout is temporarily unavailable. Please try again shortly.', 'src')], 503);
+    }
+
+    foreach (WC()->cart->get_cart() as $item) {
+        $existing_programme_id = absint(get_post_meta($item['product_id'], '_src_programme_id', true));
+        if ($existing_programme_id !== $programme_id) {
+            wp_send_json_error(['message' => __('Your cart already contains another item. Complete or clear it before starting this programme registration.', 'src')], 409);
+        }
+    }
+
+    if (!WC()->cart->find_product_in_cart(WC()->cart->generate_cart_id($purchase['product_id']))) {
+        $added = WC()->cart->add_to_cart($purchase['product_id'], 1);
+        if (!$added) {
+            wp_send_json_error(['message' => __('We could not add this programme to your cart. Please try again.', 'src')], 500);
+        }
+    }
+
+    WC()->customer->set_billing_phone('+254' . $phone);
+    WC()->customer->set_billing_email($email);
+    WC()->customer->save();
+    WC()->cart->calculate_totals();
+
+    wp_send_json_success(['checkoutUrl' => wc_get_checkout_url()]);
+}
+add_action('wp_ajax_src_v3_prepare_programme_checkout', 'src_v3_prepare_programme_checkout');
+add_action('wp_ajax_nopriv_src_v3_prepare_programme_checkout', 'src_v3_prepare_programme_checkout');
