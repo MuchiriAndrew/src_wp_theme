@@ -1,12 +1,15 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.38');
+define('SRC_VERSION', '3.5.44');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
 require_once get_template_directory() . '/inc/cli/import-impact.php';
 require_once get_template_directory() . '/inc/commerce/programme-products.php';
+require_once get_template_directory() . '/inc/v3-pool-experts.php';
+require_once get_template_directory() . '/inc/v3-get-involved.php';
+require_once get_template_directory() . '/inc/v3-careers.php';
 
 function src_setup() {
     add_theme_support('title-tag');
@@ -89,6 +92,9 @@ function src_assets() {
     }
     if (is_page('what-we-do')) wp_enqueue_script('src-what-we-do', get_template_directory_uri() . '/assets/js/what-we-do.js', [], SRC_VERSION, true);
     if (is_page('contact')) wp_enqueue_script('src-contact-v3', get_template_directory_uri() . '/assets/js/contact-v3.js', [], SRC_VERSION, true);
+    if (is_page('pool-of-experts')) wp_enqueue_script('src-pool-experts-v3', get_template_directory_uri() . '/assets/js/pool-experts-v3.js', [], SRC_VERSION, true);
+    if (is_page('get-involved')) wp_enqueue_script('src-get-involved-v3', get_template_directory_uri() . '/assets/js/get-involved-v3.js', [], SRC_VERSION, true);
+    if (is_page('careers')) wp_enqueue_script('src-careers-v3', get_template_directory_uri() . '/assets/js/careers-v3.js', [], SRC_VERSION, true);
     if (is_post_type_archive('team_member')) wp_enqueue_script('src-leadership-v3', get_template_directory_uri() . '/assets/js/leadership-v3.js', [], SRC_VERSION, true);
     if (is_post_type_archive('programme')) {
         wp_enqueue_script('src-programmes', get_template_directory_uri() . '/assets/js/programmes.js', [], SRC_VERSION, true);
@@ -172,10 +178,10 @@ function src_register_content() {
     ]);
     register_post_type('job', [
         'labels' => ['name' => 'Careers', 'singular_name' => 'Job', 'add_new_item' => 'Add Job Opening'],
-        'public' => true, 'show_in_rest' => true, 'menu_icon' => 'dashicons-businessperson', 'supports' => ['title', 'editor', 'excerpt'],
-        'has_archive' => true, 'rewrite' => ['slug' => 'careers'],
+        'public' => false, 'publicly_queryable' => false, 'show_ui' => true, 'show_in_rest' => true, 'menu_icon' => 'dashicons-businessperson', 'supports' => ['title', 'editor', 'excerpt'],
+        'has_archive' => false, 'rewrite' => false,
     ]);
-    register_taxonomy('job_department', 'job', ['labels' => ['name' => 'Departments', 'singular_name' => 'Department'], 'public' => true, 'show_in_rest' => true, 'hierarchical' => true]);
+    register_taxonomy('job_department', 'job', ['labels' => ['name' => 'Departments', 'singular_name' => 'Department'], 'public' => false, 'show_ui' => true, 'show_admin_column' => true, 'show_in_rest' => true, 'hierarchical' => true, 'rewrite' => false]);
 }
 add_action('init', 'src_register_content');
 
@@ -213,7 +219,7 @@ function src_add_meta_boxes() {
         'team_order_senior_management'=>['Leadership order: Senior Management', 'number'], 'team_order_finance_operations'=>['Leadership order: Finance & Operations', 'number'], 'team_order_data_quality'=>['Leadership order: Data Quality', 'number'], 'team_order_strategy_consulting'=>['Leadership order: Strategy & Consulting', 'number'], 'team_order_programmes_team'=>['Leadership order: Programmes', 'number'], 'team_order_drivers'=>['Leadership order: Drivers', 'number'],
         'team_category'=>'Category: leadership, board, or staff', 'team_panel_color'=>'Homepage panel colour: red, charcoal, or orange', 'team_home_order'=>['Homepage order', 'number'], 'team_home_featured'=>['Show on homepage', 'checkbox'], 'team_image_url'=>'Portrait URL or theme-relative asset path',
     ]), 'team_member', 'normal');
-    add_meta_box('src-job-meta', 'Job Details', fn($p) => src_meta_box($p, ['job_location'=>'Location', 'job_type'=>'Type: full-time, contract, or consultancy', 'job_department'=>'Department', 'job_deadline'=>'Application deadline']), 'job', 'normal');
+    add_meta_box('src-job-meta', 'Job Details', fn($p) => src_meta_box($p, ['job_location'=>'Location', 'job_type'=>'Employment type', 'job_department'=>'Department', 'job_deadline'=>'Application deadline', 'job_order'=>['Display order', 'number'], 'job_requirements'=>['Requirements (one per line)', 'textarea']]), 'job', 'normal');
     add_meta_box('src-sector-item-meta', 'Homepage Sector Details', fn($p) => src_meta_box($p, ['sector_number'=>'Display number', 'sector_home_order'=>['Homepage order', 'number'], 'sector_image_url'=>'Fallback image URL', 'sector_link'=>'Explore link']), 'src_sector_item', 'normal');
     add_meta_box('src-pillar-item-meta', 'Homepage Pillar Details', fn($p) => src_meta_box($p, ['pillar_number'=>'Display number', 'pillar_home_order'=>['Homepage order', 'number'], 'pillar_link'=>'Learn more link']), 'src_pillar_item', 'normal');
     add_meta_box('src-audience-item-meta', 'Homepage Audience Details', fn($p) => src_meta_box($p, ['audience_home_order'=>['Homepage order', 'number'], 'audience_link'=>'Audience link']), 'src_audience_item', 'normal');
@@ -225,7 +231,7 @@ add_action('add_meta_boxes', 'src_add_meta_boxes');
 function src_save_meta($post_id) {
     if (!isset($_POST['src_meta_nonce']) || !wp_verify_nonce($_POST['src_meta_nonce'], 'src_meta_save') || (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)) return;
     if (!current_user_can('edit_post', $post_id)) return;
-    $keys = array_merge(['project_partner','project_funder','project_location','project_year','project_impact','project_span','project_home_order','project_home_featured','project_external_url','project_modal_description','project_image_url','project_stats','project_impacts','programme_status','programme_partner','programme_duration','programme_start','programme_fee','programme_location','programme_spots','programme_home_order','programme_home_featured','programme_image_url','team_role','team_quote','team_bio_short','team_linkedin','team_county_level','team_order_senior_management','team_order_finance_operations','team_order_data_quality','team_order_strategy_consulting','team_order_programmes_team','team_order_drivers','team_category','team_panel_color','team_home_order','team_home_featured','team_image_url','job_location','job_type','job_department','job_deadline','sector_number','sector_home_order','sector_image_url','sector_link','pillar_number','pillar_home_order','pillar_link','audience_home_order','audience_link','partner_type','partner_abbreviation','partner_name','partner_color','partner_image_url','partner_span','partner_home_order','partner_link','stat_value','stat_label','stat_home_order','stat_home_enabled'], array_keys(src_page_field_schema()));
+    $keys = array_merge(['project_partner','project_funder','project_location','project_year','project_impact','project_span','project_home_order','project_home_featured','project_external_url','project_modal_description','project_image_url','project_stats','project_impacts','programme_status','programme_partner','programme_duration','programme_start','programme_fee','programme_location','programme_spots','programme_home_order','programme_home_featured','programme_image_url','team_role','team_quote','team_bio_short','team_linkedin','team_county_level','team_order_senior_management','team_order_finance_operations','team_order_data_quality','team_order_strategy_consulting','team_order_programmes_team','team_order_drivers','team_category','team_panel_color','team_home_order','team_home_featured','team_image_url','job_location','job_type','job_department','job_deadline','job_order','job_requirements','sector_number','sector_home_order','sector_image_url','sector_link','pillar_number','pillar_home_order','pillar_link','audience_home_order','audience_link','partner_type','partner_abbreviation','partner_name','partner_color','partner_image_url','partner_span','partner_home_order','partner_link','stat_value','stat_label','stat_home_order','stat_home_enabled'], array_keys(src_page_field_schema()));
     $checkboxes = ['project_home_featured','programme_home_featured','team_home_featured','stat_home_enabled'];
     foreach ($keys as $key) {
         if (in_array($key, $checkboxes, true)) {
@@ -235,7 +241,7 @@ function src_save_meta($post_id) {
         if (!isset($_POST[$key])) continue;
         $value = wp_unslash($_POST[$key]);
         $textarea_keys = array_keys(array_filter(src_page_field_schema(), static fn($definition) => ($definition[1] ?? '') === 'textarea'));
-        $value = in_array($key, array_merge(['project_stats','project_impacts','project_modal_description','team_bio_short'], $textarea_keys), true) ? sanitize_textarea_field($value) : (in_array($key, ['team_linkedin'], true) ? esc_url_raw($value) : sanitize_text_field($value));
+        $value = in_array($key, array_merge(['project_stats','project_impacts','project_modal_description','team_bio_short','job_requirements'], $textarea_keys), true) ? sanitize_textarea_field($value) : (in_array($key, ['team_linkedin','page_experts_cta_url'], true) ? esc_url_raw($value) : (in_array($key, ['page_involvement_email','page_application_email'], true) ? sanitize_email($value) : sanitize_text_field($value)));
         update_post_meta($post_id, '_' . $key, $value);
     }
 }
@@ -292,6 +298,45 @@ function src_page_field_schema() {
         'page_contact_social_eyebrow' => ['Contact social eyebrow', 'text'], 'page_contact_socials' => ['Contact social links, one per line as URL setting key | Label | Handle', 'textarea'],
         'page_contact_subject_options' => ['Contact enquiry choices, one per line as value | label', 'textarea'], 'page_contact_submit_label' => ['Contact submit button label', 'text'], 'page_contact_success_heading' => ['Contact success heading', 'text'], 'page_contact_success_message' => ['Contact success message', 'textarea'], 'page_contact_error_message' => ['Contact error message', 'textarea'],
         'page_careers_eyebrow' => ['Careers eyebrow', 'text'], 'page_careers_heading' => ['Careers heading', 'text'], 'page_application_email' => ['Applications email', 'email'],
+        'page_careers_positions_label' => ['Careers: positions count label', 'text'],
+        'page_careers_requirements_label' => ['Careers: requirements label', 'text'],
+        'page_careers_apply_label' => ['Careers: Apply button label', 'text'],
+        'page_careers_close_label' => ['Careers: Close button label', 'text'],
+        'page_careers_form_label' => ['Careers: application form label', 'text'],
+        'page_careers_name_placeholder' => ['Careers: name placeholder', 'text'],
+        'page_careers_email_placeholder' => ['Careers: email placeholder', 'text'],
+        'page_careers_phone_placeholder' => ['Careers: phone placeholder', 'text'],
+        'page_careers_cover_placeholder' => ['Careers: cover letter placeholder', 'text'],
+        'page_careers_cv_label' => ['Careers: CV attachment prompt (display only)', 'text'],
+        'page_careers_submit_label' => ['Careers: submit label', 'text'],
+        'page_careers_success_heading' => ['Careers: success heading', 'text'],
+        'page_careers_success_message' => ['Careers: success message', 'textarea'],
+        'page_careers_error_message' => ['Careers: error message', 'textarea'],
+        'page_careers_empty_message' => ['Careers: empty positions message', 'textarea'],
+        'page_careers_eoe_eyebrow' => ['Careers: equal opportunity eyebrow', 'text'],
+        'page_careers_eoe_heading' => ['Careers: equal opportunity heading', 'text'],
+        'page_careers_eoe_copy' => ['Careers: equal opportunity copy', 'textarea'],
+        'page_careers_stats' => ['Careers: workforce statistics, one per line as Value | Label', 'textarea'],
+        'page_experts_all_label' => ['Pool of Experts: all filter label', 'text'],
+        'page_experts_cta_eyebrow' => ['Pool of Experts: CTA eyebrow', 'text'],
+        'page_experts_cta_heading' => ['Pool of Experts: CTA heading', 'text'],
+        'page_experts_cta_copy' => ['Pool of Experts: CTA introduction', 'textarea'],
+        'page_experts_cta_button' => ['Pool of Experts: CTA button label', 'text'],
+        'page_experts_cta_url' => ['Pool of Experts: CTA button URL', 'url'],
+        'page_involvement_tracks' => ['Get Involved: paths, one per line as ID | Label | Subtitle | Description | Background hex', 'textarea'],
+        'page_involvement_capabilities' => ['Get Involved: capabilities, one per line as path ID | capability', 'textarea'],
+        'page_involvement_form_eyebrow' => ['Get Involved: form eyebrow', 'text'],
+        'page_involvement_form_heading' => ['Get Involved: form heading', 'text'],
+        'page_involvement_form_intro' => ['Get Involved: form introduction', 'text'],
+        'page_involvement_name_placeholder' => ['Get Involved: name placeholder', 'text'],
+        'page_involvement_role_placeholder' => ['Get Involved: role placeholder', 'text'],
+        'page_involvement_email_placeholder' => ['Get Involved: email placeholder', 'text'],
+        'page_involvement_organisation_placeholder' => ['Get Involved: organisation placeholder', 'text'],
+        'page_involvement_message_placeholder' => ['Get Involved: message placeholder', 'text'],
+        'page_involvement_submit_label' => ['Get Involved: submit label', 'text'],
+        'page_involvement_success_message' => ['Get Involved: success message', 'textarea'],
+        'page_involvement_error_message' => ['Get Involved: error message', 'textarea'],
+        'page_involvement_email' => ['Get Involved: enquiry recipient email', 'email'],
     ];
 }
 function src_page_field($key, $post_id = null, $fallback = '') { return src_field($key, $post_id ?: get_queried_object_id(), $fallback); }
@@ -842,7 +887,7 @@ function src_seed_v3_reference_records() {
 add_action('init', 'src_seed_v3_reference_records', 33);
 
 function src_seed_page_content() {
-    if (get_option('src_page_content_seed_version') === '6') return;
+    if (get_option('src_page_content_seed_version') === '15') return;
     $pages = [
         'about' => [
             'page_hero_title' => "Built in Kenya, for Africa's enterprises.", 'page_hero_emphasis' => 'for', 'page_hero_eyebrow' => 'About SRC', 'page_hero_intro' => 'For over a decade, SRC has helped SMEs and cooperatives grow from good to great through strategy, finance and markets.', 'page_hero_image_url' => 'https://images.unsplash.com/photo-1637149014802-d917e6255c2d?auto=format&fit=crop&w=2000&q=85', 'page_story_eyebrow' => 'Our Story', 'page_story_heading' => 'A firm built on proximity to the entrepreneur.', 'page_story_body' => "SRC was founded in 2012 by Catherine Gitonga, a development professional with more than 20 years of enterprise development experience across Kenya and East Africa. The firm grew from a conviction that SMEs — particularly in agriculture, livestock and cooperatives — were underserved by both the market and the donor system.\n\nOver 12 years, SRC has grown from a boutique advisory firm into a 51-strong team operating across 15+ Kenyan counties and 5 additional African countries, delivering multi-million-dollar programmes for some of the world's leading development funders.\n\nBut the mission has never changed: unlock real growth, for real businesses, in real communities.", 'page_story_image_url' => 'https://images.unsplash.com/photo-1776039213401-f95bfd9c516a?w=800&h=1000&fit=crop&auto=format', 'page_story_stat' => '2012', 'page_story_stat_label' => 'Founded', 'page_pillars' => "Vision | A thriving SME ecosystem across Kenya and East Africa — inclusive, innovative and globally competitive.\nMission | To provide high-quality, context-specific business support services that enable SMEs and cooperatives to achieve sustainable growth.\nPurpose | Building Enterprises from Good to Great — every intervention, every county, every entrepreneur.", 'page_values_eyebrow' => 'What We Stand For', 'page_values_heading' => 'Core Values', 'page_values' => "Integrity & Safeguarding | We hold ourselves to the highest ethical standards in all our work with clients, partners and communities.\nExcellence | We deliver measurable, lasting results — not outputs. Quality is non-negotiable in every engagement.\nInnovation | We bring creative, context-specific solutions to enterprise development challenges across diverse geographies.\nTeaming | We believe the best outcomes emerge from genuine collaboration — with clients, partners and the communities we serve.", 'page_theory_eyebrow' => 'How Change Happens', 'page_theory_heading' => 'Theory of Change', 'page_theory_steps' => "01 | Diagnosis | Assess enterprise health, market position and growth barriers\n02 | Intervention Design | Co-design bespoke support programmes with clients and donors\n03 | Delivery | Deploy technical assistance, training and market linkage services\n04 | Linkage to Finance | Connect investable enterprises to appropriate capital sources\n05 | Market Access | Facilitate off-take agreements and formal market entry\n06 | Scale & Sustain | Embed systems and skills for long-term enterprise growth", 'page_about_stats' => "51 | Staff\n15+ | Kenyan Counties\n25+ | Associate Consultants\n5 | African Countries\n12+ | Years of Impact", 'page_about_cta_eyebrow' => 'Meet the team', 'page_about_cta_heading' => 'The people behind SRC', 'page_about_cta_button' => 'Meet Our Leadership',
@@ -860,9 +905,67 @@ function src_seed_page_content() {
             'page_contact_subject_options' => "general | General enquiry\nprogrammes | Programmes & registration\npartnerships | Partnerships\ncareers | Careers\nmedia | Media\nfield-operations | Field operations", 'page_contact_submit_label' => 'Send Message', 'page_contact_success_heading' => 'Message received', 'page_contact_success_message' => 'Thank you for reaching out. We respond to all enquiries within 2 working days.', 'page_contact_error_message' => 'We could not send your message just now. Please try again or email SRC directly.',
             'page_contact_email' => 'info@srctech.co.ke', 'page_contact_city' => 'Nairobi, Kenya', 'page_contact_coverage' => 'SRC county programme teams across Kenya',
         ],
-        'careers' => ['page_hero_title' => 'Careers', 'page_hero_eyebrow' => 'Smart Regional Consultants', 'page_hero_intro' => 'Bring your perspective. Build something that matters.', 'page_careers_eyebrow' => 'Join the team', 'page_careers_heading' => 'Open positions', 'page_application_email' => 'hello@smartregionalconsultants.org'],
-        'get-involved' => ['page_hero_title' => 'Get involved', 'page_hero_eyebrow' => 'Smart Regional Consultants', 'page_hero_intro' => 'Stronger enterprises need stronger partnerships.'],
-        'pool-of-experts' => ['page_hero_title' => 'Pool of experts', 'page_hero_eyebrow' => 'Smart Regional Consultants', 'page_hero_intro' => 'The right expertise, close to the work.'],
+        'careers' => [
+            'page_hero_title' => 'Do work that moves enterprises.',
+            'page_hero_emphasis' => 'moves',
+            'page_hero_eyebrow' => 'Careers',
+            'page_hero_intro' => "Join our team or our Pool of Experts and help build Africa's next generation of businesses.",
+            'page_hero_image_url' => 'https://images.unsplash.com/photo-1573164574511-73c773193279?auto=format&fit=crop&w=2000&q=85',
+            'page_careers_eyebrow' => 'Current Openings',
+            'page_careers_heading' => 'Open Positions',
+            'page_careers_positions_label' => 'positions',
+            'page_careers_requirements_label' => 'Requirements',
+            'page_careers_apply_label' => 'Apply Now',
+            'page_careers_close_label' => 'Close',
+            'page_careers_form_label' => 'Apply for',
+            'page_careers_name_placeholder' => 'Full name',
+            'page_careers_email_placeholder' => 'Email address',
+            'page_careers_phone_placeholder' => 'Phone number',
+            'page_careers_cover_placeholder' => "Cover letter — tell us why you're the right fit (max 300 words)",
+            'page_careers_cv_label' => '+ Attach CV / Resume (PDF preferred)',
+            'page_careers_submit_label' => 'Submit Application',
+            'page_careers_success_heading' => 'Application received',
+            'page_careers_success_message' => 'Thank you for applying to %s. We will be in touch within 5 working days.',
+            'page_careers_error_message' => 'We could not send your application just now. Please try again.',
+            'page_careers_empty_message' => 'There are no open positions right now. Please check back soon.',
+            'page_careers_eoe_eyebrow' => 'Equal Opportunity',
+            'page_careers_eoe_heading' => 'SRC is an equal opportunity employer.',
+            'page_careers_eoe_copy' => "We are committed to creating an inclusive, diverse and equitable workplace. We actively encourage applications from women, young people, persons with disabilities and candidates from Kenya's marginalised communities.",
+            'page_careers_stats' => "51 | Team Members\n60% | Women on Staff\n15+ | Counties Represented",
+            'page_application_email' => 'hello@smartregionalconsultants.org',
+        ],
+        'get-involved' => [
+            'page_hero_title' => 'Get Involved',
+            'page_hero_eyebrow' => 'Get Involved',
+            'page_hero_intro' => "Whether you're a donor, a commercial enterprise or a collaborator — there is a way to work with SRC.",
+            'page_hero_image_url' => 'https://images.unsplash.com/photo-1637149014802-d917e6255c2d?auto=format&fit=crop&w=2000&q=85',
+            'page_involvement_tracks' => "donor | Partner With Us | For Donors & NGOs | SRC works with bilateral donors, foundations and NGOs to design, staff and deliver enterprise development programmes across Kenya and East Africa. We bring technical depth, county-level relationships and a proven track record with USAID, FCDO, World Bank, Mastercard Foundation and more. | #B3262C\nenterprise | Work With Us | For Commercial Enterprises | SRC supports commercial enterprises — processors, retailers, financial institutions and agribusinesses — to build supplier bases, develop SME customer segments and enter new East African markets. We bridge the gap between corporate ambition and smallholder reality. | #4A0E12\ncollaborate | Support & Collaborate | Research, Academia & Media | SRC collaborates with researchers, academic institutions, media organisations and think-tanks on enterprise development, livestock systems and women's economic empowerment in East Africa. We are open to data sharing, co-publication and thought leadership partnerships. | #F58220",
+            'page_involvement_capabilities' => "donor | Programme design and technical scoping\ndonor | Staffing — team leaders and technical experts\ndonor | Monitoring, evaluation and learning\ndonor | County-level relationships and community trust\ndonor | Full programme management capability\nenterprise | Supplier and SME customer base development\nenterprise | Market entry and distribution strategy\nenterprise | Smallholder aggregation and quality systems\nenterprise | Last-mile linkage facilitation\nenterprise | Partnership with county governments\ncollaborate | Research partnerships and data sharing\ncollaborate | Co-publication and thought leadership\ncollaborate | Field access and practitioner insight\ncollaborate | Media and documentary collaboration\ncollaborate | Academic and policy engagement",
+            'page_involvement_form_eyebrow' => 'Get in touch',
+            'page_involvement_form_heading' => 'Start a conversation',
+            'page_involvement_form_intro' => 'We respond to all enquiries within 2 working days.',
+            'page_involvement_name_placeholder' => 'Your name',
+            'page_involvement_role_placeholder' => 'Role / Title',
+            'page_involvement_email_placeholder' => 'Email address',
+            'page_involvement_organisation_placeholder' => 'Organisation',
+            'page_involvement_message_placeholder' => 'Tell us about your interest or programme idea...',
+            'page_involvement_submit_label' => 'Send Message',
+            'page_involvement_success_message' => "Thank you — we'll be in touch shortly.",
+            'page_involvement_error_message' => 'We could not send your message just now. Please try again or email SRC directly.',
+            'page_involvement_email' => '',
+        ],
+        'pool-of-experts' => [
+            'page_hero_title' => 'Pool of Experts',
+            'page_hero_eyebrow' => 'Pool of Experts',
+            'page_hero_intro' => "SRC's Pay-As-You-Go consultant network gives enterprises and programmes access to specialist knowledge — on demand, without overhead.",
+            'page_hero_image_url' => 'https://images.unsplash.com/photo-1637149014802-d917e6255c2d?auto=format&fit=crop&w=2000&q=85',
+            'page_experts_all_label' => 'All Categories',
+            'page_experts_cta_eyebrow' => 'Flexible expertise',
+            'page_experts_cta_heading' => 'Need a specialist for your programme?',
+            'page_experts_cta_copy' => 'Our Pay-As-You-Go model means you get the exact expertise you need, for exactly as long as you need it.',
+            'page_experts_cta_button' => 'Engage Our Experts',
+            'page_experts_cta_url' => '',
+        ],
         'partners' => ['page_hero_title' => 'Clients & Partners', 'page_hero_eyebrow' => 'Smart Regional Consultants', 'page_hero_intro' => 'Leading donors, NGOs and enterprises building stronger ecosystems with SRC.'],
     ];
     $legacy_seed_values = [
@@ -878,9 +981,28 @@ function src_seed_page_content() {
             'page_contact_email' => 'hello@smartregionalconsultants.org',
             'page_contact_coverage' => 'Working across 15+ counties and 5 African countries',
         ],
+        'get-involved' => [
+            'page_hero_title' => 'Get involved',
+            'page_hero_eyebrow' => 'Smart Regional Consultants',
+            'page_hero_intro' => 'Stronger enterprises need stronger partnerships.',
+        ],
+        'pool-of-experts' => [
+            'page_hero_title' => 'Pool of experts',
+            'page_hero_eyebrow' => 'Smart Regional Consultants',
+            'page_hero_intro' => 'The right expertise, close to the work.',
+        ],
+        'careers' => [
+            'page_hero_title' => 'Careers',
+            'page_hero_eyebrow' => 'Smart Regional Consultants',
+            'page_hero_intro' => 'Bring your perspective. Build something that matters.',
+            'page_careers_eyebrow' => 'Join the team',
+            'page_careers_heading' => 'Open positions',
+            'page_careers_success_message' => 'Thank you for applying. We will be in touch within 5 working days.',
+        ],
     ];
     foreach ($pages as $slug => $fields) {
-        $page = get_page_by_path($slug);
+        $career_page_id = $slug === 'careers' ? absint(get_option('src_careers_page_id_v3')) : 0;
+        $page = $career_page_id ? get_post($career_page_id) : get_page_by_path($slug);
         if (!$page) continue;
         foreach ($fields as $key => $value) {
             $current = get_post_meta($page->ID, '_' . $key, true);
@@ -888,7 +1010,7 @@ function src_seed_page_content() {
             if ($current === '' || $can_migrate_legacy) update_post_meta($page->ID, '_' . $key, $value);
         }
     }
-    update_option('src_page_content_seed_version', '6');
+    update_option('src_page_content_seed_version', '15');
 }
 add_action('init', 'src_seed_page_content', 32);
 

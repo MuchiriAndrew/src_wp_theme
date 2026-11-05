@@ -108,6 +108,7 @@ function src_v3_meta_schema() {
         'src_expert' => [
             'expert_role' => ['Specialty / role', 'text'], 'expert_summary' => ['Short summary', 'textarea'],
             'expert_order' => ['Display order', 'number'], 'expert_featured' => ['Featured', 'checkbox'],
+            'expert_request_label' => ['Request link label', 'text'], 'expert_request_url' => ['Request link URL', 'url'],
         ],
         'src_project_folder' => [
             'folder_summary' => ['Folder summary', 'textarea'], 'folder_funders' => ['Funders (one per line)', 'lines'],
