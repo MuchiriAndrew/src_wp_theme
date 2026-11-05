@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.5.44
+Version: 3.5.45
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -364,6 +364,18 @@ Text Domain: src
 .src-commerce-main .wc-block-components-sidebar, .src-commerce-main .wc-block-cart__main, .src-commerce-main .wc-block-checkout__main { font-family: var(--sans); }
 .src-commerce-main .wc-block-components-order-summary, .src-commerce-main .wc-block-checkout__sidebar { background: white; }
 .src-commerce-main .wc-block-components-totals-wrapper { border-color: rgba(28,28,28,.12); }
+.src-commerce-catalog { padding: 0 0 8px; }
+.src-commerce-catalog-heading { max-width: 760px; margin: 0 0 40px; }
+.src-commerce-catalog-heading .eyebrow { margin: 0 0 12px; color: var(--red); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.src-commerce-catalog-heading h2 { margin: 0; color: var(--charcoal); font-family: var(--serif); font-size: clamp(32px,4vw,48px); line-height: 1.1; }
+.src-commerce-catalog-heading > p:last-child { max-width: 62ch; margin: 16px 0 0; color: rgba(43,43,43,.62); font-size: 14px; line-height: 1.65; }
+.src-commerce-empty { padding: 48px; border-top: 4px solid var(--red); background: #fff; }
+.src-commerce-empty h3 { margin: 0; color: var(--charcoal); font-family: var(--serif); font-size: 28px; line-height: 1.2; }
+.src-commerce-empty p { max-width: 56ch; margin: 12px 0 24px; color: rgba(43,43,43,.62); font-size: 14px; line-height: 1.65; }
+.src-commerce-empty .src-v3-button { display: inline-flex; min-height: 48px; align-items: center; gap: 10px; padding: 0 22px; background: var(--red); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-decoration: none; text-transform: uppercase; }
+.src-commerce-empty .src-v3-button:hover { background: var(--charcoal); }
+.src-commerce-empty .src-v3-button:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
+@media (max-width: 767px) { .src-commerce-empty { padding: 32px 24px; } .src-commerce-empty h3 { font-size: 24px; } }
 @media (max-width: 680px) {
   .src-commerce-main { padding: 120px 0 60px; }
   .src-commerce-main > .woocommerce { width: calc(100% - 36px); }

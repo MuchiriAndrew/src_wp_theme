@@ -10,7 +10,11 @@ get_header();
         </div>
     </section>
     <div class="src-commerce-content container">
-        <?php while (have_posts()) : the_post(); the_content(); endwhile; ?>
+        <?php if (function_exists('is_shop') && is_shop()) : ?>
+            <?php get_template_part('template-parts/commerce-catalog'); ?>
+        <?php else : ?>
+            <?php while (have_posts()) : the_post(); the_content(); endwhile; ?>
+        <?php endif; ?>
     </div>
 </main>
 <?php get_footer(); ?>
