@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.135');
+define('SRC_VERSION', '3.5.136');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -856,7 +856,9 @@ function src_seed_v3_reference_records() {
         ['usaid', 'USAID', 'usaid.png'], ['village-capital', 'Village Capital', 'village-capital.png'],
         ['world-bank', 'World Bank', 'world-bank.png'], ['wwf', 'WWF', 'wwf.png'],
     ];
-    $partner_asset_uri = get_template_directory_uri() . '/assets/partner-logos/';
+    // Keep seeded theme-owned logos origin-relative so they work over both
+    // Valet HTTP and production HTTPS, including when this seed runs under WP-CLI.
+    $partner_asset_uri = trailingslashit(wp_make_link_relative(get_template_directory_uri())) . 'assets/partner-logos/';
     foreach ($partners as $index => [$slug, $name, $logo]) {
         $partner = get_page_by_path($slug, OBJECT, 'src_partner_item');
         if (!$partner) {
