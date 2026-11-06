@@ -65,7 +65,7 @@ $register_url = $purchase['available']
     : $contact_url;
 $span_class = $args['span_class'] ?? '';
 ?>
-<article <?php post_class('src-v3-programme-card src-v3-programme-card-' . sanitize_html_class($status) . $span_class, $programme); ?> data-programme-card data-programme-status="<?php echo esc_attr($status); ?>" data-programme-theme="<?php echo esc_attr($theme_slug); ?>" data-programme-signature="<?php echo get_post_meta($id, '_programme_type', true) === 'signature' ? '1' : '0'; ?>" data-reveal>
+<article <?php post_class('src-v3-programme-card src-v3-programme-card-' . sanitize_html_class($status) . $span_class, $programme); ?> data-programme-card data-programme-status="<?php echo esc_attr($status); ?>" data-programme-theme="<?php echo esc_attr($theme_slug); ?>" data-programme-signature="<?php echo get_post_meta($id, '_programme_type', true) === 'signature' ? '1' : '0'; ?>">
     <a class="src-v3-programme-image" href="<?php the_permalink($id); ?>" aria-label="View <?php echo esc_attr($title); ?>">
         <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy" decoding="async">
         <span class="src-v3-status src-v3-status-<?php echo esc_attr($status); ?>"><?php echo esc_html($status_label); ?></span>
@@ -92,7 +92,7 @@ $span_class = $args['span_class'] ?? '';
         <h3><a href="<?php the_permalink($id); ?>"><?php echo esc_html($title); ?></a></h3>
         <p class="src-v3-programme-summary"><?php echo esc_html(wp_trim_words($summary, 24)); ?></p>
         <?php if ($status === 'past') : ?>
-            <p class="src-v3-programme-past-fact"><span aria-hidden="true">●</span> <?php echo esc_html($reach . ($duration ? ' · ' . $duration : '')); ?></p>
+            <p class="src-v3-programme-past-fact"><span aria-hidden="true">●</span><span><?php echo esc_html($reach . ($duration ? ' · ' . $duration : '')); ?></span></p>
             <?php if ($note) : ?><p class="src-v3-programme-note"><?php echo esc_html($note); ?></p><?php endif; ?>
         <?php else : ?>
             <dl class="src-v3-programme-facts">

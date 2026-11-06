@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeDetail(false);
     mapPanels.forEach((panel) => {
       panel.style.setProperty('--map-scale', '1');
+      panel.style.setProperty('--map-pin-counter', '1');
       panel.style.transformOrigin = 'center';
     });
     view = nextView;
@@ -77,7 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const label = currentArt()?.querySelector('.map-hover-label');
     const text = label?.querySelector('span');
     if (label && text) {
-      text.textContent = active && currentData()[code] ? currentData()[code].name : '';
+      const country = currentData()[code];
+      const count = country?.programmes?.length || 0;
+      text.textContent = active && country ? `${country.name} — ${count} ${count === 1 ? 'project' : 'projects'}` : '';
       label.classList.toggle('is-visible', active && Boolean(currentData()[code]));
       label.setAttribute('aria-hidden', String(!(active && currentData()[code])));
       const dot = currentArt()?.querySelector(`.map-dot[data-country="${code}"]`);
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!programmes?.length) {
       const empty = document.createElement('p');
       empty.className = 'footprint-empty';
-      empty.textContent = 'Programme details will be added soon.';
+      empty.textContent = 'Programme details coming soon';
       list.append(empty);
       return;
     }
@@ -159,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const maxScale = view === 'kenya' && ['COUNTY-NAIROBI', 'COUNTY-MOMBASA'].includes(code) ? 8 : 5.5;
       const scale = Math.max(1, Math.min((artRect.width * 0.48) / pathRect.width, (artRect.height * 0.48) / pathRect.height, maxScale));
       art.style.setProperty('--map-scale', String(scale));
+      art.style.setProperty('--map-pin-counter', String(1 / scale));
       art.style.transformOrigin = `${pathRect.left + pathRect.width / 2 - artRect.left}px ${pathRect.top + pathRect.height / 2 - artRect.top}px`;
     }
     renderProgrammes(country.programmes || []);
@@ -177,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     details.inert = true;
     footprint.classList.remove('is-detail');
     currentArt()?.style.setProperty('--map-scale', '1');
+    currentArt()?.style.setProperty('--map-pin-counter', '1');
     if (currentArt()) currentArt().style.transformOrigin = 'center';
     delete footprint.dataset.activeCountry;
     allControls.forEach((control) => {
@@ -202,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPaths().forEach((path) => {
       const code = (path.dataset.id || path.id || '').toUpperCase();
       path.dataset.id = code;
+      path.classList.toggle('is-active-country', codes.has(code));
       if (!codes.has(code)) return;
       if (path.dataset.footprintBound === 'true') return;
       path.dataset.footprintBound = 'true';

@@ -2,8 +2,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const header = document.querySelector('.site-header');
   const toggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.primary-nav');
+  const closeButton = document.querySelector('.mobile-nav-close');
+  const scrim = document.querySelector('.nav-scrim');
   if (!header || !toggle || !nav) return;
+  const navHome = nav.parentElement;
+  const scrimHome = scrim?.parentElement;
   const isMobileNav = () => window.matchMedia('(max-width: 1023px)').matches;
+  const placeNavForViewport = () => {
+    if (isMobileNav()) {
+      nav.classList.add('is-mobile-portal');
+      scrim?.classList.add('is-mobile-portal');
+      if (scrim) document.body.append(scrim);
+      document.body.append(nav);
+    } else if (nav.parentElement !== navHome) {
+      nav.classList.remove('is-mobile-portal');
+      scrim?.classList.remove('is-mobile-portal');
+      if (scrim && scrimHome) scrimHome.append(scrim);
+      navHome?.append(nav);
+    }
+  };
+  placeNavForViewport();
   const focusableInNav = () => [...nav.querySelectorAll('a, button')].filter((element) =>
     !element.disabled && !element.closest('.sub-menu[inert]') && element.getClientRects().length
   );
@@ -23,15 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextState = Boolean(open && isMobileNav());
     header.classList.toggle('nav-open', nextState);
     nav.classList.toggle('is-open', nextState);
+    scrim?.classList.toggle('is-open', nextState);
+    document.body.classList.toggle('nav-locked', nextState);
     nav.setAttribute('aria-hidden', String(!nextState && isMobileNav()));
     toggle.setAttribute('aria-expanded', String(nextState));
     toggle.setAttribute('aria-label', nextState ? 'Close navigation' : 'Open navigation');
     nav.inert = isMobileNav() && !nextState;
     if (!nextState) closeSubmenus();
-    if (nextState && restoreFocus) nav.querySelector('.nav-parent-button, a')?.focus({ preventScroll: true });
+    if (nextState && restoreFocus) (closeButton || nav.querySelector('.nav-parent-button, a'))?.focus({ preventScroll: true });
     if (!nextState && restoreFocus) toggle.focus({ preventScroll: true });
   };
   toggle.addEventListener('click', () => setNavOpen(!header.classList.contains('nav-open')));
+  closeButton?.addEventListener('click', () => setNavOpen(false));
+  scrim?.addEventListener('click', () => setNavOpen(false, false));
   nav.querySelectorAll('.menu-item-has-children').forEach((item) => {
     const button = item.querySelector(':scope > .nav-parent-button');
     const submenu = item.querySelector(':scope > .sub-menu');
@@ -75,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }));
   document.addEventListener('pointerdown', (event) => {
-    if (header.classList.contains('nav-open') && !header.contains(event.target)) setNavOpen(false, false);
+    if (header.classList.contains('nav-open') && !header.contains(event.target) && !nav.contains(event.target)) setNavOpen(false, false);
   });
   document.addEventListener('keydown', (event) => {
     if (!header.classList.contains('nav-open')) return;
@@ -98,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   window.addEventListener('resize', () => {
     if (!isMobileNav()) setNavOpen(false, false);
+    placeNavForViewport();
     nav.setAttribute('aria-hidden', String(isMobileNav() && !header.classList.contains('nav-open')));
     nav.inert = isMobileNav() && !header.classList.contains('nav-open');
   }, { passive: true });
@@ -393,6 +416,30 @@ document.addEventListener('DOMContentLoaded', () => {
       closeCountry();
     }
   });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const section = document.querySelector('.src-v3-programme-detail-hero');
+  const ring = section?.querySelector('.src-v3-programmes-ring');
+  if (!section || !ring) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let frame = 0;
+  const updateRing = () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => {
+      if (reducedMotion.matches) {
+        ring.style.setProperty('--ring-parallax', '0px');
+        return;
+      }
+      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      ring.style.setProperty('--ring-parallax', `${(window.scrollY - sectionTop) * 0.15}px`);
+    });
+  };
+
+  updateRing();
+  window.addEventListener('scroll', updateRing, { passive: true });
+  reducedMotion.addEventListener('change', updateRing);
 });
 
 document.addEventListener('DOMContentLoaded', () => {

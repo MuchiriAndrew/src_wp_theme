@@ -12,6 +12,7 @@ $audiences = src_ordered_posts('src_audience_item', 'audience_home_order');
 $stats = array_filter(src_ordered_posts('src_stat_item', 'stat_home_order'), static fn($post) => src_field('stat_home_enabled', $post->ID, '1') === '1');
 $settings = array_merge(src_settings_defaults(), get_option('src_settings', []));
 $hero_title = preg_split('/\R/', (string) ($settings['hero_title'] ?? "Building\nEnterprises\nFrom Good\nto Great."));
+$hero_meta_parts = preg_split('/\s*·\s*/u', trim((string) ($settings['hero_meta'] ?? '')));
 $country_details = src_get_footprint_countries();
 $africa_svg = file_get_contents(get_template_directory() . '/assets/africa.svg');
 $africa_svg = preg_replace('/^.*?<svg/s', '<svg', $africa_svg);
@@ -42,7 +43,7 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
     <img class="hero-media v3-hero-poster" src="<?php echo esc_url($asset_uri . 'hero-man-with-camels-poster.png'); ?>" alt="Pastoral livestock crossing arid land">
     <video class="hero-media v3-hero-video" autoplay muted playsinline loop preload="metadata" poster="<?php echo esc_url($asset_uri . 'hero-man-with-camels-poster.png'); ?>" aria-hidden="true"><source src="<?php echo esc_url($asset_uri . 'hero-man-with-camels.mp4'); ?>" type="video/mp4"></video>
     <div class="v3-hero-watermark" aria-hidden="true"><img class="v3-watermark-mark" src="<?php echo esc_url($asset_uri . 'src-logo-mark.png'); ?>" alt=""><img class="v3-watermark-letters" src="<?php echo esc_url($asset_uri . 'src-logo-letters.png'); ?>" alt=""></div>
-    <div class="container hero-content" data-reveal="left"><p class="hero-meta"><?php echo esc_html($settings['hero_meta']); ?></p><h1 class="display"><?php foreach ($hero_title as $line) : $line = trim($line); if ($line === '') continue; ?><span class="hero-title-line<?php echo strcasecmp($line, trim($settings['hero_accent_line'] ?? 'From Good')) === 0 ? ' hero-accent-line' : ''; ?>"><?php echo esc_html($line); ?></span><?php if (strcasecmp($line, trim($settings['hero_accent_line'] ?? 'From Good')) === 0) echo '&nbsp;'; ?><?php endforeach; ?></h1><p class="hero-copy"><?php echo esc_html($settings['hero_copy']); ?></p><div class="hero-actions"><a class="button" href="<?php echo esc_url(get_post_type_archive_link('programme')); ?>">Our Programmes</a><a class="watch-story" href="#our-story"><span class="watch-icon">▷</span><span>Watch Our Story</span></a></div></div>
+    <div class="container hero-content"><div class="hero-content-inner"><div class="hero-meta"><?php foreach ($hero_meta_parts as $index => $part) : $part = trim($part); if ($part === '') continue; ?><span><?php echo esc_html($part); ?></span><?php if ($index < count($hero_meta_parts) - 1) : ?><span aria-hidden="true">·</span><?php endif; ?><?php endforeach; ?></div><h1 class="display"><?php foreach ($hero_title as $line) : $line = trim($line); if ($line === '') continue; ?><span class="hero-title-line<?php echo strcasecmp($line, trim($settings['hero_accent_line'] ?? 'From Good')) === 0 ? ' hero-accent-line' : ''; ?>"><?php echo esc_html($line); ?></span><?php if (strcasecmp($line, trim($settings['hero_accent_line'] ?? 'From Good')) === 0) echo '&nbsp;'; ?><?php endforeach; ?></h1><p class="hero-copy"><?php echo esc_html($settings['hero_copy']); ?></p><div class="hero-actions"><a class="button" href="<?php echo esc_url(get_post_type_archive_link('programme')); ?>">Our Programmes</a><a class="watch-story" href="#our-story"><span class="watch-icon">▷</span><span>Watch Our Story</span></a></div></div></div>
     <?php if ($hero_programmes) : ?><div class="v3-hero-enrolments container"><p class="v3-enrolment-label">Now Enrolling</p><div class="v3-enrolment-grid"><?php foreach ($hero_programmes as $programme) :
       $cohort_label = trim((string) src_field('programme_next_cohort_label', $programme->ID, ''));
       $cohort_date = trim((string) src_field('programme_next_cohort_date', $programme->ID, ''));
@@ -73,7 +74,7 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
     ?>
       <article class="impact-tile impact-tile--<?php echo esc_attr($area); ?>">
         <button class="impact-tile-trigger" type="button" aria-expanded="false" aria-controls="<?php echo esc_attr($panel_id); ?>" aria-label="More about <?php echo esc_attr($label); ?>"><img src="<?php echo esc_url($image); ?>" alt="" loading="lazy"><span class="impact-tile-shade"></span></button>
-        <div class="impact-stat"><div class="impact-number"><span class="impact-prefix"><?php echo esc_html($prefix); ?></span><span data-impact-count="<?php echo esc_attr($value); ?>">0</span><span><?php echo esc_html($suffix); ?></span></div><div class="impact-label"><?php echo esc_html($label); ?></div></div>
+        <div class="impact-stat"><div class="impact-number"><?php echo esc_html($prefix); ?><span data-impact-count="<?php echo esc_attr($value); ?>">0</span><?php echo esc_html($suffix); ?></div><div class="impact-label"><?php echo esc_html($label); ?></div></div>
         <div class="impact-panel" id="<?php echo esc_attr($panel_id); ?>" inert><p class="impact-panel-context"><?php echo esc_html(src_field('metric_context', $metric->ID, '')); ?></p><ul class="impact-panel-facts"><?php foreach ($facts as $fact) : ?><li><?php echo esc_html($fact); ?></li><?php endforeach; ?></ul><a class="impact-panel-link" href="<?php echo esc_url($target_link); ?>">See the programmes →</a></div>
       </article>
     <?php endforeach; ?>
@@ -91,12 +92,12 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
     </div>
     <div class="footprint-map-window">
       <div class="map-art map-art-africa" data-map-panel="africa" aria-label="Map of Africa showing SRC programme countries"><?php echo $africa_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-        <div class="map-hover-label" aria-hidden="true"><span></span><small>Click to explore</small></div>
-        <?php foreach (array_keys($country_details) as $code) : ?><button class="map-dot" type="button" data-country="<?php echo esc_attr($code); ?>" aria-label="View <?php echo esc_attr($country_details[$code]['name']); ?> programmes"><span></span></button><?php endforeach; ?>
+        <div class="map-hover-label" aria-hidden="true"><span></span></div>
+        <?php foreach ($country_details as $code => $country) : ?><button class="map-dot<?php echo !empty($country['hq']) ? ' is-hq' : ''; ?>" type="button" data-country="<?php echo esc_attr($code); ?>" aria-label="View <?php echo esc_attr($country['name']); ?> programmes"><span></span></button><?php endforeach; ?>
       </div>
       <div class="map-art map-art-kenya" data-map-panel="kenya" hidden aria-label="Map of Kenya counties"><?php echo $kenya_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-        <div class="map-hover-label" aria-hidden="true"><span></span><small>Click to explore</small></div>
-        <?php foreach (array_keys($county_details) as $code) : ?><button class="map-dot" type="button" data-country="<?php echo esc_attr($code); ?>" aria-label="View <?php echo esc_attr($county_details[$code]['name']); ?> programmes"><span></span></button><?php endforeach; ?>
+        <div class="map-hover-label" aria-hidden="true"><span></span></div>
+        <?php foreach ($county_details as $code => $county) : ?><button class="map-dot<?php echo !empty($county['hq']) ? ' is-hq' : ''; ?>" type="button" data-country="<?php echo esc_attr($code); ?>" aria-label="View <?php echo esc_attr($county['name']); ?> programmes"><span></span></button><?php endforeach; ?>
       </div>
     </div>
     </div>
@@ -136,7 +137,7 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
   }
   $project_modal_data = [];
   ?>
-  <section id="portfolio" class="project-ref"><div class="container"><div class="section-heading"><div><p class="eyebrow"><?php echo esc_html($settings['projects_eyebrow']); ?></p><h2 class="display display-md"><?php echo esc_html($settings['projects_heading']); ?></h2></div><a class="section-link" href="<?php echo esc_url(home_url('/portfolio/')); ?>">See all case studies →</a></div><div class="projects-stage"><div class="projects-grid project-mosaic project-theme-grid">
+  <section id="portfolio" class="project-ref"><div class="container"><div class="section-heading"><div><p class="eyebrow"><?php echo esc_html($settings['projects_eyebrow']); ?></p><h2 class="display display-md"><?php echo esc_html($settings['projects_heading']); ?></h2></div><a class="section-link" href="<?php echo esc_url(home_url('/programmes/')); ?>">See all case studies →</a></div><div class="projects-stage"><div class="projects-grid project-mosaic project-theme-grid">
     <?php foreach ($project_groups as $index => [$term, $programmes]) :
       $lead = $programmes[0];
       $image = src_image_url($lead->ID, 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=900&h=600&fit=crop&auto=format&q=82');
@@ -153,7 +154,7 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
     ?>
       <button class="project-tile <?php echo in_array($index, [0, 3], true) ? 'span-2' : ''; ?>" type="button" data-project-index="<?php echo esc_attr(count($project_modal_data) - 1); ?>" aria-haspopup="dialog" aria-label="Open <?php echo esc_attr($project_title); ?>"><img src="<?php echo esc_url($image); ?>" alt=""><span class="project-tile-overlay" aria-hidden="true"></span><span class="project-tile-content"><span class="project-tile-partner"><?php echo esc_html($funder_label); ?></span><strong><?php echo esc_html(count($programmes) . ' programmes'); ?></strong><span class="project-theme-name"><?php echo esc_html($project_title); ?></span></span><span class="project-open-label">Open project →</span></button>
     <?php endforeach; ?>
-  </div></div></div></section>
+  </div></div><a class="project-ref-mobile-link" href="<?php echo esc_url(home_url('/programmes/')); ?>">See all case studies →</a></div></section>
 
   <dialog class="project-folder" id="project-folder" aria-labelledby="project-folder-title">
     <div class="project-folder-photo" aria-hidden="true"></div><div class="project-folder-shade" aria-hidden="true"></div>
@@ -188,11 +189,11 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
   ?>
   <section id="partners" class="home-partners-ref">
     <div class="home-partners-heading"><p class="eyebrow">Trusted By</p><h2 class="display">Our Partners</h2></div>
-    <?php if ($partner_posts) : ?><div class="home-partner-marquee" aria-label="SRC partners"><div class="home-partner-track">
+    <?php if ($partner_posts) : ?><div class="home-partner-marquee brand-section-content cx" aria-label="SRC partners">
       <?php for ($copy = 0; $copy < 2; $copy++) : foreach ($partner_posts as $partner) : $name = src_field('partner_name', $partner->ID, $partner->post_title); $logo = src_field('partner_logo_url', $partner->ID, ''); ?>
         <div class="home-partner-logo" <?php echo $copy ? 'aria-hidden="true"' : ''; ?>><?php if ($logo) : ?><img src="<?php echo esc_url($logo); ?>" alt="<?php echo $copy ? '' : esc_attr($name); ?>" loading="lazy"><?php else : ?><span><?php echo esc_html($name); ?></span><?php endif; ?></div>
       <?php endforeach; endfor; ?>
-    </div></div><?php endif; ?>
+    </div><?php endif; ?>
   </section>
 
   <section id="programmes" class="home-programmes-ref"><div class="home-programmes-inner">
@@ -244,7 +245,7 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
 
   <?php $publications = src_ordered_posts('src_publication', 'publication_year'); $publication = null; foreach (array_reverse($publications) as $candidate) if (src_field('publication_featured', $candidate->ID, '0') === '1') { $publication = $candidate; break; } ?>
   <?php if ($publication) : $pdf = src_field('publication_pdf', $publication->ID, ''); $flipbook = src_field('publication_flipbook', $publication->ID, ''); ?>
-    <section class="home-report-ref"><div class="home-report-inner"><div class="home-report-copy"><p class="eyebrow">Annual Publication</p><h2 class="display"><?php echo esc_html(get_the_title($publication)); ?></h2><p><?php echo esc_html(wp_strip_all_tags($publication->post_content)); ?></p><a class="home-report-download" href="<?php echo esc_url($pdf ?: '#impact-report'); ?>" <?php echo $pdf ? 'download' : 'aria-disabled="true"'; ?>>Download PDF <span aria-hidden="true">↓</span></a></div><div class="home-report-viewer" id="impact-report"><?php if ($flipbook) : ?><iframe src="<?php echo esc_url($flipbook); ?>" title="<?php echo esc_attr(get_the_title($publication)); ?>" loading="lazy"></iframe><?php else : ?><div class="home-report-placeholder"><span>Publuu flipbook embed</span></div><?php endif; ?></div></div></section>
+    <section class="home-report-ref"><div class="home-report-inner"><div class="home-report-copy"><p class="eyebrow">Annual Publication</p><h2 class="display"><?php echo esc_html(get_the_title($publication)); ?></h2><p><?php echo esc_html(wp_strip_all_tags($publication->post_content)); ?></p><a class="home-report-download" href="<?php echo esc_url($pdf ?: '#impact-report'); ?>" <?php echo $pdf ? 'download' : 'aria-disabled="true"'; ?>>Download PDF</a></div><div class="home-report-viewer" id="impact-report"><?php if ($flipbook) : ?><iframe src="<?php echo esc_url($flipbook); ?>" title="<?php echo esc_attr(get_the_title($publication)); ?>" loading="lazy"></iframe><?php else : ?><div class="home-report-placeholder"><span>Publuu flipbook embed</span></div><?php endif; ?></div></div></section>
   <?php endif; ?>
 </main>
 <?php get_footer(); ?>

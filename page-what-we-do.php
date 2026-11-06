@@ -107,7 +107,7 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
           <div class="pillar-panel pillar-panel--<?php echo esc_attr($pillar['key']); ?><?php echo $active ? ' is-active' : ''; ?>" style="--pillar-gradient:<?php echo esc_attr($pillar['gradient']); ?>;--pillar-color:<?php echo esc_attr($pillar['color']); ?>" data-pillar-panel="<?php echo esc_attr($pillar['key']); ?>" role="button" tabindex="0" aria-expanded="<?php echo $active ? 'true' : 'false'; ?>">
             <div class="pillar-panel-collapsed"><span><?php echo esc_html((string) ((int) $pillar['number'])); ?></span><strong><?php echo esc_html($pillar['title']); ?></strong></div>
             <div class="pillar-panel-expanded">
-              <div><span class="pillar-number"><?php echo esc_html($pillar['number']); ?></span><h3><?php echo esc_html($pillar['title']); ?></h3><em>“<?php echo esc_html($pillar['tagline']); ?>”</em><p><?php echo esc_html($pillar['description']); ?></p><div class="pillar-audience"><span>Who it's for</span><strong><?php echo esc_html($pillar['audience']); ?></strong></div></div>
+              <div><span class="pillar-number"><?php echo esc_html((string) ((int) $pillar['number'])); ?></span><h3><?php echo esc_html($pillar['title']); ?></h3><em>“<?php echo esc_html($pillar['tagline']); ?>”</em><p><?php echo esc_html($pillar['description']); ?></p><div class="pillar-audience"><span>Who it's for</span><strong><?php echo esc_html($pillar['audience']); ?></strong></div></div>
               <button type="button" class="pillar-learn" data-pillar-open="<?php echo esc_attr($pillar['key']); ?>">Explore programmes <span aria-hidden="true">→</span></button>
             </div>
           </div>

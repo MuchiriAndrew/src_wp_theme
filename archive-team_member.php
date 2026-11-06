@@ -17,12 +17,6 @@ $board_section = [
 $programme_members = src_leadership_team_members('programmes-team');
 $programme_leads = array_values(array_filter($programme_members, static fn($member) => $member['county'] === ''));
 $county_members = array_values(array_filter($programme_members, static fn($member) => $member['county'] !== ''));
-usort($county_members, static function ($a, $b) {
-    $county_order = strcasecmp($a['county'], $b['county']);
-    if ($county_order !== 0) return $county_order;
-    $level_order = ((int) ($a['county_level'] === 'Officer')) <=> ((int) ($b['county_level'] === 'Officer'));
-    return $level_order ?: strcasecmp($a['name'], $b['name']);
-});
 $programme_members = array_merge($programme_leads, $county_members);
 $counties = array_values(array_unique(array_filter(array_column($county_members, 'county'))));
 sort($counties, SORT_NATURAL | SORT_FLAG_CASE);

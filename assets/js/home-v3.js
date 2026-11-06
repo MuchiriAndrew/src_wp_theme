@@ -141,6 +141,24 @@
     window.addEventListener('scroll', updateRing, { passive: true });
     reducedMotion.addEventListener('change', updateRing);
   }
+
+  const newsSection = document.querySelector('.home-news-ref');
+  if (newsSection) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    const updateNewsRing = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const offset = reducedMotion.matches
+          ? 0
+          : (window.scrollY - (newsSection.getBoundingClientRect().top + window.scrollY)) * 0.15;
+        newsSection.style.setProperty('--news-ring-parallax', `${offset}px`);
+      });
+    };
+    updateNewsRing();
+    window.addEventListener('scroll', updateNewsRing, { passive: true });
+    reducedMotion.addEventListener('change', updateNewsRing);
+  }
 })();
 
 (() => {

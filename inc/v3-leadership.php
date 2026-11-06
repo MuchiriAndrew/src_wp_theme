@@ -249,10 +249,6 @@ function src_leadership_member_data($post) {
 }
 
 function src_leadership_team_tone($member, $index, $ordered_members, $brainstorm = false) {
-    if ($brainstorm) {
-        if (in_array('senior-management', $member['departments'], true)) return 'red';
-        return $member['county_level'] === 'Manager' ? 'grey' : 'yellow';
-    }
     if (in_array('senior-management', $member['departments'], true)) return 'red';
     $earlier_non_senior = 0;
     foreach (array_slice($ordered_members, 0, $index) as $earlier) {

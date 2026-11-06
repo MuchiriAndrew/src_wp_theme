@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const desktopPanels = [...page.querySelectorAll('[data-pillar-panel]')];
   const mobileCards = [...page.querySelectorAll('[data-pillar-mobile-card]')];
   const cabinets = [...page.querySelectorAll('[data-pillar-cabinet]')];
-  let returnFocus = null;
-
   const setDesktopActive = (key) => desktopPanels.forEach((panel) => {
     const active = panel.dataset.pillarPanel === key;
     panel.classList.toggle('is-active', active);
@@ -51,10 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (active) card.append(buildMobileDetails(card));
   });
 
-  const openCabinet = (key, trigger) => {
+  const openCabinet = (key) => {
     const cabinet = cabinets.find((item) => item.dataset.pillarCabinet === key);
     if (!cabinet || !stage) return;
-    returnFocus = trigger || document.activeElement;
     desktopPanels.forEach((panel) => { panel.closest('.pillar-accordion-desktop').hidden = true; });
     page.querySelector('.pillar-accordion-mobile').hidden = true;
     stage.classList.add('pillar-stage--cabinet');
@@ -62,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
     requestAnimationFrame(() => {
       section.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
-      cabinet.querySelector('[data-pillar-close]')?.focus({ preventScroll: true });
     });
   };
 
@@ -74,8 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobile = page.querySelector('.pillar-accordion-mobile');
     if (desktop) desktop.hidden = false;
     if (mobile) mobile.hidden = false;
-    returnFocus?.focus?.({ preventScroll: true });
-    returnFocus = null;
   };
 
   const activateTab = (cabinet, key) => {
@@ -102,9 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   mobileCards.forEach((card) => {
-    card.dataset.tagline = card.querySelector('em')?.textContent.replace(/[“”]/g, '') || card.dataset.tagline || '';
-    card.dataset.description = card.querySelector(':scope > div > p')?.textContent || '';
-    card.dataset.audience = card.querySelector('.pillar-audience strong')?.textContent || '';
+    const tagline = card.querySelector(':scope > div > em')?.textContent.replace(/[“”]/g, '');
+    const description = card.querySelector(':scope > div > p')?.textContent;
+    const audience = card.querySelector(':scope > div .pillar-audience strong')?.textContent;
+    if (tagline) card.dataset.tagline = tagline;
+    if (description) card.dataset.description = description;
+    if (audience) card.dataset.audience = audience;
     card.querySelector('[data-pillar-mobile-trigger]')?.addEventListener('click', () => setMobileActive(card.dataset.pillarMobileCard));
   });
 
@@ -113,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (open) {
       event.preventDefault();
       event.stopPropagation();
-      openCabinet(open.dataset.pillarOpen, open);
+      openCabinet(open.dataset.pillarOpen);
       return;
     }
     const close = event.target.closest('[data-pillar-close]');
@@ -124,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (select) activateTab(select.closest('[data-pillar-cabinet]'), select.dataset.pillarSelectProgramme);
   });
 
-  page.addEventListener('keydown', (event) => {
+  window.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
     const cabinet = cabinets.find((item) => !item.hidden);
     if (cabinet) closeCabinet(cabinet);

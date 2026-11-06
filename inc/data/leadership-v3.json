@@ -30,7 +30,7 @@
       "strategy-consulting"
     ],
     "department_order": {
-      "senior-management": 5,
+      "senior-management": 2,
       "strategy-consulting": 1
     },
     "slug": "moses-odipo"
@@ -45,10 +45,12 @@
     "bio": "",
     "linkedin": "",
     "departments": [
+      "senior-management",
       "finance-operations"
     ],
     "department_order": {
-      "finance-operations": 5
+      "senior-management": 3,
+      "finance-operations": 1
     },
     "slug": "kennedy-njue"
   },
@@ -66,7 +68,7 @@
       "data-quality"
     ],
     "department_order": {
-      "senior-management": 6,
+      "senior-management": 4,
       "data-quality": 1
     },
     "slug": "florence-ndwiga"
@@ -85,7 +87,7 @@
       "programmes-team"
     ],
     "department_order": {
-      "senior-management": 4,
+      "senior-management": 5,
       "programmes-team": 1
     },
     "slug": "bonano-badia"
@@ -103,7 +105,7 @@
       "senior-management"
     ],
     "department_order": {
-      "senior-management": 2
+      "senior-management": 6
     },
     "slug": "emmaculate-mulinge"
   },
@@ -117,12 +119,10 @@
     "bio": "Caroline is a finance leader with 24 years of experience in international NGO and development finance, serving as Head of Finance at Smart Regional Consultants since February 2023. Her career includes 13 years rising through World Concern International to Africa Region Finance Manager and Regional Grant and Compliance Manager, followed by Associate Director for Grants, Finance and Fundraising at Farm Concern International and Grants and Finance Manager at the Drylands Learning and Capacity Building Initiative.\n\nShe brings proven strength in donor budgeting and grants compliance across USAID, the Bill and Melinda Gates Foundation, FCDO, the European Union, United Nations bodies and the Government of Kenya, together with treasury and cash flow management, internal controls, audit management and board reporting. She has managed portfolios of up to USD 10 million and led fundraising resulting in grants ranging from USD 100,000 to USD 6 million. Country experience spans Kenya, Uganda, Tanzania, Rwanda, Somalia, Ethiopia, South Sudan and Chad.\n\nCertified Public Accountant, CPA(K), Strathmore College; Bachelor of Arts in Economics and Business Studies, Kenyatta University; MBA in Strategic Management (ongoing), Africa Nazarene University. Member of ICPAK and Humentum. Serves on three boards, including as Chair of the Finance Committee at World Concern International.",
     "linkedin": "https://www.linkedin.com/in/caroline-nyagah-6203a913/",
     "departments": [
-      "senior-management",
       "finance-operations"
     ],
     "department_order": {
-      "senior-management": 3,
-      "finance-operations": 1
+      "finance-operations": 2
     },
     "slug": "caroline-nyagah"
   },
@@ -139,7 +139,7 @@
       "finance-operations"
     ],
     "department_order": {
-      "finance-operations": 2
+      "finance-operations": 3
     },
     "slug": "cynthia-wanja-theuri"
   },
@@ -156,7 +156,7 @@
       "finance-operations"
     ],
     "department_order": {
-      "finance-operations": 3
+      "finance-operations": 4
     },
     "slug": "john-kangata-ndinguri"
   },
@@ -173,7 +173,7 @@
       "finance-operations"
     ],
     "department_order": {
-      "finance-operations": 4
+      "finance-operations": 5
     },
     "slug": "judy-waruguru"
   },
@@ -238,11 +238,9 @@
     "bio": "Keisla serves as the Communications Manager at Smart Regional Consultants (SRC), where she leads the organisation’s strategic communications, brand visibility and stakeholder engagement. She oversees content strategy, digital campaigns and storytelling that showcase SRC’s work and impact, drawing on her background in strategy and project management to support organisational goals.\n\nShe holds a Bachelor’s degree in Exercise and Sport Science from Kenyatta University and has undertaken professional training in entrepreneurship development, business advisory and artificial intelligence. With over eight years of experience spanning communications, strategy and project management, Keisla has contributed to initiatives supporting women and youth entrepreneurs across Kenya and other African countries. She is passionate about using strategic communication to amplify impact, strengthen partnerships and create opportunities for businesses and communities to thrive. \n\nOutside of work, Keisla enjoys travelling, connecting with people and participating in community service activities.",
     "linkedin": "https://www.linkedin.com/in/keisla-adhiambo/",
     "departments": [
-      "senior-management",
       "strategy-consulting"
     ],
     "department_order": {
-      "senior-management": 7,
       "strategy-consulting": 2
     },
     "slug": "keisla-adhiambo-otieno"

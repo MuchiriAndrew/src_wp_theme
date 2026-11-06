@@ -18,6 +18,13 @@
     nav.classList.toggle('has-scroll-right', row.scrollLeft + row.clientWidth < row.scrollWidth - 1);
   };
 
+  const updateLastVisibleCategory = () => {
+    const visible = categories.filter((category) => !category.hidden);
+    categories.forEach((category) => {
+      category.classList.toggle('is-last-visible', visible[visible.length - 1] === category);
+    });
+  };
+
   filterButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const selected = button.dataset.expertFilter;
@@ -29,9 +36,11 @@
       categories.forEach((category) => {
         category.hidden = selected !== 'all' && category.dataset.expertCategory !== selected;
       });
+      updateLastVisibleCategory();
     });
   });
 
+  updateLastVisibleCategory();
   updateDocked();
   updateScrollEdges();
   window.addEventListener('scroll', updateDocked, { passive: true });

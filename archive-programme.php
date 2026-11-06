@@ -51,7 +51,7 @@ $group_labels = [
                 <div class="src-programme-filter-status" role="group" aria-label="Filter by status">
                     <?php foreach (['all' => 'All', 'current' => 'Current', 'upcoming' => 'Upcoming', 'past' => 'Past'] as $value => $label) :
                         $active = $selected_status === $value || ($selected_status === 'all' && $value === 'current'); ?>
-                        <button type="button" data-programme-status="<?php echo esc_attr($value); ?>" class="src-programme-filter src-programme-filter-status-item <?php echo $active ? 'is-active' : ''; ?>"><?php echo esc_html($label); ?><span class="src-programme-filter-separator" aria-hidden="true">·</span><span class="src-programme-filter-count"><?php echo esc_html($counts[$value]); ?></span></button>
+                        <button type="button" data-programme-status="<?php echo esc_attr($value); ?>" class="src-programme-filter src-programme-filter-status-item <?php echo $active ? 'is-active' : ''; ?>"><?php echo esc_html($label . ' · ' . $counts[$value]); ?></button>
                     <?php endforeach; ?>
                 </div>
                 <?php if (!is_wp_error($themes)) foreach ($themes as $theme) :

@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.45');
+define('SRC_VERSION', '3.5.135');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -588,8 +588,9 @@ function src_get_footprint_counties() {
                 'image' => src_image_url($programme->ID, ''), 'url' => get_permalink($programme),
             ];
         }, $programmes);
+        $county_name = $slug === 'taita-taveta' && $term->name === 'Taita-Taveta' ? 'Taita Taveta' : $term->name;
         $counties[strtoupper('county-' . $slug)] = [
-            'name' => html_entity_decode($term->name, ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'count' => sprintf(_n('%d programme', '%d programmes', count($rows), 'src'), count($rows)),
+            'name' => html_entity_decode($county_name, ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'count' => sprintf(_n('%d programme', '%d programmes', count($rows), 'src'), count($rows)),
             'meta' => $slug === 'nairobi' ? 'SRC headquarters · Nairobi' : sprintf(_n('%d active or completed programme', '%d active or completed programmes', count($rows), 'src'), count($rows)),
             'scale' => (float) (get_term_meta($term->term_id, 'src_country_scale', true) ?: 1.55), 'x' => '0%', 'y' => '0%',
             'hq' => $slug === 'nairobi', 'order' => $order, 'programmes' => $rows,

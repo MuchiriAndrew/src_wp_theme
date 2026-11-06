@@ -110,6 +110,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const photoPanel = document.createElement('div');
     photoPanel.className = `leadership-bio-modal-photo-panel leadership-person-card--${card.dataset.tone}`;
     photoPanel.innerHTML = patternMarkup(card.dataset.tone);
+    const portraitOutline = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    portraitOutline.setAttribute('viewBox', '0 0 100 100');
+    portraitOutline.setAttribute('preserveAspectRatio', 'none');
+    portraitOutline.setAttribute('aria-hidden', 'true');
+    portraitOutline.classList.add('leadership-portrait-outline');
+    const outlinePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    outlinePath.setAttribute('d', 'M18 58V16H82V46Q82 58 70 58Z');
+    outlinePath.setAttribute('fill', 'none');
+    outlinePath.setAttribute('stroke', 'rgba(255,255,255,.7)');
+    outlinePath.setAttribute('stroke-width', '1.5');
+    outlinePath.setAttribute('vector-effect', 'non-scaling-stroke');
+    portraitOutline.append(outlinePath);
+    photoPanel.append(portraitOutline);
     if (card.dataset.image) {
       const photo = document.createElement('img');
       photo.className = 'leadership-bio-modal-photo';
