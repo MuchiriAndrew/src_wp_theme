@@ -452,6 +452,7 @@ Text Domain: src
 .src-commerce-main .wc-block-checkout__create-account,
 .src-commerce-main .wc-block-checkout__login-prompt { display:none !important; }
 .src-commerce-main .wc-block-checkout__sidebar .wc-block-components-order-summary { overflow:visible; border:0; background:transparent; }
+.src-commerce-main .wc-block-checkout__sidebar .wp-block-woocommerce-checkout-order-summary-block { border:0; }
 .src-commerce-main .wc-block-checkout__sidebar .wc-block-components-order-summary-item {
   display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:6px;
   margin:0; padding:20px 18px; border:0; background:#f7f4ef;
