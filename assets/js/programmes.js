@@ -123,7 +123,8 @@
   });
 
   const updateDocked = () => {
-    nav.classList.toggle('sticky-subnav--docked', nav.getBoundingClientRect().top <= 88);
+    const dockTop = document.body.classList.contains('admin-bar') ? 120 : 88;
+    nav.classList.toggle('sticky-subnav--docked', nav.getBoundingClientRect().top <= dockTop + 1);
   };
   window.addEventListener('scroll', () => {
     updateDocked();

@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.5.184
+Version: 3.5.185
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -41,8 +41,9 @@ Text Domain: src
 .src-v3-hero-secondary span { font-size: 20px; }
 .src-v3-hero-secondary:hover { color: var(--orange); }
 @keyframes srcProgrammeHeroZoom { from { transform: scale(1.06); } to { transform: scale(1); } }
-.src-programme-filters { position: sticky; z-index: 40; top: 88px; width: calc(100% - 48px); max-width: 1400px; margin: 0 auto; overflow: hidden; border: 1px solid rgba(31,31,31,.08); border-radius: 24px; background: rgba(250,248,244,.88); box-shadow: 0 8px 24px rgba(74,14,18,.1); backdrop-filter: blur(18px) saturate(140%); transition: border-radius 250ms ease; }
-.src-programme-filters.sticky-subnav--docked { border-top-color: rgba(31,31,31,.06); border-radius: 0 0 24px 24px; }
+.src-programme-filters { position: sticky; z-index: 40; top: 88px; width: calc(100% - 48px); max-width: 1400px; margin: 0 auto; overflow: hidden; border: 1px solid rgba(31,31,31,.08); border-radius: 24px; background: rgba(250,248,244,.88); box-shadow: 0 8px 24px rgba(74,14,18,.1); backdrop-filter: blur(18px) saturate(140%); transition: border-radius 250ms ease, box-shadow 250ms ease; }
+.post-type-archive-programme .site-header.is-scrolled .header-inner { border-bottom-color: rgba(31,31,31,.06); border-radius: 24px 24px 0 0; box-shadow: none; }
+.src-programme-filters.sticky-subnav--docked { border-top-color: rgba(31,31,31,.06); border-radius: 0 0 24px 24px; box-shadow: 0 12px 28px rgba(74,14,18,.1); }
 .admin-bar .src-programme-filters { top: 120px; }
 .src-programme-filter-scroll { position: relative; }
 .src-programme-filter-scroll::before, .src-programme-filter-scroll::after { position: absolute; z-index: 2; top: 0; bottom: 0; width: 40px; opacity: 0; pointer-events: none; content: ''; transition: opacity 180ms ease; }
