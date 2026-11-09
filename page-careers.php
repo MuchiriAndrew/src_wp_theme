@@ -86,7 +86,7 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
                     </div>
                   <?php else : ?>
                     <?php if ($application_status === 'error' && $is_active) : ?><p class="src-careers-v3-error" role="alert"><?php echo esc_html(src_page_field('page_careers_error_message', $page_id, 'We could not send your application just now. Please try again.')); ?></p><?php endif; ?>
-                    <form class="src-careers-v3-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                    <form class="src-careers-v3-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                       <p><?php echo esc_html(src_page_field('page_careers_form_label', $page_id, 'Apply for')); ?>: <?php echo esc_html(get_the_title($job)); ?></p>
                       <input type="hidden" name="action" value="src_careers_application">
                       <input type="hidden" name="job_id" value="<?php echo esc_attr((string) $job->ID); ?>">
@@ -95,7 +95,12 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
                       <label class="screen-reader-text" for="career-email-<?php echo esc_attr((string) $job->ID); ?>">Email address</label><input id="career-email-<?php echo esc_attr((string) $job->ID); ?>" type="email" name="email" placeholder="<?php echo esc_attr(src_page_field('page_careers_email_placeholder', $page_id, 'Email address')); ?>" required autocomplete="email">
                       <label class="screen-reader-text" for="career-phone-<?php echo esc_attr((string) $job->ID); ?>">Phone number</label><input id="career-phone-<?php echo esc_attr((string) $job->ID); ?>" type="tel" name="phone" placeholder="<?php echo esc_attr(src_page_field('page_careers_phone_placeholder', $page_id, 'Phone number')); ?>" autocomplete="tel">
                       <label class="screen-reader-text" for="career-cover-<?php echo esc_attr((string) $job->ID); ?>">Cover letter</label><textarea id="career-cover-<?php echo esc_attr((string) $job->ID); ?>" name="cover_letter" rows="4" placeholder="<?php echo esc_attr(src_page_field('page_careers_cover_placeholder', $page_id, "Cover letter — tell us why you're the right fit (max 300 words)")); ?>"></textarea>
-                      <div class="src-careers-v3-cv-prompt"><?php echo esc_html(src_page_field('page_careers_cv_label', $page_id, '+ Attach CV / Resume (PDF preferred)')); ?></div>
+                      <label class="src-careers-v3-cv-dropzone" data-cv-dropzone>
+                        <input type="file" name="cv_resume" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-describedby="career-cv-help-<?php echo esc_attr((string) $job->ID); ?>">
+                        <span class="src-careers-v3-cv-icon" aria-hidden="true">↑</span>
+                        <span class="src-careers-v3-cv-title" data-cv-title><?php echo esc_html(src_page_field('page_careers_cv_label', $page_id, '+ Attach CV / Resume (PDF preferred)')); ?></span>
+                        <span class="src-careers-v3-cv-help" id="career-cv-help-<?php echo esc_attr((string) $job->ID); ?>">Click to browse or drag and drop a PDF, DOC or DOCX file (max 10 MB)</span>
+                      </label>
                       <button type="submit"><?php echo esc_html(src_page_field('page_careers_submit_label', $page_id, 'Submit Application')); ?></button>
                     </form>
                   <?php endif; ?>

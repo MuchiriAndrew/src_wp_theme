@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.178');
+define('SRC_VERSION', '3.5.184');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -103,6 +103,17 @@ function src_assets() {
     wp_localize_script('src-registration', 'srcRegistrationConfig', [
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('src_v3_registration'),
+        'order' => function_exists('src_v3_registration_return_order') && src_v3_registration_return_order() ? [
+            'id' => src_v3_registration_return_order()->get_id(),
+            'key' => src_v3_registration_return_order()->get_order_key(),
+            'programmeId' => src_v3_order_programme_id(src_v3_registration_return_order()),
+            'programmeTitle' => get_post_meta(src_v3_order_programme_id(src_v3_registration_return_order()), '_programme_hero_title', true) ?: get_the_title(src_v3_order_programme_id(src_v3_registration_return_order())),
+            'paid' => src_v3_registration_return_order()->is_paid(),
+            'number' => src_v3_registration_return_order()->get_order_number(),
+            'email' => src_v3_registration_return_order()->get_billing_email(),
+            'receipt' => (string) src_v3_registration_return_order()->get_meta('_mpesa_receipt_number'),
+            'retryUrl' => src_v3_registration_return_order()->get_checkout_payment_url(),
+        ] : null,
     ]);
     if (is_front_page()) wp_enqueue_script('src-home-v3', get_template_directory_uri() . '/assets/js/home-v3.js', [], SRC_VERSION, true);
 }

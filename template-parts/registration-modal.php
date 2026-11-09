@@ -108,8 +108,13 @@ $first_image = src_image_url($first_programme->ID, '');
             </section>
 
             <section data-register-step="3" hidden>
-                <h3>Registration received</h3>
-                <p>Complete checkout to confirm your place. WooCommerce will show your order confirmation when payment is complete.</p>
+                <p class="src-register-confirm-kicker">Programme registration</p>
+                <h3 data-register-confirm-heading>Checking your payment</h3>
+                <p data-register-confirm-message>We are waiting for your payment provider to confirm the transaction. Please complete the M-PESA prompt on your phone.</p>
+                <dl class="src-register-confirm-facts"><div><dt>Programme</dt><dd data-register-confirm-programme></dd></div><div><dt>Order</dt><dd data-register-confirm-order></dd></div><div data-register-confirm-receipt-row hidden><dt>M-PESA receipt</dt><dd data-register-confirm-receipt></dd></div></dl>
+                <p class="src-register-confirm-email" data-register-confirm-email></p>
+                <a class="src-register-primary" data-register-confirm-retry hidden href="#">Retry payment</a>
+                <a class="src-register-primary" data-register-confirm-done href="<?php echo esc_url(home_url('/')); ?>">Return to homepage</a>
             </section>
         </div>
     </div>

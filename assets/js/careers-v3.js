@@ -20,4 +20,33 @@
       if (!wasOpen) setOpen(card, true);
     });
   });
+
+  document.querySelectorAll('[data-cv-dropzone]').forEach((zone) => {
+    const input = zone.querySelector('input[type="file"]');
+    const title = zone.querySelector('[data-cv-title]');
+    const defaultTitle = title?.textContent || '';
+    if (!input || !title) return;
+
+    const showFile = (file) => {
+      title.textContent = file ? file.name : defaultTitle;
+      zone.classList.toggle('has-file', Boolean(file));
+    };
+    input.addEventListener('change', () => showFile(input.files?.[0]));
+    ['dragenter', 'dragover'].forEach((eventName) => zone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      zone.classList.add('is-dragging');
+    }));
+    ['dragleave', 'drop'].forEach((eventName) => zone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      zone.classList.remove('is-dragging');
+    }));
+    zone.addEventListener('drop', (event) => {
+      const file = event.dataTransfer?.files?.[0];
+      if (!file) return;
+      const transfer = new DataTransfer();
+      transfer.items.add(file);
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
 })();

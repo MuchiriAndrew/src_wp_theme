@@ -142,11 +142,34 @@ function src_careers_application_handler() {
     $recipient = $careers_page ? sanitize_email(get_post_meta($careers_page->ID, '_page_application_email', true)) : '';
     if (!is_email($recipient)) $recipient = sanitize_email(get_option('admin_email'));
     $sent = false;
+    $attachments = [];
+    $uploaded_file = '';
+    if (!empty($_FILES['cv_resume']['name'])) {
+        $file = $_FILES['cv_resume'];
+        $allowed_extensions = ['pdf', 'doc', 'docx'];
+        $extension = strtolower(pathinfo((string) $file['name'], PATHINFO_EXTENSION));
+        if (!in_array($extension, $allowed_extensions, true) || (int) $file['size'] > 10 * MB_IN_BYTES || (int) $file['error'] !== UPLOAD_ERR_OK) {
+            wp_safe_redirect(add_query_arg('application_status', 'error', $redirect));
+            exit;
+        }
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        $upload = wp_handle_upload($file, ['test_form' => false, 'mimes' => ['pdf' => 'application/pdf', 'doc' => 'application/msword', 'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']]);
+        if (!empty($upload['error']) || empty($upload['file'])) {
+            wp_safe_redirect(add_query_arg('application_status', 'error', $redirect));
+            exit;
+        }
+        $uploaded_file = $upload['file'];
+        $attachments[] = $uploaded_file;
+    } elseif (isset($_FILES['cv_resume']['error']) && (int) $_FILES['cv_resume']['error'] !== UPLOAD_ERR_NO_FILE) {
+        wp_safe_redirect(add_query_arg('application_status', 'error', $redirect));
+        exit;
+    }
     if ($job && $name !== '' && is_email($email) && is_email($recipient)) {
         $mail_subject = 'SRC website application: ' . $job->post_title;
         $mail_body = "Position: {$job->post_title}\nName: {$name}\nEmail: {$email}\nPhone: {$phone}\n\nCover letter:\n{$cover_letter}";
-        $sent = wp_mail($recipient, $mail_subject, $mail_body, ['Reply-To: ' . $name . ' <' . $email . '>']);
+        $sent = wp_mail($recipient, $mail_subject, $mail_body, ['Reply-To: ' . $name . ' <' . $email . '>'], $attachments);
     }
+    if ($uploaded_file && file_exists($uploaded_file)) wp_delete_file($uploaded_file);
     wp_safe_redirect(add_query_arg('application_status', $sent ? 'sent' : 'error', $redirect));
     exit;
 }

@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
       art.style.transformOrigin = `${pathRect.left + pathRect.width / 2 - artRect.left}px ${pathRect.top + pathRect.height / 2 - artRect.top}px`;
     }
     renderProgrammes(country.programmes || []);
+    details.querySelector('.footprint-dialog-body').scrollTop = 0;
     details.setAttribute('aria-label', `${country.name || 'Country'} programmes`);
     details.setAttribute('aria-hidden', 'false');
     details.inert = false;
