@@ -109,7 +109,10 @@ $first_image = src_image_url($first_programme->ID, '');
 
             <section data-register-step="3" hidden>
                 <p class="src-register-confirm-kicker">Programme registration</p>
-                <h3 data-register-confirm-heading>Checking your payment</h3>
+                <div class="src-register-confirm-status" role="status" aria-live="polite" aria-atomic="true">
+                    <span class="src-register-confirm-indicator" data-register-confirm-indicator data-state="pending" aria-hidden="true"></span>
+                    <h3 data-register-confirm-heading>Checking your payment</h3>
+                </div>
                 <p data-register-confirm-message>We are waiting for your payment provider to confirm the transaction. Please complete the M-PESA prompt on your phone.</p>
                 <dl class="src-register-confirm-facts"><div><dt>Programme</dt><dd data-register-confirm-programme></dd></div><div><dt>Order</dt><dd data-register-confirm-order></dd></div><div data-register-confirm-receipt-row hidden><dt>M-PESA receipt</dt><dd data-register-confirm-receipt></dd></div></dl>
                 <p class="src-register-confirm-email" data-register-confirm-email></p>

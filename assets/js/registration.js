@@ -83,13 +83,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (orderProgramme) selectProgramme(orderProgramme);
     else if (title) title.textContent = returnedOrder.programmeTitle || '';
     const heading = dialog.querySelector('[data-register-confirm-heading]');
+    const indicator = dialog.querySelector('[data-register-confirm-indicator]');
     const message = dialog.querySelector('[data-register-confirm-message]');
     const emailNote = dialog.querySelector('[data-register-confirm-email]');
     const retry = dialog.querySelector('[data-register-confirm-retry]');
     const done = dialog.querySelector('[data-register-confirm-done]');
     dialog.querySelector('[data-register-confirm-programme]').textContent = returnedOrder.programmeTitle || '';
     dialog.querySelector('[data-register-confirm-order]').textContent = `#${returnedOrder.number}`;
-    const paintStatus = (paid, failed, receipt) => {
+    const paintStatus = (paid, failed, receipt, failureMessage = '') => {
+      indicator.dataset.state = paid ? 'paid' : failed ? 'failed' : 'pending';
       if (paid) {
         heading.textContent = 'Your payment is confirmed';
         message.textContent = 'Thank you for registering. Your place has been confirmed and our team will follow up with programme details.';
@@ -102,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         done.hidden = false;
       } else if (failed) {
         heading.textContent = 'Payment was not completed';
-        message.textContent = 'Your registration is still awaiting payment. You can try the payment again.';
+        message.textContent = failureMessage || 'Your payment was not completed. You can try again.';
         emailNote.textContent = 'Your confirmation email will be sent after the payment is confirmed.';
         retry.hidden = false;
         done.hidden = true;
@@ -115,10 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     retry.href = returnedOrder.retryUrl;
-    paintStatus(returnedOrder.paid, false, returnedOrder.receipt);
+    paintStatus(returnedOrder.paid, returnedOrder.failed, returnedOrder.receipt, returnedOrder.failureMessage);
     showStep(3);
     if (!dialog.open) dialog.showModal();
-    if (!returnedOrder.paid) {
+    if (!returnedOrder.paid && !returnedOrder.failed) {
       let attempts = 0;
       const poll = async () => {
         if (attempts++ >= 120) return;
@@ -130,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const response = await fetch(window.srcRegistrationConfig.ajaxUrl, { method: 'POST', body: payload, cache: 'no-store', credentials: 'same-origin' });
           const result = await response.json();
           if (response.ok && result.success) {
-            paintStatus(result.data.paid, result.data.failed, result.data.receipt);
+            paintStatus(result.data.paid, result.data.failed, result.data.receipt, result.data.failureMessage);
             if (result.data.paid || result.data.failed) return;
           }
         } catch (error) { /* A temporary network error should not change payment state. */ }

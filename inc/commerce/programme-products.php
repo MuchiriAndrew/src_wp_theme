@@ -243,14 +243,29 @@ function src_v3_registration_order_status() {
         wp_send_json_error(['message' => __('Order not found.', 'src')], 404);
     }
     nocache_headers();
-    wp_send_json_success([
-        'paid' => $order->is_paid(),
-        'failed' => in_array($order->get_status(), ['failed', 'cancelled'], true),
-        'receipt' => (string) $order->get_meta('_mpesa_receipt_number'),
-    ]);
+    wp_send_json_success(src_v3_registration_payment_state($order));
 }
 add_action('wp_ajax_src_v3_registration_order_status', 'src_v3_registration_order_status');
 add_action('wp_ajax_nopriv_src_v3_registration_order_status', 'src_v3_registration_order_status');
+
+/** The order can remain payable after a failed M-PESA attempt. */
+function src_v3_registration_payment_state($order) {
+    $paid = $order->is_paid() || $order->get_meta('_mpesa_payment_confirmed') === 'yes';
+    $failed = !$paid && ($order->get_meta('_mpesa_payment_attempt_status') === 'failed'
+        || in_array($order->get_status(), ['failed', 'cancelled'], true));
+    $result_code = (string) $order->get_meta('_mpesa_last_result_code');
+    $failure_message = $result_code === '1032'
+        ? __('The M-PESA request was cancelled on your phone. You can try again.', 'src')
+        : ($result_code === '1037'
+            ? __('The M-PESA request timed out. You can try again.', 'src')
+            : __('Your payment was not completed. You can try again.', 'src'));
+    return [
+        'paid' => $paid,
+        'failed' => $failed,
+        'failureMessage' => $failed ? $failure_message : '',
+        'receipt' => (string) $order->get_meta('_mpesa_receipt_number'),
+    ];
+}
 
 /** Payment emails use WooCommerce's paid order lifecycle and mail transport. */
 add_filter('woocommerce_email_styles', static function ($css, $email) {
