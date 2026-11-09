@@ -114,7 +114,7 @@ function src_v3_meta_schema() {
             'folder_order' => ['Display order', 'number'], 'folder_cta_url' => ['Results / stories URL', 'url'],
         ],
         'src_publication' => [
-            'publication_year' => ['Year', 'number'], 'publication_pdf' => ['PDF URL', 'url'],
+            'publication_year' => ['Year', 'number'], 'publication_pdf' => ['Impact report PDF (upload or select)', 'pdf'],
             'publication_flipbook' => ['Flipbook URL', 'url'], 'publication_featured' => ['Featured publication', 'checkbox'],
         ],
         'src_partner_item' => [
@@ -184,6 +184,8 @@ function src_v3_render_meta_box($post) {
             echo '<select id="' . esc_attr($id) . '" name="' . esc_attr($key) . '"><option value="">— Select —</option>';
             foreach ($definition[2] as $option => $option_label) echo '<option value="' . esc_attr($option) . '" ' . selected((string) $value, (string) $option, false) . '>' . esc_html($option_label) . '</option>';
             echo '</select>';
+        } elseif ($kind === 'pdf') {
+            echo '<div class="src-v3-pdf-control"><input id="' . esc_attr($id) . '" name="' . esc_attr($key) . '" type="url" value="' . esc_attr(is_scalar($value) ? (string) $value : '') . '" class="large-text" placeholder="Select or upload a PDF"> <button type="button" class="button src-v3-select-pdf">Choose PDF</button><p class="description">Upload the impact report PDF to the Media Library, or choose one already uploaded.</p></div>';
         } else {
             $input_kind = $kind === 'url' ? 'url' : ($kind === 'date' ? 'date' : ($kind === 'number' ? 'number' : 'text'));
             $step = $kind === 'number' && str_ends_with($key, 'fee_amount') ? ' step="1" min="0"' : '';
@@ -193,6 +195,18 @@ function src_v3_render_meta_box($post) {
     }
     echo '</div>';
 }
+
+function src_v3_publication_pdf_media_picker($hook) {
+    if (!in_array($hook, ['post.php', 'post-new.php'], true)) return;
+    $screen = get_current_screen();
+    if (!$screen || $screen->post_type !== 'src_publication') return;
+    wp_enqueue_media();
+    $script = <<<'JS'
+jQuery(function($){$(document).on('click','.src-v3-select-pdf',function(e){e.preventDefault();var field=$(this).siblings('input[type=url]');var picker=wp.media({title:'Select an impact report PDF',button:{text:'Use this PDF'},library:{type:'application/pdf'},multiple:false});picker.on('select',function(){var file=picker.state().get('selection').first().toJSON();if(file.mime!=='application/pdf'){window.alert('Please choose a PDF file.');return;}field.val(file.url).trigger('change');});picker.open();});});
+JS;
+    wp_add_inline_script('jquery-core', $script);
+}
+add_action('admin_enqueue_scripts', 'src_v3_publication_pdf_media_picker');
 
 function src_v3_save_meta($post_id) {
     if (!isset($_POST['src_v3_meta_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['src_v3_meta_nonce'])), 'src_v3_save_meta')) return;
