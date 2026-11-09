@@ -445,6 +445,26 @@ Text Domain: src
   .src-commerce-main .wc-block-components-checkout-step__title { font-size:20px; }
 }
 
+/* Programme checkout: keep the customer journey quiet and give the programme room. */
+.src-commerce-main:has(.wc-block-checkout) .src-checkout-intro { padding-bottom:0; border-bottom:0; }
+.src-commerce-main .wc-block-components-checkout-step { margin-bottom:38px; padding-bottom:0; border-bottom:0; }
+.src-commerce-main .wc-block-checkout__guest-checkout-notice,
+.src-commerce-main .wc-block-checkout__create-account,
+.src-commerce-main .wc-block-checkout__login-prompt { display:none !important; }
+.src-commerce-main .wc-block-checkout__sidebar .wc-block-components-order-summary { overflow:visible; border:0; background:transparent; }
+.src-commerce-main .wc-block-checkout__sidebar .wc-block-components-order-summary-item {
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:10px 16px;
+  margin:0; padding:20px 18px; border:0; background:#f7f4ef;
+}
+.src-commerce-main .wc-block-components-order-summary-item__image { display:none; }
+.src-commerce-main .wc-block-components-order-summary-item__description { min-width:0; width:auto; }
+.src-commerce-main .wc-block-components-order-summary-item__description .wc-block-components-product-name { color:#342a29; font-size:14px; font-weight:700; line-height:1.45; }
+.src-commerce-main .wc-block-components-order-summary-item__description .wc-block-components-product-metadata,
+.src-commerce-main .wc-block-components-order-summary-item__description .wc-block-components-order-summary-item__individual-prices { display:none !important; }
+.src-commerce-main .wc-block-components-order-summary-item__total-price { grid-column:2; grid-row:1; white-space:nowrap; color:#342a29; font-size:14px; font-weight:700; }
+.src-commerce-main .wc-block-components-totals-wrapper { border:0 !important; }
+.src-commerce-main .wc-block-components-order-summary .wc-block-components-order-summary-item + .wc-block-components-order-summary-item { margin-top:8px; }
+
 :root {
   --red: #b3262c;
   --color-accent: var(--red);

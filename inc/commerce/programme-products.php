@@ -173,6 +173,49 @@ add_action('woocommerce_store_api_checkout_update_order_from_request', static fu
     $order->save();
 }, 20, 2);
 
+/** Create or link a silent WooCommerce customer record for programme registrations. */
+function src_v3_attach_programme_customer($order) {
+    if (is_numeric($order)) $order = wc_get_order(absint($order));
+    if (!$order instanceof WC_Order || !src_v3_order_programme_id($order)) return;
+    $email = sanitize_email($order->get_billing_email());
+    if (!is_email($email)) return;
+
+    $user = get_user_by('email', $email);
+    if ($user) {
+        $customer_id = (int) $user->ID;
+    } else {
+        $first_name = $order->get_billing_first_name();
+        $last_name = $order->get_billing_last_name();
+        $username = wc_create_new_customer_username($email, ['first_name' => $first_name, 'last_name' => $last_name]);
+        $customer_id = wp_insert_user([
+            'user_login' => $username,
+            'user_pass' => wp_generate_password(40, true, true),
+            'user_email' => $email,
+            'role' => 'customer',
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'display_name' => trim($first_name . ' ' . $last_name) ?: $email,
+        ]);
+        if (is_wp_error($customer_id)) {
+            wc_get_logger()->error('Could not create programme customer record.', ['source' => 'src-programme-registration']);
+            return;
+        }
+    }
+
+    if ($order->get_customer_id() !== $customer_id) {
+        $order->set_customer_id($customer_id);
+        $order->save();
+    }
+    $customer = new WC_Customer($customer_id);
+    $customer->set_billing_email($email);
+    $customer->set_billing_first_name($order->get_billing_first_name());
+    $customer->set_billing_last_name($order->get_billing_last_name());
+    $customer->set_billing_phone($order->get_billing_phone());
+    $customer->save();
+}
+add_action('woocommerce_store_api_checkout_order_processed', 'src_v3_attach_programme_customer', 30, 1);
+add_action('woocommerce_checkout_order_processed', 'src_v3_attach_programme_customer', 30, 3);
+
 /** The order key is required before exposing a registration result to the browser. */
 function src_v3_order_programme_id($order) {
     if (!$order instanceof WC_Order) return 0;
