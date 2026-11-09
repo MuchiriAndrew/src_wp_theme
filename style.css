@@ -4473,7 +4473,7 @@ a.site-footer-social:focus-visible { border-color: #b3262c; background: #b3262c;
 .home-programme-card { height: 566px; display: flex; flex-direction: column; border-radius: 24px; }
 .home-programme-photo { flex: 0 0 208px; }
 .home-programme-card-body { display: flex; min-height: 0; flex: 1; flex-direction: column; line-height: 24px; }
-.home-programme-status { display: inline; line-height: 13.5px; }
+.home-programme-status { display: inline-flex; width: fit-content; max-width: 100%; align-self: flex-start; line-height: 13.5px; }
 .home-programme-card h3 { margin: 20px 0 0; font-size: 24px; line-height: 32px; }
 .home-programme-card-body > p { margin: 8px 0 0; color: rgba(43,43,43,.55); font-size: 12px; line-height: 19.5px; }
 .home-programme-facts { gap: 12px; line-height: 15px; }
