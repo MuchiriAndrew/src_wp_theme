@@ -11,5 +11,5 @@ echo '<tr><td style="padding:15px 0;border-top:1px solid #ded7ce;font-weight:700
 echo '<p style="margin:24px 0 0;color:#555;font-size:13px">' . esc_html__('Registration email', 'src') . ': <strong>' . esc_html($order->get_billing_email()) . '</strong>';
 if ($order->get_billing_phone()) echo '<br>' . esc_html__('M-PESA phone', 'src') . ': <strong>' . esc_html($order->get_billing_phone()) . '</strong>';
 echo '</p>';
-if (!empty($additional_content)) echo wp_kses_post(wpautop(wptexturize($additional_content)));
+echo '<p style="margin:22px 0 0;color:#555;font-size:13px">' . esc_html__('Questions about your registration? Email', 'src') . ' <a href="mailto:info@srctech.co.ke" style="color:#78191e">info@srctech.co.ke</a>.</p>';
 do_action('woocommerce_email_footer', $email);
