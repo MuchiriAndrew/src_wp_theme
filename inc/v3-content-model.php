@@ -24,7 +24,6 @@ function src_v3_register_content_model() {
             ],
             'public' => $is_news,
             'publicly_queryable' => $is_news,
-            'publicly_queryable' => false,
             'show_ui' => true,
             'show_in_rest' => true,
             'menu_icon' => $icon,

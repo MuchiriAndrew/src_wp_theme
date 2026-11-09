@@ -37,11 +37,11 @@ $footer_columns = [
     [
         'location' => 'footer_legal',
         'title' => 'Legal',
-        'links' => [
-            ['Privacy Policy', src_page_url('contact')],
-            ['Terms of Use', src_page_url('contact')],
-            ['Cookie Policy', src_page_url('contact')],
-        ],
+        'links' => array_values(array_filter([
+            ($page = get_page_by_path('privacy-policy', OBJECT, 'page')) && $page->post_status === 'publish' ? ['Privacy Policy', get_permalink($page)] : null,
+            ($page = get_page_by_path('terms-of-use', OBJECT, 'page')) && $page->post_status === 'publish' ? ['Terms of Use', get_permalink($page)] : null,
+            ($page = get_page_by_path('cookie-policy', OBJECT, 'page')) && $page->post_status === 'publish' ? ['Cookie Policy', get_permalink($page)] : null,
+        ], static function ($link) { return $link !== null; })),
     ],
 ];
 
@@ -90,6 +90,7 @@ $footer_socials = [
   <img class="site-footer-watermark" src="<?php echo esc_url(get_template_directory_uri() . '/assets/src-logo-footer.png'); ?>" alt="" aria-hidden="true">
   <div class="site-footer-grid cx">
     <?php foreach ($footer_columns as $column) : ?>
+      <?php if (empty($column['links']) && !has_nav_menu($column['location'])) continue; ?>
       <nav class="site-footer-column" aria-label="<?php echo esc_attr($column['title']); ?>">
         <h2 class="site-footer-heading"><?php echo esc_html($column['title']); ?></h2>
         <?php if (has_nav_menu($column['location'])) : ?>

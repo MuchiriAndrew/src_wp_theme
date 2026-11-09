@@ -1470,7 +1470,7 @@ body.nav-locked { overflow: hidden; overscroll-behavior: none; }
 .v3-home-hero::after { display: none; }
 .v3-home-hero .v3-hero-poster { z-index: 0; opacity: 1; filter: none; }
 .v3-home-hero .v3-hero-video { z-index: 0; opacity: 1; filter: none; }
-.v3-home-hero .hero-content { z-index: 3; display: flex; flex: 1 1 auto; flex-direction: column; align-items: flex-start; box-sizing: border-box; width: min(1200px,100%); margin-inline: auto; padding: 112px 40px 0; }
+.v3-home-hero .hero-content { z-index: 3; display: flex; flex: 1 1 auto; flex-direction: column; align-items: flex-start; box-sizing: border-box; width: min(1200px,100%); margin-inline: auto; padding: 136px 40px 0; }
 .v3-home-hero .hero-content-inner { width: fit-content; max-width: min(900px,100%); }
 .v3-home-hero h1 { max-width: 900px; margin: 0; font-size: clamp(40px,5vw,76px); font-weight: 900; line-height: 1; letter-spacing: normal; }
 .v3-home-hero .hero-copy { max-width: 620px; margin: 16px 0; font-size: 17px; line-height: 1.45; }
@@ -1509,7 +1509,7 @@ body.nav-locked { overflow: hidden; overscroll-behavior: none; }
 .site-header:not(.is-scrolled) .header-inner { width: min(1400px,calc(100% - 48px)); min-height: 74px; margin: 16px auto 0; padding: 0 38px; border: 1px solid rgba(255,255,255,.2); border-radius: 24px; background: rgba(255,255,255,.12); box-shadow: 0 8px 30px rgba(0,0,0,.25); backdrop-filter: blur(18px) saturate(140%); }
 .site-header:not(.is-scrolled) .brand { transform: scale(.9); transform-origin: left center; }
 @media (max-width: 1050px) {
-  .v3-home-hero .hero-content { padding-top: 104px; }
+  .v3-home-hero .hero-content { padding-top: 120px; }
   .site-header:not(.is-scrolled) .header-inner { width: calc(100% - 32px); padding: 0 24px; }
 }
 @media (min-width: 641px) and (max-width: 1099px) {
@@ -1525,10 +1525,10 @@ body.nav-locked { overflow: hidden; overscroll-behavior: none; }
 }
 @media (max-width: 640px) {
   .v3-home-hero { height: 100vh; height: 100svh; min-height: 680px; }
-  .v3-home-hero .hero-content { width: 100%; padding: 106px 20px 0; }
+  .v3-home-hero .hero-content { width: 100%; padding: 126px 20px 0; }
   .v3-home-hero h1 { max-width: 100%; font-size: clamp(40px,12vw,54px); }
   .v3-home-hero .hero-meta { max-width: none; line-height: 16px; }
-  .v3-home-hero .hero-copy { display: -webkit-box; overflow: hidden; font-size: 14px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .v3-home-hero .hero-copy { font-size: 14px; }
   .v3-home-hero .hero-actions .button { min-height: 44px; padding-inline: 18px; font-size: 12px; }
   .v3-home-hero .watch-story { min-height: 44px; padding-inline: 18px; font-size: 12px; }
   .v3-hero-enrolments { width: 100%; padding: 0 20px 20px; }
@@ -2653,7 +2653,11 @@ body.src-footprint-open .site-header { z-index:120; }
   .footprint-programmes { grid-template-columns:minmax(0,1fr); }
 }
 
-/* Match the published site's slim scrollbar gutter and thumb. */
+/* Keep the page scrollbar from reserving a visible strip beside the content. */
+html { scrollbar-width: none; scrollbar-color: transparent transparent; -ms-overflow-style: none; }
+html::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+
+/* Keep internal scroll areas usable while the track stays visually clear. */
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:rgba(193,39,45,.4); border-radius:2px; }

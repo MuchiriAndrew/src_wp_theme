@@ -134,13 +134,37 @@ add_action('wp_ajax_nopriv_src_v3_prepare_programme_checkout', 'src_v3_prepare_p
 function src_v3_redirect_cart_page() {
     $cart_page_id = function_exists('wc_get_page_id') ? absint(wc_get_page_id('cart')) : 0;
     $is_cart_page = (function_exists('is_cart') && is_cart()) || is_page('cart') || ($cart_page_id && is_page($cart_page_id));
-    if (!$is_cart_page) return;
     $programmes_url = get_post_type_archive_link('programme');
     if (!$programmes_url) $programmes_url = home_url('/programmes/');
-    wp_safe_redirect($programmes_url, 302);
-    exit;
+
+    if ($is_cart_page) {
+        wp_safe_redirect($programmes_url, 302);
+        exit;
+    }
+
+    // A direct checkout URL without a selected programme has no valid order context.
+    // Keep payment retry and order-received endpoints available for existing orders.
+    $is_empty_checkout = function_exists('is_checkout') && is_checkout()
+        && !is_wc_endpoint_url('order-pay')
+        && !is_wc_endpoint_url('order-received')
+        && function_exists('WC') && WC()->cart && WC()->cart->is_empty();
+    if ($is_empty_checkout) {
+        wp_safe_redirect($programmes_url, 302);
+        exit;
+    }
 }
 add_action('template_redirect', 'src_v3_redirect_cart_page', 1);
+
+/** Customers do not need an account page to enrol or pay for a programme. */
+function src_v3_redirect_account_page() {
+    $account_page_id = function_exists('wc_get_page_id') ? absint(wc_get_page_id('myaccount')) : 0;
+    $is_account_page = (function_exists('is_account_page') && is_account_page()) || is_page('my-account') || ($account_page_id && is_page($account_page_id));
+    if (!$is_account_page) return;
+
+    wp_safe_redirect(get_post_type_archive_link('programme') ?: home_url('/programmes/'), 302);
+    exit;
+}
+add_action('template_redirect', 'src_v3_redirect_account_page', 1);
 
 /** Show the M-PESA number in Checkout Blocks, prefilled from the registration wizard. */
 add_action('woocommerce_init', static function () {
