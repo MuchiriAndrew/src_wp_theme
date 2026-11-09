@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.184');
+define('SRC_VERSION', '3.5.185');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
