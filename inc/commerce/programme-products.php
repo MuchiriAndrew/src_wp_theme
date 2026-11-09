@@ -59,17 +59,11 @@ function src_v3_programme_product_purchasable($purchasable, $product) {
 }
 add_filter('woocommerce_is_purchasable', 'src_v3_programme_product_purchasable', 20, 2);
 
-/** A registration cart can contain one programme only. */
+/** A programme enrolment always starts a fresh secure checkout. */
 function src_v3_validate_programme_cart_item($passed, $product_id, $quantity, $variation_id = 0) {
     if (!$passed || !function_exists('WC') || !WC()->cart) return $passed;
     $new_programme = absint(get_post_meta($product_id, '_src_programme_id', true));
-    foreach (WC()->cart->get_cart() as $item) {
-        $existing_programme = absint(get_post_meta($item['product_id'], '_src_programme_id', true));
-        if (!$new_programme || $existing_programme !== $new_programme) {
-            wc_add_notice(__('Please complete one programme registration per order.', 'src'), 'error');
-            return false;
-        }
-    }
+    if ($new_programme && !WC()->cart->is_empty()) WC()->cart->empty_cart();
     return $passed;
 }
 add_filter('woocommerce_add_to_cart_validation', 'src_v3_validate_programme_cart_item', 20, 4);
@@ -118,18 +112,12 @@ function src_v3_prepare_programme_checkout() {
         wp_send_json_error(['message' => __('Secure checkout is temporarily unavailable. Please try again shortly.', 'src')], 503);
     }
 
-    foreach (WC()->cart->get_cart() as $item) {
-        $existing_programme_id = absint(get_post_meta($item['product_id'], '_src_programme_id', true));
-        if ($existing_programme_id !== $programme_id) {
-            wp_send_json_error(['message' => __('Your cart already contains another item. Complete or clear it before starting this programme registration.', 'src')], 409);
-        }
-    }
-
-    if (!WC()->cart->find_product_in_cart(WC()->cart->generate_cart_id($purchase['product_id']))) {
-        $added = WC()->cart->add_to_cart($purchase['product_id'], 1);
-        if (!$added) {
-            wp_send_json_error(['message' => __('We could not add this programme to your cart. Please try again.', 'src')], 500);
-        }
+    // A programme checkout is a single-purpose flow. Remove stale products or
+    // an earlier programme before setting up this registration.
+    if (!WC()->cart->is_empty()) WC()->cart->empty_cart();
+    $added = WC()->cart->add_to_cart($purchase['product_id'], 1);
+    if (!$added) {
+        wp_send_json_error(['message' => __('We could not prepare secure checkout. Please try again.', 'src')], 500);
     }
 
     WC()->customer->set_billing_phone('+254' . $phone);
@@ -141,6 +129,18 @@ function src_v3_prepare_programme_checkout() {
 }
 add_action('wp_ajax_src_v3_prepare_programme_checkout', 'src_v3_prepare_programme_checkout');
 add_action('wp_ajax_nopriv_src_v3_prepare_programme_checkout', 'src_v3_prepare_programme_checkout');
+
+/** Keep the WooCommerce cart page out of the public registration journey. */
+function src_v3_redirect_cart_page() {
+    $cart_page_id = function_exists('wc_get_page_id') ? absint(wc_get_page_id('cart')) : 0;
+    $is_cart_page = (function_exists('is_cart') && is_cart()) || is_page('cart') || ($cart_page_id && is_page($cart_page_id));
+    if (!$is_cart_page) return;
+    $programmes_url = get_post_type_archive_link('programme');
+    if (!$programmes_url) $programmes_url = home_url('/programmes/');
+    wp_safe_redirect($programmes_url, 302);
+    exit;
+}
+add_action('template_redirect', 'src_v3_redirect_cart_page', 1);
 
 /** Show the M-PESA number in Checkout Blocks, prefilled from the registration wizard. */
 add_action('woocommerce_init', static function () {
