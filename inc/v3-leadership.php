@@ -27,10 +27,15 @@ function src_leadership_settings_schema() {
         'leadership_board_formal' => ['Board section formal heading', 'text'],
         'leadership_board_nickname' => ['Board section nickname', 'text'],
         'leadership_board_tagline' => ['Board section tagline', 'text'],
+        'leadership_board_placeholder_copy' => ['Board profile placeholder copy', 'text'],
         'leadership_programmes_filter_heading' => ['County team filter heading', 'text'],
         'leadership_programmes_scroll_hint' => ['County filter scroll hint', 'text'],
+        'leadership_county_filter_aria' => ['County filter accessible label', 'text'],
+        'leadership_county_all_label' => ['All counties filter label', 'text'],
         'leadership_cta_heading' => ['Leadership closing heading', 'text'],
         'leadership_cta_button' => ['Leadership closing button', 'text'],
+        'leadership_profile_eyebrow' => ['Leadership profile eyebrow', 'text'],
+        'leadership_profile_back_label' => ['Leadership profile return link', 'text'],
     ];
 }
 
@@ -46,18 +51,24 @@ function src_leadership_settings_defaults() {
         'leadership_board_formal' => 'Board of Directors',
         'leadership_board_nickname' => 'The Compass',
         'leadership_board_tagline' => "Setting SRC's direction.",
+        'leadership_board_placeholder_copy' => 'Profile forthcoming',
         'leadership_programmes_filter_heading' => 'County Program Manager/Officer',
         'leadership_programmes_scroll_hint' => 'Swipe to see all counties →',
+        'leadership_county_filter_aria' => 'Filter by county',
+        'leadership_county_all_label' => 'All',
         'leadership_cta_heading' => 'Want to work with this team?',
         'leadership_cta_button' => 'See open positions',
+        'leadership_profile_eyebrow' => 'Leadership profile',
+        'leadership_profile_back_label' => 'Back to Leadership',
     ];
 }
 
 function src_leadership_settings_groups() {
     return [
         ['Leadership hero and actions', ['leadership_hero_eyebrow','leadership_hero_title_before','leadership_hero_emphasis','leadership_hero_image_url','leadership_meet_button','leadership_join_button']],
-        ['Leadership board and county filter', ['leadership_board_formal','leadership_board_nickname','leadership_board_tagline','leadership_board_placeholders','leadership_programmes_filter_heading','leadership_programmes_scroll_hint']],
+        ['Leadership board and county filter', ['leadership_board_formal','leadership_board_nickname','leadership_board_tagline','leadership_board_placeholders','leadership_board_placeholder_copy','leadership_programmes_filter_heading','leadership_programmes_scroll_hint','leadership_county_filter_aria','leadership_county_all_label']],
         ['Leadership closing call to action', ['leadership_cta_heading','leadership_cta_button']],
+        ['Leadership profile pages', ['leadership_profile_eyebrow','leadership_profile_back_label']],
     ];
 }
 

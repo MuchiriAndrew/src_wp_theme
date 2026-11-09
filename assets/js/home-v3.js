@@ -188,7 +188,8 @@
   if (!countdowns.length) return;
   const labels = ['Days', 'Hrs', 'Min', 'Sec'];
   const updateCountdowns = () => countdowns.forEach((countdown) => {
-    const deadline = countdown.dataset.deadline ? new Date(countdown.dataset.deadline).getTime() : 0;
+    const rawDeadline = countdown.dataset.deadline || '';
+    const deadline = rawDeadline ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(rawDeadline) ? `${rawDeadline}T00:00:00` : rawDeadline).getTime() : 0;
     const distance = deadline ? Math.max(0, deadline - Date.now()) : 0;
     const values = [
       Math.floor(distance / 86400000),
@@ -202,6 +203,8 @@
       if (number) number.textContent = String(values[index] ?? 0).padStart(2, '0');
       if (label) label.textContent = labels[index] ?? '';
     });
+    countdown.classList.toggle('is-expired', !!deadline && deadline <= Date.now());
+    countdown.setAttribute('aria-label', deadline && deadline <= Date.now() ? 'Cohort start date has arrived' : 'Cohort countdown');
   });
   updateCountdowns();
   window.setInterval(updateCountdowns, 1000);

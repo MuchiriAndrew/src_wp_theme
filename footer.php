@@ -3,44 +3,48 @@ if (!defined('ABSPATH')) exit;
 
 $programme_archive = get_post_type_archive_link('programme');
 if (!$programme_archive) $programme_archive = home_url('/programmes/');
+$footer_page_title = static function ($slug, $fallback) {
+    $page = get_page_by_path($slug);
+    return $page ? get_the_title($page) : $fallback;
+};
 
 $footer_columns = [
     [
         'location' => 'footer_our_story',
-        'title' => 'Our Story',
+        'title' => src_option('footer_story_title', 'Our Story'),
         'links' => [
-            ['About SRC', src_page_url('about')],
-            ['What We Do', src_page_url('what-we-do')],
-            ['Leadership', get_post_type_archive_link('team_member') ?: src_page_url('leadership')],
-            ['Pool of Experts', src_page_url('pool-of-experts')],
-            ['Careers', src_page_url('careers')],
+            [$footer_page_title('about', 'About SRC'), src_page_url('about')],
+            [$footer_page_title('what-we-do', 'What We Do'), src_page_url('what-we-do')],
+            [src_option('footer_leadership_label', 'Leadership'), get_post_type_archive_link('team_member') ?: src_page_url('leadership')],
+            [$footer_page_title('pool-of-experts', 'Pool of Experts'), src_page_url('pool-of-experts')],
+            [$footer_page_title('careers', 'Careers'), src_page_url('careers')],
         ],
     ],
     [
         'location' => 'footer_programmes',
-        'title' => 'Programmes',
+        'title' => src_option('footer_programmes_title', 'Programmes'),
         'links' => [
-            ['Current Programmes', add_query_arg('status', 'current', $programme_archive)],
-            ['Upcoming Programmes', add_query_arg('status', 'upcoming', $programme_archive)],
-            ['Past Programmes', add_query_arg('status', 'past', $programme_archive)],
+            [src_option('programmes_current_heading', 'Current Programmes'), add_query_arg('status', 'current', $programme_archive)],
+            [src_option('programmes_upcoming_heading', 'Upcoming'), add_query_arg('status', 'upcoming', $programme_archive)],
+            [src_option('programmes_past_heading', 'Past Programmes'), add_query_arg('status', 'past', $programme_archive)],
         ],
     ],
     [
         'location' => 'footer_more',
-        'title' => 'More',
+        'title' => src_option('footer_more_title', 'More'),
         'links' => [
-            ['Portfolio', home_url('/portfolio/')],
-            ['Partner With Us', src_page_url('get-involved')],
-            ['Contact', src_page_url('contact')],
+            [$footer_page_title('portfolio', 'Portfolio'), src_page_url('portfolio')],
+            [$footer_page_title('get-involved', 'Get Involved'), src_page_url('get-involved')],
+            [$footer_page_title('contact', 'Contact'), src_page_url('contact')],
         ],
     ],
     [
         'location' => 'footer_legal',
-        'title' => 'Legal',
+        'title' => src_option('footer_legal_title', 'Legal'),
         'links' => array_values(array_filter([
-            ($page = get_page_by_path('privacy-policy', OBJECT, 'page')) && $page->post_status === 'publish' ? ['Privacy Policy', get_permalink($page)] : null,
-            ($page = get_page_by_path('terms-of-use', OBJECT, 'page')) && $page->post_status === 'publish' ? ['Terms of Use', get_permalink($page)] : null,
-            ($page = get_page_by_path('cookie-policy', OBJECT, 'page')) && $page->post_status === 'publish' ? ['Cookie Policy', get_permalink($page)] : null,
+            ($page = get_page_by_path('privacy-policy', OBJECT, 'page')) && $page->post_status === 'publish' ? [get_the_title($page), get_permalink($page)] : null,
+            ($page = get_page_by_path('terms-of-use', OBJECT, 'page')) && $page->post_status === 'publish' ? [get_the_title($page), get_permalink($page)] : null,
+            ($page = get_page_by_path('cookie-policy', OBJECT, 'page')) && $page->post_status === 'publish' ? [get_the_title($page), get_permalink($page)] : null,
         ], static function ($link) { return $link !== null; })),
     ],
 ];
@@ -70,19 +74,13 @@ $footer_socials = [
     <svg class="stay-connected-ring" viewBox="0 0 520 520" aria-hidden="true" focusable="false"><circle cx="260" cy="260" r="228" fill="none" stroke="currentColor" stroke-width="64" pathLength="100" stroke-dasharray="70 30" stroke-linecap="round"></circle></svg>
     <div class="stay-connected-grain" aria-hidden="true"></div>
     <div class="stay-connected-topography" aria-hidden="true"></div>
-    <form class="stay-connected-grid cx" action="#" method="post" onsubmit="return false;">
+    <div class="stay-connected-grid cx">
       <div class="stay-connected-column">
         <p class="stay-connected-kicker"><?php echo esc_html(src_option('newsletter_eyebrow', 'Stay connected')); ?></p>
         <h2 id="stay-connected-heading" class="stay-connected-headline"><?php echo esc_html(src_option('newsletter_heading', 'News worth opening.')); ?></h2>
       </div>
-      <label class="stay-connected-column">
-        <span class="stay-connected-kicker"><?php echo esc_html(src_option('newsletter_email_label', 'Email address')); ?></span>
-        <span class="stay-connected-pill">
-          <input id="newsletter-email" name="email" type="email" required autocomplete="email" placeholder="<?php echo esc_attr(src_option('newsletter_placeholder', 'you@example.com')); ?>">
-          <button type="submit"><?php echo esc_html(src_option('newsletter_button_label', 'Subscribe')); ?></button>
-        </span>
-      </label>
-    </form>
+      <div class="stay-connected-column stay-connected-action"><p><?php echo esc_html(src_option('newsletter_intro', 'Stories, updates and practical insights from our work with enterprises across the region.')); ?></p><a class="stay-connected-pill" href="<?php echo esc_url(home_url('/news/')); ?>"<?php echo esc_html(src_option('newsletter_link_label', 'Explore latest news')); ?> <span aria-hidden="true">→</span></a></div>
+    </div>
   </section>
 <?php endif; ?>
 
@@ -106,27 +104,23 @@ $footer_socials = [
     <?php endforeach; ?>
 
     <div class="site-footer-column site-footer-contact">
-      <h2 class="site-footer-heading">Contact</h2>
+      <h2 class="site-footer-heading"><?php echo esc_html(src_option('footer_contact_title', 'Contact')); ?></h2>
       <div class="site-footer-contact-details">
         <a href="mailto:<?php echo esc_attr(src_option('contact_email', 'info@srctech.co.ke')); ?>"><?php echo esc_html(src_option('contact_email', 'info@srctech.co.ke')); ?></a>
-        <p>Smart Regional Consultants Ltd.<br><?php echo esc_html(src_option('contact_city', 'Nairobi, Kenya')); ?></p>
+        <p><?php echo esc_html(src_option('footer_company_name', 'Smart Regional Consultants Ltd.')); ?><br><?php echo esc_html(src_option('contact_city', 'Nairobi, Kenya')); ?></p>
       </div>
     </div>
   </div>
 
   <div class="site-footer-copyright">
     <div class="site-footer-copyright-inner cx">
-      <p>&copy; <?php echo esc_html(wp_date('Y')); ?> Smart Regional Consultants Ltd.</p>
+      <p>&copy; <?php echo esc_html(wp_date('Y')); ?> <?php echo esc_html(src_option('footer_company_name', 'Smart Regional Consultants Ltd.')); ?></p>
       <div class="site-footer-socials">
         <?php foreach ($footer_socials as $option => $social) : $url = src_option($option, ''); ?>
           <?php if ($url) : ?>
             <a class="site-footer-social" href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr($social['label']); ?>">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="<?php echo esc_attr($social['path']); ?>"></path></svg>
             </a>
-          <?php else : ?>
-            <span class="site-footer-social" role="img" aria-label="<?php echo esc_attr($social['label']); ?>">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="<?php echo esc_attr($social['path']); ?>"></path></svg>
-            </span>
           <?php endif; ?>
         <?php endforeach; ?>
       </div>

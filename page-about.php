@@ -46,7 +46,7 @@ $hero_title_parts = $hero_emphasis !== '' ? explode($hero_emphasis, $hero_title,
         </div>
       </div>
       <div class="about-v3-story-media">
-        <img src="<?php echo esc_url(src_page_field('page_story_image_url', null, 'https://images.unsplash.com/photo-1776039213401-f95bfd9c516a?w=800&h=1000&fit=crop&auto=format')); ?>" alt="SRC team training session" loading="lazy">
+        <img src="<?php echo esc_url(src_page_field('page_story_image_url', null, 'https://images.unsplash.com/photo-1776039213401-f95bfd9c516a?w=800&h=1000&fit=crop&auto=format')); ?>" alt="<?php echo esc_attr(src_page_field('page_story_image_alt', null, 'SRC team training session')); ?>" loading="lazy">
         <div class="about-v3-story-tint" aria-hidden="true"></div>
         <div class="about-v3-founded">
           <strong><?php echo esc_html(src_page_field('page_story_stat', null, '2012')); ?></strong>
@@ -116,7 +116,7 @@ $hero_title_parts = $hero_emphasis !== '' ? explode($hero_emphasis, $hero_title,
   <section class="about-v3-cta">
     <p class="about-v3-section-eyebrow"><?php echo esc_html(src_page_field('page_about_cta_eyebrow', null, 'Meet the team')); ?></p>
     <h2><?php echo esc_html(src_page_field('page_about_cta_heading', null, 'The people behind SRC')); ?></h2>
-    <a href="<?php echo esc_url(src_page_url('leadership')); ?>"><?php echo esc_html(src_page_field('page_about_cta_button', null, 'Meet Our Leadership')); ?></a>
+    <a href="<?php echo esc_url(src_page_field('page_about_cta_url', null, src_page_url('leadership'))); ?>"><?php echo esc_html(src_page_field('page_about_cta_button', null, 'Meet Our Leadership')); ?></a>
   </section>
 </main>
 

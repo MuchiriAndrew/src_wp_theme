@@ -53,7 +53,7 @@ foreach ($pillars as $pillar) {
 }
 
 $programme_archive = get_post_type_archive_link('programme') ?: home_url('/programmes/');
-$get_involved_url = src_page_url('get-involved');
+$get_involved_url = (string) src_page_field('page_service_cta_url', $page_id, src_page_url('get-involved'));
 $logo_assets = [
     'src' => 'src-logo.png', 'herventure' => 'her-venture-transparent.svg',
     'boma-project' => 'partner-logos/boma-project.png', 'cherie-blair-foundation' => 'partner-logos/cherie-blair-foundation.png',
@@ -62,13 +62,13 @@ $logo_assets = [
     'world-bank' => 'partner-logos/world-bank.png', 'wwf' => 'partner-logos/wwf.png', 'kcdf' => 'partner-logos/kcdf.png',
 ];
 $logo_labels = ['ande' => 'ANDE', 'boma-project' => 'BOMA Project', 'afrishela' => 'Afrishela', 'graca-machel-trust' => 'Graça Machel Trust', 'sheconnects' => 'SheConnects', 'care' => 'CARE', 'mastercard-foundation' => 'Mastercard Foundation', 'herventure' => 'HerVenture', 'cherie-blair-foundation' => 'Cherie Blair Foundation', 'dhl' => 'DHL', 'src' => 'SRC', 'kcb-foundation' => 'KCB Foundation', 'usaid' => 'USAID', 'village-capital' => 'Village Capital', 'giz' => 'GIZ', 'goal' => 'GOAL', 'united-nations' => 'United Nations', 'world-bank' => 'World Bank', 'wwf' => 'WWF', 'kcdf' => 'KCDF'];
-$status_label = static function ($programme) {
+$status_label = static function ($programme) use ($page_id) {
     $enrolment = (string) get_post_meta($programme->ID, '_programme_enrolment', true);
     $status = (string) get_post_meta($programme->ID, '_programme_status', true);
-    if ($enrolment === 'open') return 'Enrolling now';
-    if ($status === 'upcoming') return 'Upcoming';
-    if ($status === 'current') return 'In delivery';
-    return 'Completed';
+    if ($enrolment === 'open') return src_page_field('page_service_status_enrolling', $page_id, 'Enrolling now');
+    if ($status === 'upcoming') return src_page_field('page_service_status_upcoming', $page_id, 'Upcoming');
+    if ($status === 'current') return src_page_field('page_service_status_delivery', $page_id, 'In delivery');
+    return src_page_field('page_service_status_completed', $page_id, 'Completed');
 };
 $programme_title = static function ($programme) {
     return (string) (get_post_meta($programme->ID, '_programme_hero_title', true) ?: get_post_meta($programme->ID, '_programme_short_name', true) ?: get_the_title($programme));
@@ -100,15 +100,15 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
     </div>
   </section>
 
-  <section class="pillar-section pillar-section--page what-we-do-v3-pillars" aria-label="Three pillars of enterprise growth" data-pillar-section>
+  <section class="pillar-section pillar-section--page what-we-do-v3-pillars" aria-label="<?php echo esc_attr(src_page_field('page_service_pillar_aria_label', $page_id, 'Three pillars of enterprise growth')); ?>" data-pillar-section>
     <div class="pillar-stage" data-pillar-stage>
       <div class="pillar-accordion-desktop">
         <?php foreach ($pillars as $index => $pillar) : $active = $index === 0; ?>
           <div class="pillar-panel pillar-panel--<?php echo esc_attr($pillar['key']); ?><?php echo $active ? ' is-active' : ''; ?>" style="--pillar-gradient:<?php echo esc_attr($pillar['gradient']); ?>;--pillar-color:<?php echo esc_attr($pillar['color']); ?>" data-pillar-panel="<?php echo esc_attr($pillar['key']); ?>" role="button" tabindex="0" aria-expanded="<?php echo $active ? 'true' : 'false'; ?>">
             <div class="pillar-panel-collapsed"><span><?php echo esc_html((string) ((int) $pillar['number'])); ?></span><strong><?php echo esc_html($pillar['title']); ?></strong></div>
             <div class="pillar-panel-expanded">
-              <div><span class="pillar-number"><?php echo esc_html((string) ((int) $pillar['number'])); ?></span><h3><?php echo esc_html($pillar['title']); ?></h3><em>“<?php echo esc_html($pillar['tagline']); ?>”</em><p><?php echo esc_html($pillar['description']); ?></p><div class="pillar-audience"><span>Who it's for</span><strong><?php echo esc_html($pillar['audience']); ?></strong></div></div>
-              <button type="button" class="pillar-learn" data-pillar-open="<?php echo esc_attr($pillar['key']); ?>">Explore programmes <span aria-hidden="true">→</span></button>
+              <div><span class="pillar-number"><?php echo esc_html((string) ((int) $pillar['number'])); ?></span><h3><?php echo esc_html($pillar['title']); ?></h3><em>“<?php echo esc_html($pillar['tagline']); ?>”</em><p><?php echo esc_html($pillar['description']); ?></p><div class="pillar-audience"><span><?php echo esc_html(src_page_field('page_service_who_label', $page_id, "Who it's for")); ?></span><strong><?php echo esc_html($pillar['audience']); ?></strong></div></div>
+              <button type="button" class="pillar-learn" data-pillar-open="<?php echo esc_attr($pillar['key']); ?>"><?php echo esc_html(src_page_field('page_service_explore_label', $page_id, 'Explore programmes')); ?> <span aria-hidden="true">→</span></button>
             </div>
           </div>
         <?php endforeach; ?>
@@ -118,16 +118,16 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
         <?php foreach ($pillars as $index => $pillar) : $active = $index === 0; ?>
           <article class="pillar-mobile-card<?php echo $active ? ' is-active' : ''; ?>" style="--pillar-gradient:<?php echo esc_attr($pillar['gradient']); ?>;--pillar-color:<?php echo esc_attr($pillar['color']); ?>" data-pillar-mobile-card="<?php echo esc_attr($pillar['key']); ?>" data-tagline="<?php echo esc_attr($pillar['tagline']); ?>" data-description="<?php echo esc_attr($pillar['description']); ?>" data-audience="<?php echo esc_attr($pillar['audience']); ?>">
             <button type="button" data-pillar-mobile-trigger="<?php echo esc_attr($pillar['key']); ?>" aria-expanded="<?php echo $active ? 'true' : 'false'; ?>"><span><?php echo esc_html((string) ((int) $pillar['number'])); ?></span><strong><?php echo esc_html($pillar['title']); ?></strong><i aria-hidden="true">+</i></button>
-            <?php if ($active) : ?><div><em>“<?php echo esc_html($pillar['tagline']); ?>”</em><p><?php echo esc_html($pillar['description']); ?></p><div class="pillar-audience"><span>Who it's for</span><strong><?php echo esc_html($pillar['audience']); ?></strong></div><button type="button" class="pillar-learn" data-pillar-open="<?php echo esc_attr($pillar['key']); ?>">Explore programmes <span aria-hidden="true">→</span></button></div><?php endif; ?>
+            <?php if ($active) : ?><div><em>“<?php echo esc_html($pillar['tagline']); ?>”</em><p><?php echo esc_html($pillar['description']); ?></p><div class="pillar-audience"><span><?php echo esc_html(src_page_field('page_service_who_label', $page_id, "Who it's for")); ?></span><strong><?php echo esc_html($pillar['audience']); ?></strong></div><button type="button" class="pillar-learn" data-pillar-open="<?php echo esc_attr($pillar['key']); ?>"><?php echo esc_html(src_page_field('page_service_explore_label', $page_id, 'Explore programmes')); ?> <span aria-hidden="true">→</span></button></div><?php endif; ?>
           </article>
         <?php endforeach; ?>
       </div>
 
       <?php foreach ($pillars as $pillar) : $programmes = $pillar_programmes[$pillar['key']] ?? []; ?>
-        <div class="pillar-cabinet" style="--pillar-color:<?php echo esc_attr($pillar['color']); ?>;--pillar-gradient:<?php echo esc_attr($pillar['gradient']); ?>" role="dialog" aria-modal="true" aria-label="<?php echo esc_attr($pillar['title'] . ' programme cabinet'); ?>" data-pillar-cabinet="<?php echo esc_attr($pillar['key']); ?>" hidden>
-          <div class="pillar-title-strip pillar-title-strip--<?php echo esc_attr($pillar['key']); ?>"><button type="button" aria-label="Close programme cabinet" data-pillar-close>×</button><span><?php echo esc_html((string) ((int) $pillar['number'])); ?></span><strong><?php echo esc_html($pillar['title']); ?></strong></div>
+        <div class="pillar-cabinet" style="--pillar-color:<?php echo esc_attr($pillar['color']); ?>;--pillar-gradient:<?php echo esc_attr($pillar['gradient']); ?>" role="dialog" aria-modal="true" aria-label="<?php echo esc_attr($pillar['title'] . ' ' . src_page_field('page_service_pillar_programmes_label', $page_id, 'programmes')); ?>" data-pillar-cabinet="<?php echo esc_attr($pillar['key']); ?>" hidden>
+          <div class="pillar-title-strip pillar-title-strip--<?php echo esc_attr($pillar['key']); ?>"><button type="button" aria-label="<?php echo esc_attr(src_page_field('page_service_close_label', $page_id, 'Close programme cabinet')); ?>" data-pillar-close>×</button><span><?php echo esc_html((string) ((int) $pillar['number'])); ?></span><strong><?php echo esc_html($pillar['title']); ?></strong></div>
           <div class="pillar-tab-strip" aria-label="<?php echo esc_attr($pillar['title'] . ' programmes'); ?>">
-            <button type="button" class="is-active" aria-pressed="true" data-pillar-tab="overview"><span class="pillar-tab-dot pillar-tab-dot--overview" aria-hidden="true"></span><strong>Overview</strong></button>
+            <button type="button" class="is-active" aria-pressed="true" data-pillar-tab="overview"><span class="pillar-tab-dot pillar-tab-dot--overview" aria-hidden="true"></span><strong><?php echo esc_html(src_page_field('page_service_overview_label', $page_id, 'Overview')); ?></strong></button>
             <?php foreach ($programmes as $programme) : ?><button type="button" aria-pressed="false" data-pillar-tab="<?php echo esc_attr($programme->post_name); ?>"><span class="pillar-tab-dot pillar-tab-dot--<?php echo esc_attr(get_post_meta($programme->ID, '_programme_status', true) ?: 'past'); ?>" aria-hidden="true"></span><strong><?php echo esc_html($programme_short($programme)); ?></strong></button><?php endforeach; ?>
           </div>
           <div class="pillar-folder-edges" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -135,8 +135,8 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
             <div class="pillar-sheet-content" data-pillar-content="overview">
               <div class="pillar-sheet-summary">
                 <div class="pillar-sheet-eyebrow"><?php echo esc_html((string) ((int) $pillar['number'])); ?></div><h3><?php echo esc_html($pillar['title']); ?></h3><p class="pillar-sheet-tagline">“<?php echo esc_html($pillar['tagline']); ?>”</p><p class="pillar-sheet-description"><?php echo esc_html($pillar['description']); ?></p>
-                <div class="pillar-sheet-audience"><span>Who it's for</span><strong><?php echo esc_html($pillar['audience']); ?></strong></div>
-                <div class="pillar-overview-programmes"><div class="pillar-sheet-eyebrow">Programmes in this pillar</div><div>
+                <div class="pillar-sheet-audience"><span><?php echo esc_html(src_page_field('page_service_who_label', $page_id, "Who it's for")); ?></span><strong><?php echo esc_html($pillar['audience']); ?></strong></div>
+                <div class="pillar-overview-programmes"><div class="pillar-sheet-eyebrow"><?php echo esc_html(src_page_field('page_service_pillar_programmes_label', $page_id, 'Programmes in this pillar')); ?></div><div>
                   <?php foreach ($programmes as $programme) : ?><button type="button" data-pillar-select-programme="<?php echo esc_attr($programme->post_name); ?>"><span><?php echo esc_html($status_label($programme)); ?></span><strong><?php echo esc_html($programme_short($programme)); ?></strong><i aria-hidden="true">→</i></button><?php endforeach; ?>
                 </div></div>
               </div>
@@ -168,19 +168,19 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
                   <div class="pillar-programme-topline"><div class="pillar-sheet-status"><?php echo esc_html($status_label($programme)); ?></div><div class="pillar-sheet-logos"><div>
                     <?php foreach ($logos as $logo) : $logo = (string) $logo; $logo_slug = sanitize_title($logo); $asset = $logo_assets[$logo_slug] ?? ''; $label = $logo_labels[$logo_slug] ?? $logo; ?><div><?php if ($asset) : ?><img src="<?php echo esc_url(get_template_directory_uri() . '/assets/' . $asset); ?>" alt="<?php echo esc_attr($label); ?>" loading="lazy"><?php else : ?><span><?php echo esc_html($label); ?></span><?php endif; ?></div><?php endforeach; ?>
                   </div></div></div>
-                  <div class="pillar-sheet-facts"><div><span>Audience</span><strong><?php echo esc_html($audience); ?></strong></div><div><span>Duration</span><strong><?php echo esc_html($duration); ?></strong></div><div><span>Delivery</span><strong><?php echo esc_html($delivery); ?></strong></div></div>
-                  <div class="pillar-sheet-journey"><div class="pillar-sheet-eyebrow">Learning journey</div><?php if ($journey) : ?><ol><?php foreach ($journey as $index => $step) : ?><li><span><?php echo esc_html(sprintf('%02d', $index + 1)); ?></span><strong><?php echo esc_html($step); ?></strong></li><?php endforeach; ?></ol><?php else : ?><p>Journey details coming soon.</p><?php endif; ?></div>
+                  <div class="pillar-sheet-facts"><div><span><?php echo esc_html(src_page_field('page_service_audience_label', $page_id, 'Audience')); ?></span><strong><?php echo esc_html($audience); ?></strong></div><div><span><?php echo esc_html(src_page_field('page_service_duration_label', $page_id, 'Duration')); ?></span><strong><?php echo esc_html($duration); ?></strong></div><div><span><?php echo esc_html(src_page_field('page_service_delivery_label', $page_id, 'Delivery')); ?></span><strong><?php echo esc_html($delivery); ?></strong></div></div>
+                  <div class="pillar-sheet-journey"><div class="pillar-sheet-eyebrow"><?php echo esc_html(src_page_field('page_service_journey_label', $page_id, 'Learning journey')); ?></div><?php if ($journey) : ?><ol><?php foreach ($journey as $index => $step) : ?><li><span><?php echo esc_html(sprintf('%02d', $index + 1)); ?></span><strong><?php echo esc_html($step); ?></strong></li><?php endforeach; ?></ol><?php else : ?><p><?php echo esc_html(src_page_field('page_service_journey_empty_label', $page_id, 'Journey details coming soon.')); ?></p><?php endif; ?></div>
                   <div class="pillar-sheet-actions">
-                    <?php if ($status === 'past') : ?><a href="<?php echo esc_url($programme_url); ?>">View programme</a><a href="<?php echo esc_url(add_query_arg('status', 'current', $programme_archive)); ?>">Explore current programmes</a>
-                    <?php elseif ($status === 'upcoming') : ?><a href="<?php echo esc_url(add_query_arg('status', 'upcoming', $programme_archive)); ?>">Get notified</a><a href="<?php echo esc_url($programme_url); ?>">View programme</a>
-                    <?php elseif ($enrolment === 'open') : ?><a href="<?php echo esc_url($programme_url); ?>">Register</a><a href="<?php echo esc_url($programme_url); ?>">View programme</a>
-                    <?php else : ?><a href="<?php echo esc_url($programme_url); ?>">View programme</a><a href="<?php echo esc_url($get_involved_url); ?>">Partner with us</a><?php endif; ?>
+                    <?php if ($status === 'past') : ?><a href="<?php echo esc_url($programme_url); ?>"><?php echo esc_html(src_page_field('page_service_view_programme_label', $page_id, 'View programme')); ?></a><a href="<?php echo esc_url(add_query_arg('status', 'current', $programme_archive)); ?>"><?php echo esc_html(src_page_field('page_service_current_programmes_label', $page_id, 'Explore current programmes')); ?></a>
+                    <?php elseif ($status === 'upcoming') : ?><a href="<?php echo esc_url(add_query_arg('status', 'upcoming', $programme_archive)); ?>"><?php echo esc_html(src_page_field('page_service_get_notified_label', $page_id, 'Get notified')); ?></a><a href="<?php echo esc_url($programme_url); ?>"><?php echo esc_html(src_page_field('page_service_view_programme_label', $page_id, 'View programme')); ?></a>
+                    <?php elseif ($enrolment === 'open') : ?><a href="<?php echo esc_url($programme_url); ?>"><?php echo esc_html(src_page_field('page_service_register_label', $page_id, 'Register')); ?></a><a href="<?php echo esc_url($programme_url); ?>"><?php echo esc_html(src_page_field('page_service_view_programme_label', $page_id, 'View programme')); ?></a>
+                    <?php else : ?><a href="<?php echo esc_url($programme_url); ?>"><?php echo esc_html(src_page_field('page_service_view_programme_label', $page_id, 'View programme')); ?></a><a href="<?php echo esc_url($get_involved_url); ?>"><?php echo esc_html(src_page_field('page_service_partner_label', $page_id, 'Partner with us')); ?></a><?php endif; ?>
                   </div>
                 </div>
               </div>
             <?php endforeach; ?>
 
-            <div class="pillar-sheet-footer"><a href="<?php echo esc_url($programme_archive); ?>">See all programmes</a><span aria-hidden="true">·</span><a href="<?php echo esc_url($get_involved_url); ?>">Partner with us</a><span aria-hidden="true">·</span><a href="<?php echo esc_url($get_involved_url); ?>">Get involved</a></div>
+            <div class="pillar-sheet-footer"><a href="<?php echo esc_url($programme_archive); ?>"><?php echo esc_html(src_page_field('page_service_all_programmes_label', $page_id, 'See all programmes')); ?></a><span aria-hidden="true">·</span><a href="<?php echo esc_url($get_involved_url); ?>"><?php echo esc_html(src_page_field('page_service_partner_label', $page_id, 'Partner with us')); ?></a><span aria-hidden="true">·</span><a href="<?php echo esc_url($get_involved_url); ?>"><?php echo esc_html(src_page_field('page_service_get_involved_label', $page_id, 'Get involved')); ?></a></div>
           </div>
         </div>
       <?php endforeach; ?>

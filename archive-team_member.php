@@ -63,7 +63,7 @@ $hero_ring_rotation = [0, 35, 70, 110, 150][$hero_ring_hash % 5];
         <?php foreach ($board_placeholders as $placeholder) : ?>
           <article class="leadership-board-card">
             <span><?php echo esc_html($board_section['formal']); ?></span>
-            <div><strong><?php echo esc_html(preg_match('/\d+$/', $placeholder, $match) ? $match[0] : $placeholder); ?></strong><p>Profile forthcoming</p></div>
+            <div><strong><?php echo esc_html(preg_match('/\d+$/', $placeholder, $match) ? $match[0] : $placeholder); ?></strong><p><?php echo esc_html($settings['leadership_board_placeholder_copy'] ?? 'Profile forthcoming'); ?></p></div>
           </article>
         <?php endforeach; ?>
       </div>
@@ -102,8 +102,8 @@ $hero_ring_rotation = [0, 35, 70, 110, 150][$hero_ring_hash % 5];
           <div class="leadership-programmes-toolbar">
             <h3><?php echo esc_html($settings['leadership_programmes_filter_heading'] ?? 'County Program Manager/Officer'); ?></h3>
             <div class="leadership-county-filter-shell">
-              <div class="leadership-county-filters hide-scrollbar" aria-label="Filter by county">
-                <button type="button" class="leadership-county-filter is-active" data-team-county-filter="All" aria-pressed="true">All</button>
+              <div class="leadership-county-filters hide-scrollbar" aria-label="<?php echo esc_attr($settings['leadership_county_filter_aria'] ?? 'Filter by county'); ?>">
+                <button type="button" class="leadership-county-filter is-active" data-team-county-filter="All" aria-pressed="true"><?php echo esc_html($settings['leadership_county_all_label'] ?? 'All'); ?></button>
                 <?php foreach ($counties as $county) : ?><button type="button" class="leadership-county-filter" data-team-county-filter="<?php echo esc_attr($county); ?>" aria-pressed="false"><?php echo esc_html($county); ?></button><?php endforeach; ?>
               </div>
               <div class="leadership-county-scroll-hint" aria-hidden="true"><?php echo esc_html($settings['leadership_programmes_scroll_hint'] ?? 'Swipe to see all counties →'); ?></div>

@@ -53,7 +53,11 @@ $logo_labels = [
     'goal' => 'GOAL', 'united-nations' => 'United Nations', 'world-bank' => 'World Bank',
     'wwf' => 'WWF', 'kcdf' => 'KCDF',
 ];
-$status_label = $status === 'past' ? 'Past' : ($status === 'upcoming' ? 'Upcoming' : ($enrolment === 'open' ? 'Enrolling now' : 'Running'));
+$status_label = (string) get_post_meta($id, '_programme_status_label', true);
+if ($status_label === '') $status_label = $status === 'past' ? 'Past' : ($status === 'upcoming' ? 'Upcoming' : ($enrolment === 'open' ? 'Enrolling now' : 'Running'));
+$view_label = (string) get_post_meta($id, '_programme_card_view_label', true) ?: 'View programme';
+$notify_label = (string) get_post_meta($id, '_programme_card_notify_label', true) ?: 'Get notified';
+$register_label = (string) get_post_meta($id, '_programme_card_register_label', true) ?: 'Register';
 $eyebrow = $status === 'past' ? ($funders[0] ?? $partners[0] ?? $theme) : $theme;
 $note = get_post_meta($id, '_programme_note', true);
 $dates = get_post_meta($id, '_programme_dates', true);
@@ -96,25 +100,25 @@ $span_class = $args['span_class'] ?? '';
             <?php if ($note) : ?><p class="src-v3-programme-note"><?php echo esc_html($note); ?></p><?php endif; ?>
         <?php else : ?>
             <dl class="src-v3-programme-facts">
-                <?php if ($reach) : ?><div><dt>Reach</dt><dd><span aria-hidden="true">●</span> <?php echo esc_html($reach); ?></dd></div><?php endif; ?>
-                <?php if ($duration) : ?><div><dt>Duration</dt><dd>Duration: <?php echo esc_html($duration); ?></dd></div><?php endif; ?>
-                <?php if ($status === 'upcoming') : ?><div><dt>Dates</dt><dd><?php echo esc_html($dates); ?></dd></div><?php endif; ?>
+                <?php if ($reach) : ?><div><dt><?php echo esc_html(get_post_meta($id, '_programme_fact_reach_label', true) ?: 'Reach'); ?></dt><dd><span aria-hidden="true">●</span> <?php echo esc_html($reach); ?></dd></div><?php endif; ?>
+                <?php if ($duration) : ?><div><dt><?php echo esc_html(get_post_meta($id, '_programme_fact_duration_label', true) ?: 'Duration'); ?></dt><dd><?php echo esc_html($duration); ?></dd></div><?php endif; ?>
+                <?php if ($status === 'upcoming') : ?><div><dt><?php echo esc_html(get_post_meta($id, '_programme_fact_dates_label', true) ?: 'Dates'); ?></dt><dd><?php echo esc_html($dates); ?></dd></div><?php endif; ?>
             </dl>
             <?php if ($tags) : ?><div class="src-v3-programme-tags"><?php foreach ($tags as $tag) : ?><span><?php echo esc_html($tag); ?></span><?php endforeach; ?></div><?php endif; ?>
         <?php endif; ?>
         <div class="src-v3-programme-actions">
             <?php if ($status === 'past') : ?>
-                <a class="src-v3-link" href="<?php the_permalink($id); ?>">View programme <span aria-hidden="true">→</span></a>
+                <a class="src-v3-link" href="<?php the_permalink($id); ?>"><?php echo esc_html($view_label); ?> <span aria-hidden="true">→</span></a>
             <?php else : ?>
                 <?php if ($status === 'upcoming' || get_post_meta($id, '_programme_detail_available', true) !== '0' && $enrolment !== 'partner') : ?>
-                    <a class="src-v3-button src-v3-button-outline" href="<?php the_permalink($id); ?>">View programme</a>
+                    <a class="src-v3-button src-v3-button-outline" href="<?php the_permalink($id); ?>"><?php echo esc_html($view_label); ?></a>
                 <?php endif; ?>
                 <?php if ($status === 'upcoming') : ?>
-                    <a class="src-v3-button" href="<?php echo esc_url($contact_url); ?>">Get notified</a>
+                    <a class="src-v3-button" href="<?php echo esc_url($contact_url); ?>"><?php echo esc_html($notify_label); ?></a>
                 <?php elseif ($enrolment === 'open') : ?>
-                    <button class="src-v3-button" type="button" data-src-open-registration="<?php echo esc_attr($programme->post_name); ?>" aria-controls="src-registration-dialog">Register</button>
+                    <button class="src-v3-button" type="button" data-src-open-registration="<?php echo esc_attr($programme->post_name); ?>" aria-controls="src-registration-dialog"><?php echo esc_html($register_label); ?></button>
                 <?php elseif ($enrolment === 'partner') : ?>
-                    <a class="src-v3-button" href="<?php the_permalink($id); ?>">View programme</a>
+                    <a class="src-v3-button" href="<?php the_permalink($id); ?>"><?php echo esc_html($view_label); ?></a>
                 <?php endif; ?>
             <?php endif; ?>
         </div>

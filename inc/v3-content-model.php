@@ -64,6 +64,30 @@ function src_v3_meta_schema() {
             'programme_short_name' => ['Short card name', 'text'],
             'programme_hero_title' => ['Hero title', 'text'],
             'programme_hero_subtitle' => ['Hero subtitle', 'text'],
+            'programme_status_label' => ['Status label override (optional)', 'text'],
+            'programme_cta_label' => ['Primary action label override (optional)', 'text'],
+            'programme_summary_heading' => ['Summary section heading', 'text'],
+            'programme_journey_heading' => ['Journey section heading', 'text'],
+            'programme_journey_eyebrow' => ['Journey section eyebrow', 'text'],
+            'programme_reach_label' => ['Geography section label', 'text'],
+            'programme_delivery_label' => ['Delivery section label', 'text'],
+            'programme_signature_label' => ['Signature programme label', 'text'],
+            'programme_partners_label' => ['Partners section label', 'text'],
+            'programme_next_step_heading' => ['Next step section heading', 'text'],
+            'programme_related_label' => ['Related programmes section eyebrow', 'text'],
+            'programme_related_prefix' => ['Related programmes heading prefix', 'text'],
+            'programme_card_view_label' => ['Programme card details link label', 'text'],
+            'programme_card_notify_label' => ['Programme card notification action label', 'text'],
+            'programme_card_register_label' => ['Programme card registration action label', 'text'],
+            'programme_fact_reach_label' => ['Programme reach fact label', 'text'],
+            'programme_fact_duration_label' => ['Programme duration fact label', 'text'],
+            'programme_fact_dates_label' => ['Programme dates fact label', 'text'],
+            'programme_summary_eyebrow' => ['Summary section eyebrow', 'text'],
+            'programme_summary_audience_label' => ['Audience summary label', 'text'],
+            'programme_summary_outcomes_label' => ['Outcomes summary label', 'text'],
+            'programme_summary_duration_label' => ['Duration summary label', 'text'],
+            'programme_summary_delivery_label' => ['Delivery summary label', 'text'],
+            'programme_map_summary' => ['Nationwide map caption', 'text'],
             'programme_status' => ['Status', 'select', ['current' => 'Current', 'upcoming' => 'Upcoming', 'past' => 'Past']],
             'programme_enrolment' => ['Enrolment', 'select', ['open' => 'Open', 'partner' => 'Partner managed', 'closed' => 'Closed']],
             'programme_type' => ['Programme type', 'select', ['signature' => 'SRC Signature', 'partner' => 'Partner programme']],
@@ -95,12 +119,12 @@ function src_v3_meta_schema() {
         'src_testimonial' => [
             'story_person' => ['Person name', 'text'], 'story_business' => ['Business and location', 'text'],
             'story_headline' => ['Story headline', 'text'], 'story_paragraphs' => ['Story paragraphs (one per line)', 'lines'],
-            'story_image_url' => ['Story image URL', 'url'], 'story_video_url' => ['Video URL', 'url'],
+            'story_image_url' => ['Story image', 'image'], 'story_video_url' => ['Video URL', 'url'],
             'story_order' => ['Display order', 'number'], 'story_featured' => ['Show on homepage', 'checkbox'],
         ],
         'src_news_item' => [
             'news_date_label' => ['Display date', 'text'], 'news_category' => ['News category', 'text'],
-            'news_image_url' => ['Card image URL', 'url'], 'news_order' => ['Display order', 'number'],
+            'news_image_url' => ['Card image', 'image'], 'news_order' => ['Display order', 'number'],
             'news_featured' => ['Show on homepage', 'checkbox'], 'news_programme_slug' => ['Related programme slug', 'text'],
             'news_url' => ['Article URL (leave blank for internal story)', 'url'],
         ],
@@ -118,7 +142,7 @@ function src_v3_meta_schema() {
             'publication_flipbook' => ['Flipbook URL', 'url'], 'publication_featured' => ['Featured publication', 'checkbox'],
         ],
         'src_partner_item' => [
-            'partner_name' => ['Partner display name', 'text'], 'partner_logo_url' => ['Logo image URL', 'url'],
+            'partner_name' => ['Partner display name', 'text'], 'partner_logo_url' => ['Partner logo', 'image'],
             'partner_link' => ['Partner website URL', 'url'], 'partner_order' => ['Marquee order', 'number'],
             'partner_marquee' => ['Show in homepage partner marquee', 'checkbox'],
         ],
@@ -184,6 +208,8 @@ function src_v3_render_meta_box($post) {
             echo '<select id="' . esc_attr($id) . '" name="' . esc_attr($key) . '"><option value="">— Select —</option>';
             foreach ($definition[2] as $option => $option_label) echo '<option value="' . esc_attr($option) . '" ' . selected((string) $value, (string) $option, false) . '>' . esc_html($option_label) . '</option>';
             echo '</select>';
+        } elseif ($kind === 'image') {
+            echo '<div class="src-v3-image-control"><input id="' . esc_attr($id) . '" name="' . esc_attr($key) . '" type="url" value="' . esc_attr(is_scalar($value) ? (string) $value : '') . '" class="large-text"> <button type="button" class="button src-select-image">Choose image</button><p class="description">Choose or upload an image from the Media Library.</p></div>';
         } elseif ($kind === 'pdf') {
             echo '<div class="src-v3-pdf-control"><input id="' . esc_attr($id) . '" name="' . esc_attr($key) . '" type="url" value="' . esc_attr(is_scalar($value) ? (string) $value : '') . '" class="large-text" placeholder="Select or upload a PDF"> <button type="button" class="button src-v3-select-pdf">Choose PDF</button><p class="description">Upload the impact report PDF to the Media Library, or choose one already uploaded.</p></div>';
         } else {
@@ -225,7 +251,7 @@ function src_v3_save_meta($post_id) {
             update_post_meta($post_id, '_' . $key, array_values(array_filter(array_map('trim', $rows), static fn($row) => $row !== '')));
         } elseif ($kind === 'textarea') {
             update_post_meta($post_id, '_' . $key, sanitize_textarea_field($raw));
-        } elseif ($kind === 'url') {
+        } elseif (in_array($kind, ['url', 'image'], true)) {
             update_post_meta($post_id, '_' . $key, esc_url_raw($raw));
         } elseif ($kind === 'number') {
             $number = trim((string) $raw);

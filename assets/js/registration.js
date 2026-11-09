@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const detailsForm = dialog.querySelector('[data-register-details]');
   const checkoutButton = dialog.querySelector('[data-register-checkout]');
   const returnedOrder = window.srcRegistrationConfig?.order;
+  const copy = window.srcRegistrationConfig?.copy || {};
   let selected = options[0] || null;
   let activeStep = 0;
 
@@ -93,9 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const paintStatus = (paid, failed, receipt, failureMessage = '') => {
       indicator.dataset.state = paid ? 'paid' : failed ? 'failed' : 'pending';
       if (paid) {
-        heading.textContent = 'Your payment is confirmed';
-        message.textContent = 'Thank you for registering. Your place has been confirmed and our team will follow up with programme details.';
-        emailNote.textContent = `We have sent your order confirmation to ${returnedOrder.email}. Please check your inbox and spam folder.`;
+        heading.textContent = copy.paidHeading || 'Your payment is confirmed';
+        message.textContent = copy.paidMessage || 'Thank you for registering. Your place has been confirmed and our team will follow up with programme details.';
+        emailNote.textContent = (copy.paidEmail || 'We have sent your order confirmation to %s. Please check your inbox and spam folder.').replace('%s', returnedOrder.email);
         if (receipt) {
           dialog.querySelector('[data-register-confirm-receipt]').textContent = receipt;
           dialog.querySelector('[data-register-confirm-receipt-row]').hidden = false;
@@ -103,15 +104,15 @@ document.addEventListener('DOMContentLoaded', () => {
         retry.hidden = true;
         done.hidden = false;
       } else if (failed) {
-        heading.textContent = 'Payment was not completed';
-        message.textContent = failureMessage || 'Your payment was not completed. You can try again.';
-        emailNote.textContent = 'Your confirmation email will be sent after the payment is confirmed.';
+        heading.textContent = copy.failedHeading || 'Payment was not completed';
+        message.textContent = failureMessage || copy.failedMessage || 'Your payment was not completed. You can try again.';
+        emailNote.textContent = copy.pendingEmail || 'Your confirmation email will be sent after the payment is confirmed.';
         retry.hidden = false;
         done.hidden = true;
       } else {
-        heading.textContent = 'Waiting for payment confirmation';
-        message.textContent = 'Complete the M-PESA prompt on your phone. This window will update when your payment is confirmed.';
-        emailNote.textContent = `Your confirmation email will be sent to ${returnedOrder.email} after payment.`;
+        heading.textContent = copy.waitingHeading || 'Waiting for payment confirmation';
+        message.textContent = copy.waitingMessage || 'Complete the M-PESA prompt on your phone. This window will update when your payment is confirmed.';
+        emailNote.textContent = (copy.waitingEmail || 'Your confirmation email will be sent to %s after payment.').replace('%s', returnedOrder.email);
         retry.hidden = true;
         done.hidden = true;
       }
@@ -167,9 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault();
     const validPhone = /^[71]\d{8}$/.test(phone?.value.trim() || '');
     const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.value.trim() || '');
-    showError('phone', validPhone ? '' : 'Enter 9 digits starting with 7 or 1.');
-    showError('email', validEmail ? '' : 'Enter a valid email address.');
-    showError('consent', consent?.checked ? '' : 'Consent is required to continue.');
+    showError('phone', validPhone ? '' : (copy.phoneError || 'Enter 9 digits starting with 7 or 1.'));
+    showError('email', validEmail ? '' : (copy.emailError || 'Enter a valid email address.'));
+    showError('consent', consent?.checked ? '' : (copy.consentError || 'Consent is required to continue.'));
     if (validPhone && validEmail && consent?.checked) showStep(2);
   });
 
@@ -178,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkoutError = dialog.querySelector('[data-register-checkout-error]');
     checkoutButton.disabled = true;
     checkoutButton.setAttribute('aria-busy', 'true');
-    checkoutButton.textContent = 'Preparing checkout…';
+    checkoutButton.textContent = copy.preparingCheckout || 'Preparing checkout…';
     if (checkoutError) checkoutError.hidden = true;
 
     const payload = new FormData();
@@ -192,16 +193,16 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(window.srcRegistrationConfig.ajaxUrl, { method: 'POST', body: payload, credentials: 'same-origin' });
       const result = await response.json();
-      if (!response.ok || !result.success || !result.data?.checkoutUrl) throw new Error(result.data?.message || 'Checkout could not be started. Please try again.');
+      if (!response.ok || !result.success || !result.data?.checkoutUrl) throw new Error(result.data?.message || copy.checkoutError || 'Checkout could not be started. Please try again.');
       window.location.assign(result.data.checkoutUrl);
     } catch (error) {
       if (checkoutError) {
-        checkoutError.textContent = error.message || 'Checkout could not be started. Please try again.';
+        checkoutError.textContent = error.message || copy.checkoutError || 'Checkout could not be started. Please try again.';
         checkoutError.hidden = false;
       }
       checkoutButton.disabled = false;
       checkoutButton.removeAttribute('aria-busy');
-      checkoutButton.textContent = 'Continue to secure checkout';
+      checkoutButton.textContent = copy.continueCheckout || 'Continue to secure checkout';
     }
   });
 });

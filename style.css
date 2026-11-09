@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.5.183
+Version: 3.5.184
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -231,8 +231,41 @@ Text Domain: src
 .about-v3-breadcrumb a { color: rgba(255,255,255,.9); text-decoration: none; }
 .about-v3-breadcrumb span { padding: 0 7px; }
 .about-v3-eyebrow { margin: 0 0 20px; color: #f0954a; font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-.about-v3-hero h1 { display: -webkit-box; max-width: 14ch; margin: 0; overflow: hidden; color: #fff; font-family: var(--serif); font-size: clamp(40px,5.2vw,84px); font-weight: 700; line-height: 1.02; text-shadow: 0 2px 12px rgba(40,8,10,.35); text-wrap: balance; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.about-v3-hero h1 { max-width: 15ch; margin: 0; color: #fff; font-family: var(--serif); font-size: clamp(40px,5.2vw,84px); font-weight: 700; line-height: 1.02; text-shadow: 0 2px 12px rgba(40,8,10,.35); text-wrap: balance; }
 .about-v3-hero h1 em { color: var(--orange); font-weight: inherit; }
+.about-v3-hero h1 + .about-v3-hero-intro { margin-top: 24px; }
+.v3-countdown-tbc { margin: 11px 0 16px; color: rgba(255,255,255,.68); font-size: 10px; font-weight: 600; }
+.v3-countdown.is-expired { opacity: .72; }
+.impact-panel-context { font-size: 14px; line-height: 1.55; }
+.impact-panel-facts { font-size: 13px; line-height: 1.55; }
+.home-report-cover { position: relative; display: flex; min-height: 440px; flex-direction: column; justify-content: flex-end; overflow: hidden; padding: clamp(28px,5vw,64px); background: linear-gradient(145deg,#4a0e12 0%,#8d1e24 58%,#b3262c 100%); color: #fff; }
+.home-report-cover::before,.home-report-cover::after { position: absolute; width: 440px; height: 440px; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; content: ''; pointer-events: none; }
+.home-report-cover::before { top: -190px; right: -70px; box-shadow: 0 0 0 42px rgba(255,255,255,.035),0 0 0 84px rgba(255,255,255,.025); }
+.home-report-cover::after { right: -220px; bottom: -300px; border-width: 60px; border-color: rgba(245,130,32,.55); }
+.home-report-cover-mark { position: absolute; top: 28px; left: 30px; font-size: 12px; font-weight: 800; letter-spacing: .2em; }
+.home-report-cover-label { position: relative; color: #ffc37c; font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
+.home-report-cover strong { position: relative; margin-top: 12px; font-family: var(--serif); font-size: clamp(64px,10vw,112px); line-height: .95; }
+.home-report-cover-caption { position: relative; margin-top: 24px; color: rgba(255,255,255,.76); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.stay-connected-action > p { max-width: 38ch; margin: 0 0 18px; color: rgba(255,255,255,.75); font-size: 14px; line-height: 1.65; }
+.stay-connected-action .stay-connected-pill { display: inline-flex; width: auto; min-height: 48px; align-items: center; gap: 24px; padding: 0 22px; text-decoration: none; }
+.site-footer-socials:empty { display: none; }
+.partners-hero { display: flex; min-height: 520px; align-items: center; background: linear-gradient(112deg,rgba(74,14,18,.96),rgba(130,27,33,.84)),url('assets/hero-man-with-camels-poster.png') center 52%/cover; }
+.partners-hero-content { width: min(1200px,calc(100% - 80px)); margin: auto; padding-top: 120px; }
+.partners-breadcrumb { margin-bottom: 38px; color: rgba(255,255,255,.75); font-size: 12px; }
+.partners-breadcrumb a { color: #fff; text-decoration: none; }
+.partners-breadcrumb span { padding-inline: 8px; }
+.partners-hero h1 { margin: 0; color: #fff; }
+.partners-hero .lede { max-width: 58ch; margin-top: 20px; }
+.partners-directory { padding: 96px max(40px,calc((100% - 1200px)/2)); background: #faf7f2; }
+.partners-directory-heading { max-width: 680px; margin: 0 auto 52px; text-align: center; }
+.partners-directory-heading h2 { margin: 0; }
+.partners-directory-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 18px; margin: 0; padding: 0; list-style: none; }
+.partners-directory-item { display: grid; min-height: 146px; place-items: center; padding: 24px; background: #fff; box-shadow: 0 8px 28px rgba(28,28,28,.055); }
+.partners-directory-item > a { display: grid; width: 100%; height: 100%; place-items: center; }
+.partners-directory-item img { display: block; max-width: 100%; max-height: 72px; object-fit: contain; }
+.partners-directory-name { color: #4a0e12; font-size: 15px; font-weight: 700; text-align: center; }
+.partners-directory-empty { text-align: center; }
+@media(max-width:767px) { .partners-hero-content { width: calc(100% - 40px); padding-top: 120px; } .partners-directory { padding: 72px 20px; } .partners-directory-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; } .partners-directory-item { min-height: 114px; padding: 16px; } .home-report-cover { min-height: 340px; } }
 .about-v3-hero-intro { display: -webkit-box; max-width: 60ch; margin: 24px 0 0; overflow: hidden; color: #fff; font-size: 18px; line-height: 1.6; text-shadow: 0 2px 12px rgba(40,8,10,.35); -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .about-v3-shell { width: min(100%,1280px); margin-inline: auto; padding-right: 40px; padding-left: 40px; }
 .about-v3-story { padding: 112px 0; background: #fff; }
@@ -1536,6 +1569,38 @@ body.nav-locked { overflow: hidden; overscroll-behavior: none; }
   .v3-enrolment-grid::-webkit-scrollbar { display: none; }
   .v3-enrol-card { width: 82vw; min-width: 82vw; min-height: 229px; flex: 0 0 82vw; padding: 16px; scroll-snap-align: start; }
   .site-header:not(.is-scrolled) .header-inner { width: calc(100% - 28px); min-height: 66px; margin-top: 10px; padding: 0 16px; border-radius: 36px; }
+}
+
+.src-team-profile-hero { position: relative; overflow: hidden; padding: 150px 0 88px; color: #fff; background: #292929; }
+.src-team-profile-shell { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+.src-team-profile-breadcrumb { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 46px; color: rgba(255,255,255,.68); font-size: 13px; }
+.src-team-profile-breadcrumb a { color: #fff; text-decoration: none; }
+.src-team-profile-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .72fr); gap: clamp(40px, 8vw, 120px); align-items: center; }
+.src-team-profile-copy .eyebrow, .src-team-profile-bio .eyebrow { color: #f58220; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.src-team-profile-copy h1 { margin: 14px 0 18px; }
+.src-team-profile-role { margin: 0; color: #f58220; font-size: clamp(20px, 2vw, 28px); font-weight: 700; }
+.src-team-profile-county { margin: 12px 0 0; color: rgba(255,255,255,.74); }
+.src-team-profile-summary { max-width: 680px; margin: 28px 0; color: rgba(255,255,255,.84); font-size: 18px; line-height: 1.65; }
+.src-team-profile-linkedin { display: inline-flex; gap: 9px; align-items: center; color: #fff; font-weight: 700; text-decoration: none; }
+.src-team-profile-portrait { overflow: hidden; aspect-ratio: 4 / 5; margin: 0; border-radius: 180px 180px 12px 12px; background: #454545; }
+.src-team-profile-portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.src-team-profile-bio { padding: 84px 24px 100px; background: #f7f4ef; }
+.src-team-profile-bio-inner { width: min(760px, 100%); margin: 0 auto; }
+.src-team-profile-body { color: #373737; font-size: 18px; line-height: 1.8; }
+.src-team-profile-body p { margin: 0 0 1.2em; }
+.src-team-profile-bio-inner > a { display: inline-flex; gap: 10px; align-items: center; margin-top: 18px; color: #b3262c; font-weight: 700; text-decoration: none; }
+.src-woocommerce-product { min-height: 70vh; padding: 150px 24px 96px; background: #f7f4ef; }
+.src-woocommerce-product-shell { width: min(1160px, 100%); margin: 0 auto; }
+.src-woocommerce-product-shell .product { padding: clamp(24px, 5vw, 64px); border-radius: 20px; background: #fff; }
+@media (max-width: 760px) {
+  .src-team-profile-hero { padding: 124px 0 60px; }
+  .src-team-profile-shell { width: min(100% - 40px, 620px); }
+  .src-team-profile-breadcrumb { margin-bottom: 32px; }
+  .src-team-profile-grid { grid-template-columns: 1fr; gap: 34px; }
+  .src-team-profile-portrait { width: min(100%, 420px); aspect-ratio: 4 / 4.5; }
+  .src-team-profile-bio { padding: 58px 20px 72px; }
+  .src-woocommerce-product { padding: 120px 16px 60px; }
+  .src-woocommerce-product-shell .product { padding: 22px; }
 }
 @media (prefers-reduced-motion: reduce) { .v3-hero-video { display: none; } .v3-enrol-card,.v3-enrol-cta { transition: none; } }
 .v3-impact-section { position: relative; isolation: isolate; overflow: hidden; padding: 128px 0; background: var(--cream); }

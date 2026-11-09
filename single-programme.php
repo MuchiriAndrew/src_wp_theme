@@ -59,9 +59,11 @@ $image = $image_id ? wp_get_attachment_image_url($image_id, 'full') : '';
 if (!$image && $image_key !== '') $image = 'https://images.unsplash.com/' . rawurlencode($image_key) . '?auto=format&fit=crop&w=2000&q=85';
 if (!$image) $image = 'https://images.unsplash.com/photo-1637149014802-d917e6255c2d?auto=format&fit=crop&w=2000&q=85';
 
-$status_label = $status === 'past' ? 'Past programme' : ($status === 'upcoming' ? 'Upcoming' : ($enrolment === 'open' ? 'Enrolling now' : 'Running'));
+$status_label = (string) get_post_meta($id, '_programme_status_label', true);
+if ($status_label === '') $status_label = $status === 'past' ? 'Past programme' : ($status === 'upcoming' ? 'Upcoming' : ($enrolment === 'open' ? 'Enrolling now' : 'Running'));
 $status_tone = $status === 'past' ? 'red' : ($status === 'upcoming' ? 'amber' : 'green');
-$cta_label = $enrolment === 'open' ? 'Register' : ($enrolment === 'partner' ? 'Partner with us' : ($status === 'upcoming' ? 'Get notified' : 'Explore current programmes'));
+$cta_label = (string) get_post_meta($id, '_programme_cta_label', true);
+if ($cta_label === '') $cta_label = $enrolment === 'open' ? 'Register' : ($enrolment === 'partner' ? 'Partner with us' : ($status === 'upcoming' ? 'Get notified' : 'Explore current programmes'));
 $archive_url = get_post_type_archive_link('programme') ?: home_url('/programmes/');
 $cta_url = $status === 'past' ? add_query_arg('status', 'current', $archive_url) : ($status === 'upcoming' ? add_query_arg('status', 'upcoming', $archive_url) : ($enrolment === 'partner' ? src_page_url('get-involved') : add_query_arg('status', 'current', $archive_url)));
 
@@ -102,8 +104,8 @@ $logo_labels = [
 ];
 $logo_items = $external_logos ?: ($funders ? [sanitize_title($funders[0])] : []);
 
-$journey_heading = $journey ? 'How the programme unfolds' : 'How it is delivered';
-$journey_eyebrow = $journey ? 'Learning Journey' : 'Delivery Format';
+$journey_heading = (string) get_post_meta($id, '_programme_journey_heading', true) ?: ($journey ? 'How the programme unfolds' : 'How it is delivered');
+$journey_eyebrow = (string) get_post_meta($id, '_programme_journey_eyebrow', true) ?: ($journey ? 'Learning Journey' : 'Delivery Format');
 $related = $theme_ids ? get_posts([
     'post_type' => 'programme', 'post_status' => 'publish', 'posts_per_page' => 3, 'post__not_in' => [$id],
     'orderby' => 'menu_order', 'order' => 'ASC', 'meta_key' => '_src_v3_imported', 'meta_value' => '1',
@@ -135,13 +137,13 @@ $related = $theme_ids ? get_posts([
 
   <section class="src-v3-programme-summary">
     <div class="src-v3-programme-shell">
-      <header class="src-v3-programme-section-heading">
-        <p class="eyebrow">Programme Summary</p>
-        <h2>At a glance</h2>
+        <header class="src-v3-programme-section-heading">
+        <p class="eyebrow"><?php echo esc_html(get_post_meta($id, '_programme_summary_eyebrow', true) ?: 'Programme Summary'); ?></p>
+        <h2><?php echo esc_html(get_post_meta($id, '_programme_summary_heading', true) ?: 'At a glance'); ?></h2>
         <?php if ($name !== $title) : ?><p><?php echo esc_html($name); ?></p><?php endif; ?>
       </header>
       <div class="src-v3-programme-summary-grid">
-        <?php foreach ([['Target Audience', $audience], ['Key Outcomes', $outcomes], ['Duration', trim($duration . ($dates !== '' ? ' · ' . $dates : ''))], ['Delivery Method', $delivery]] as [$label, $value]) : ?>
+        <?php foreach ([[get_post_meta($id, '_programme_summary_audience_label', true) ?: 'Target Audience', $audience], [get_post_meta($id, '_programme_summary_outcomes_label', true) ?: 'Key Outcomes', $outcomes], [get_post_meta($id, '_programme_summary_duration_label', true) ?: 'Duration', trim($duration . ($dates !== '' ? ' · ' . $dates : ''))], [get_post_meta($id, '_programme_summary_delivery_label', true) ?: 'Delivery Method', $delivery]] as [$label, $value]) : ?>
           <article><p><?php echo esc_html($label); ?></p><div><?php echo esc_html($value); ?></div></article>
         <?php endforeach; ?>
       </div>
@@ -167,9 +169,9 @@ $related = $theme_ids ? get_posts([
   <section class="src-v3-programme-reach">
     <div class="src-v3-programme-shell src-v3-programme-reach-grid">
       <div class="src-v3-programme-reach-copy">
-        <p class="eyebrow"><?php echo esc_html($has_counties ? 'Where' : "How it's delivered"); ?></p>
+        <p class="eyebrow"><?php echo esc_html(get_post_meta($id, '_programme_reach_label', true) ?: ($has_counties ? 'Where' : "How it's delivered")); ?></p>
         <h2><?php echo esc_html($has_counties ? count($county_names) . ' counties' : $delivery_heading); ?></h2>
-        <?php if ($signature_only) : ?><span class="src-v3-programme-signature">An SRC Signature Programme</span><?php endif; ?>
+        <?php if ($signature_only) : ?><span class="src-v3-programme-signature"><?php echo esc_html(get_post_meta($id, '_programme_signature_label', true) ?: 'An SRC Signature Programme'); ?></span><?php endif; ?>
         <?php if ($has_counties) : ?>
           <div class="src-v3-programme-county-tags"><?php foreach ($county_names as $county_name) : ?><span><?php echo esc_html($county_name); ?></span><?php endforeach; ?></div>
         <?php else : ?>
@@ -185,7 +187,7 @@ $related = $theme_ids ? get_posts([
           </div>
         <?php endif; ?>
         <?php if ($external_partners) : ?>
-          <div class="src-v3-programme-partners"><p class="eyebrow">Partners</p><div class="src-v3-programme-logo-row">
+          <div class="src-v3-programme-partners"><p class="eyebrow"><?php echo esc_html(get_post_meta($id, '_programme_partners_label', true) ?: 'Partners'); ?></p><div class="src-v3-programme-logo-row">
             <?php foreach ($logo_items as $logo_item) :
                 $logo_slug = sanitize_title((string) $logo_item);
                 $logo_label = $logo_labels[$logo_slug] ?? (string) $logo_item;
@@ -198,14 +200,14 @@ $related = $theme_ids ? get_posts([
       </div>
       <div class="src-v3-programme-map-card">
         <?php if ($county_svg) : ?><div class="src-v3-programme-map" role="img" aria-label="<?php echo esc_attr($has_counties ? 'Map of Kenya highlighting programme counties' : 'Map of Kenya showing nationwide programme access'); ?>"><?php echo $county_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div><?php endif; ?>
-        <?php if (!$has_counties) : ?><p><?php echo esc_html('Open to participants in all 47 counties' . (stripos($reach, 'Virtual') !== false ? ' · Online' : '')); ?></p><?php endif; ?>
+        <?php if (!$has_counties) : ?><p><?php echo esc_html((get_post_meta($id, '_programme_map_summary', true) ?: 'Open to participants in all 47 counties') . (stripos($reach, 'Virtual') !== false ? ' · Online' : '')); ?></p><?php endif; ?>
       </div>
     </div>
   </section>
 
   <section class="src-v3-programme-next-step">
     <div class="src-v3-programme-shell">
-      <div><p>Take the next step</p><h2><?php echo esc_html($cta_label); ?></h2></div>
+      <div><p><?php echo esc_html(get_post_meta($id, '_programme_next_step_heading', true) ?: 'Take the next step'); ?></p><h2><?php echo esc_html($cta_label); ?></h2></div>
       <?php if ($status === 'current' && $enrolment === 'open') : ?>
         <button type="button" data-src-open-registration="<?php echo esc_attr($slug); ?>" aria-controls="src-registration-dialog"><?php echo esc_html($cta_label); ?> <span aria-hidden="true">→</span></button>
       <?php else : ?>
@@ -217,7 +219,7 @@ $related = $theme_ids ? get_posts([
   <?php if ($related) : ?>
     <section class="src-v3-programme-related">
       <div class="src-v3-programme-shell">
-        <header class="src-v3-programme-section-heading"><p class="eyebrow">Related Programmes</p><h2>More in <?php echo esc_html($theme); ?></h2></header>
+        <header class="src-v3-programme-section-heading"><p class="eyebrow"><?php echo esc_html(get_post_meta($id, '_programme_related_label', true) ?: 'Related Programmes'); ?></p><h2><?php echo esc_html(get_post_meta($id, '_programme_related_prefix', true) ?: 'More in'); ?> <?php echo esc_html($theme); ?></h2></header>
         <div class="src-v3-programme-related-grid"><?php foreach ($related as $related_programme) get_template_part('template-parts/programme-card', null, ['programme' => $related_programme]); ?></div>
       </div>
     </section>

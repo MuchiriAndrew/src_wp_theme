@@ -17,9 +17,9 @@ $programme_archive = get_post_type_archive_link('programme') ?: home_url('/progr
 ?>
 <section class="src-commerce-catalog" aria-labelledby="src-commerce-catalog-title">
     <header class="src-commerce-catalog-heading">
-        <p class="eyebrow">Open enrolment</p>
-        <h2 id="src-commerce-catalog-title">Choose a programme</h2>
-        <p>Explore current programmes and start your registration. Programme fees and payment options are confirmed in the registration flow.</p>
+        <p class="eyebrow"><?php echo esc_html(src_option('shop_catalog_eyebrow', 'Open enrolment')); ?></p>
+        <h2 id="src-commerce-catalog-title"><?php echo esc_html(src_option('shop_catalog_heading', 'Choose a programme')); ?></h2>
+        <p><?php echo esc_html(src_option('shop_catalog_intro', 'Explore current programmes and start your registration. Programme fees and payment options are confirmed in the registration flow.')); ?></p>
     </header>
 
     <?php if ($programmes) : ?>
@@ -28,9 +28,9 @@ $programme_archive = get_post_type_archive_link('programme') ?: home_url('/progr
         </div>
     <?php else : ?>
         <div class="src-commerce-empty">
-            <h3>There are no programmes open for enrolment right now.</h3>
-            <p>Browse all programmes to see what is running, coming soon or recently completed.</p>
-            <a class="src-v3-button" href="<?php echo esc_url($programme_archive); ?>">Browse all programmes <span aria-hidden="true">→</span></a>
+            <h3><?php echo esc_html(src_option('shop_empty_heading', 'There are no programmes open for enrolment right now.')); ?></h3>
+            <p><?php echo esc_html(src_option('shop_empty_intro', 'Browse all programmes to see what is running, coming soon or recently completed.')); ?></p>
+            <a class="src-v3-button" href="<?php echo esc_url($programme_archive); ?>"><?php echo esc_html(src_option('shop_empty_action', 'Browse all programmes')); ?> <span aria-hidden="true">→</span></a>
         </div>
     <?php endif; ?>
 </section>

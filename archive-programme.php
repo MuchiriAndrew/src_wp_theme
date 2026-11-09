@@ -24,34 +24,36 @@ if (!is_wp_error($themes)) {
     if ($selected_theme && !in_array($selected_theme, wp_list_pluck($themes, 'slug'), true)) $selected_theme = '';
 }
 $group_labels = [
-    'current' => ['Active Now', 'Current Programmes', 'Programmes currently enrolling or being delivered with our partners.'],
-    'upcoming' => ['Returning Soon', 'Upcoming', 'Proven programmes preparing for their next cohort.'],
-    'past' => ['Our Track Record', 'Past Programmes', 'Programmes SRC has delivered with its partners.'],
+    'current' => [src_option('programmes_current_eyebrow', 'Active Now'), src_option('programmes_current_heading', 'Current Programmes'), src_option('programmes_current_intro', 'Programmes currently enrolling or being delivered with our partners.')],
+    'upcoming' => [src_option('programmes_upcoming_eyebrow', 'Returning Soon'), src_option('programmes_upcoming_heading', 'Upcoming'), src_option('programmes_upcoming_intro', 'Proven programmes preparing for their next cohort.')],
+    'past' => [src_option('programmes_past_eyebrow', 'Our Track Record'), src_option('programmes_past_heading', 'Past Programmes'), src_option('programmes_past_intro', 'Programmes SRC has delivered with its partners.')],
 ];
+$archive_heading = src_option('programmes_archive_heading', 'Grow your business');
+$archive_emphasis = src_option('programmes_archive_emphasis', 'with us.');
 ?>
 <main class="src-v3-programmes">
     <section class="page-hero src-v3-programmes-hero">
-        <img class="src-v3-programmes-backdrop" src="https://images.unsplash.com/photo-1776039325240-02916820bfeb?auto=format&amp;fit=crop&amp;w=2000&amp;q=85" alt="Entrepreneurs attending a business training session" fetchpriority="high">
+        <img class="src-v3-programmes-backdrop" src="<?php echo esc_url(src_option('programmes_archive_image_url', 'https://images.unsplash.com/photo-1776039325240-02916820bfeb?auto=format&fit=crop&w=2000&q=85')); ?>" alt="" fetchpriority="high">
         <div class="src-v3-programmes-ring src-v3-programmes-ring--archive src-experts-v3-ring" style="--ring-rotate:70deg;--ring-parallax:0px" aria-hidden="true">
             <svg viewBox="0 0 900 900" focusable="false"><circle cx="450" cy="450" r="405" fill="none" stroke="currentColor" stroke-width="90" pathLength="100" stroke-dasharray="70 30" stroke-linecap="round"></circle></svg>
         </div>
         <div class="container src-v3-programmes-hero-content" data-reveal="left">
             <div class="src-v3-programmes-breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>">Home</a><span>/</span>Programmes</div>
-            <p class="eyebrow eyebrow-light">Enrolling Now <span aria-hidden="true">·</span> Upcoming</p>
-            <h1 class="display display-lg">Grow your business <em>with us.</em></h1>
-            <p class="lede lede-light">Training, bootcamps and advisory designed for entrepreneurs ready for their next stage.</p>
+            <p class="eyebrow eyebrow-light"><?php echo esc_html(src_option('programmes_archive_eyebrow', 'Enrolling Now · Upcoming')); ?></p>
+            <h1 class="display display-lg"><?php echo esc_html($archive_heading); ?> <em><?php echo esc_html($archive_emphasis); ?></em></h1>
+            <p class="lede lede-light"><?php echo esc_html(src_option('programmes_archive_intro', 'Training, bootcamps and advisory designed for entrepreneurs ready for their next stage.')); ?></p>
             <div class="hero-actions">
-                <button class="button" type="button" data-scroll-programmes>View Programmes</button>
-                <button class="src-v3-hero-secondary" type="button" data-scroll-programmes><span aria-hidden="true">→</span> How registration works</button>
+                <button class="button" type="button" data-scroll-programmes><?php echo esc_html(src_option('programmes_archive_primary_action', 'View Programmes')); ?></button>
+                <button class="src-v3-hero-secondary" type="button" data-scroll-programmes><span aria-hidden="true">→</span> <?php echo esc_html(src_option('programmes_archive_secondary_action', 'How registration works')); ?></button>
             </div>
         </div>
     </section>
 
-    <nav class="src-programme-filters" aria-label="Programme filters">
+    <nav class="src-programme-filters" aria-label="<?php echo esc_attr(src_option('programmes_filter_aria', 'Programme filters')); ?>">
         <div class="src-programme-filter-scroll">
             <div class="src-programme-filter-inner">
-                <div class="src-programme-filter-status" role="group" aria-label="Filter by status">
-                    <?php foreach (['all' => 'All', 'current' => 'Current', 'upcoming' => 'Upcoming', 'past' => 'Past'] as $value => $label) :
+                <div class="src-programme-filter-status" role="group" aria-label="<?php echo esc_attr(src_option('programmes_filter_status_aria', 'Filter by status')); ?>">
+                    <?php foreach (['all' => src_option('programmes_filter_all', 'All'), 'current' => src_option('programmes_filter_current', 'Current'), 'upcoming' => src_option('programmes_filter_upcoming', 'Upcoming'), 'past' => src_option('programmes_filter_past', 'Past')] as $value => $label) :
                         $active = $selected_status === $value || ($selected_status === 'all' && $value === 'current'); ?>
                         <button type="button" data-programme-status="<?php echo esc_attr($value); ?>" class="src-programme-filter src-programme-filter-status-item <?php echo $active ? 'is-active' : ''; ?>"><?php echo esc_html($label . ' · ' . $counts[$value]); ?></button>
                     <?php endforeach; ?>
@@ -60,7 +62,7 @@ $group_labels = [
                     $active = $selected_theme === $theme->slug; ?>
                     <button type="button" data-programme-theme="<?php echo esc_attr($theme->slug); ?>" data-programme-theme-name="<?php echo esc_attr($theme->name); ?>" class="src-programme-filter src-programme-filter-theme <?php echo $active ? 'is-active' : ''; ?>"><?php echo esc_html($theme->name); ?></button>
                 <?php endforeach; ?>
-                <button type="button" data-programme-signature class="src-programme-filter src-programme-filter-signature" aria-pressed="false">SRC Signature only</button>
+                <button type="button" data-programme-signature class="src-programme-filter src-programme-filter-signature" aria-pressed="false"><?php echo esc_html(src_option('programmes_filter_signature', 'SRC Signature only')); ?></button>
             </div>
         </div>
     </nav>
@@ -114,7 +116,7 @@ $group_labels = [
             </section>
         <?php endforeach; ?>
         <section class="src-programme-empty container" role="status" <?php echo $found ? 'hidden' : ''; ?>>
-            <p>No programmes match these filters.</p>
+            <p><?php echo esc_html(src_option('programmes_empty_message', 'No programmes match these filters.')); ?></p>
         </section>
     </div>
 </main>

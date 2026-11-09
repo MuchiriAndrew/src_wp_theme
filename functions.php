@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.196');
+define('SRC_VERSION', '3.5.197');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -105,6 +105,23 @@ function src_assets() {
     wp_localize_script('src-registration', 'srcRegistrationConfig', [
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('src_v3_registration'),
+        'copy' => [
+            'paidHeading' => src_option('registration_paid_heading', 'Your payment is confirmed'),
+            'paidMessage' => src_option('registration_paid_message', 'Thank you for registering. Your place has been confirmed and our team will follow up with programme details.'),
+            'paidEmail' => src_option('registration_paid_email_message', 'We have sent your order confirmation to %s. Please check your inbox and spam folder.'),
+            'failedHeading' => src_option('registration_failed_heading', 'Payment was not completed'),
+            'failedMessage' => src_option('registration_failed_message', 'Your payment was not completed. You can try again.'),
+            'pendingEmail' => src_option('registration_pending_email_message', 'Your confirmation email will be sent after the payment is confirmed.'),
+            'waitingHeading' => src_option('registration_waiting_heading', 'Waiting for payment confirmation'),
+            'waitingMessage' => src_option('registration_waiting_message', 'Complete the M-PESA prompt on your phone. This window will update when your payment is confirmed.'),
+            'waitingEmail' => src_option('registration_waiting_email_message', 'Your confirmation email will be sent to %s after payment.'),
+            'phoneError' => src_option('registration_phone_error', 'Enter 9 digits starting with 7 or 1.'),
+            'emailError' => src_option('registration_email_error', 'Enter a valid email address.'),
+            'consentError' => src_option('registration_consent_error', 'Consent is required to continue.'),
+            'preparingCheckout' => src_option('registration_preparing_checkout', 'Preparing checkout…'),
+            'checkoutError' => src_option('registration_checkout_error', 'Checkout could not be started. Please try again.'),
+            'continueCheckout' => src_option('registration_continue_checkout', 'Continue to secure checkout'),
+        ],
         'order' => $registration_return_order ? [
             'id' => $registration_return_order->get_id(),
             'key' => $registration_return_order->get_order_key(),
@@ -213,7 +230,8 @@ function src_meta_box($post, $fields) {
         } elseif ($type === 'checkbox') {
             printf('<p><label><input id="%1$s" name="%1$s" type="checkbox" value="1"%2$s> <strong>%3$s</strong></label>%4$s</p>', esc_attr($key), checked($value, '1', false), esc_html($label), $description ? '<br><span class="description">' . esc_html($description) . '</span>' : '');
         } else {
-            printf('<p><label for="%1$s"><strong>%2$s</strong></label><br><input style="width:100%%" id="%1$s" name="%1$s" type="%4$s" value="%3$s">%5$s</p>', esc_attr($key), esc_html($label), esc_attr($value), esc_attr($type), $description ? '<br><span class="description">' . esc_html($description) . '</span>' : '');
+            $is_image = in_array($key, ['project_image_url','programme_image_url','team_image_url','sector_image_url','partner_image_url'], true);
+            printf('<p><label for="%1$s"><strong>%2$s</strong></label><br><span class="src-media-field"><input style="width:100%%" id="%1$s" name="%1$s" type="%4$s" value="%3$s">%6$s</span>%5$s</p>', esc_attr($key), esc_html($label), esc_attr($value), esc_attr($type), $description ? '<br><span class="description">' . esc_html($description) . '</span>' : '', $is_image ? '<button type="button" class="button src-select-image">Choose image</button>' : '');
         }
     }
     echo '</div>';
@@ -222,6 +240,7 @@ function src_add_meta_boxes() {
     add_meta_box('src-project-meta', 'Project Details', fn($p) => src_meta_box($p, [
         'project_partner'=>'Partner / Funder', 'project_funder'=>'Modal funder label', 'project_location'=>'Location', 'project_year'=>'Year', 'project_impact'=>'Impact statement',
         'project_span'=>['Homepage tile size: 1 or 2', 'number'], 'project_home_order'=>['Homepage order', 'number'], 'project_home_featured'=>['Show on homepage', 'checkbox'],
+        'project_detail_eyebrow'=>'Project detail eyebrow', 'project_detail_heading'=>'Project detail section heading',
         'project_external_url'=>'External project website', 'project_modal_description'=>['Modal description', 'textarea'], 'project_image_url'=>'Fallback image URL',
         'project_stats'=>['Overview stats, one per line as Label | Value', 'textarea'], 'project_impacts'=>['Impact results, one per line as Heading | Description', 'textarea'],
     ]), 'project', 'normal');
@@ -240,13 +259,96 @@ function src_add_meta_boxes() {
     add_meta_box('src-audience-item-meta', 'Homepage Audience Details', fn($p) => src_meta_box($p, ['audience_home_order'=>['Homepage order', 'number'], 'audience_link'=>'Audience link']), 'src_audience_item', 'normal');
     add_meta_box('src-partner-item-meta', 'Homepage Partner Details', fn($p) => src_meta_box($p, ['partner_type'=>'Tile type: logo, image, or cta', 'partner_abbreviation'=>'Short label (use a line break only in the full-name field if desired)', 'partner_name'=>'Full name', 'partner_color'=>'Logo tile colour: red, charcoal, or orange', 'partner_image_url'=>'Fallback image URL', 'partner_span'=>['Tile span: 1 or 2', 'number'], 'partner_home_order'=>['Homepage order', 'number'], 'partner_link'=>'Partner page link']), 'src_partner_item', 'normal');
     add_meta_box('src-stat-item-meta', 'Homepage Stat Details', fn($p) => src_meta_box($p, ['stat_value'=>'Value', 'stat_label'=>'Label', 'stat_home_order'=>['Homepage order', 'number'], 'stat_home_enabled'=>['Show on homepage', 'checkbox']]), 'src_stat_item', 'normal');
-    add_meta_box('src-page-content-meta', 'SRC Page Content', fn($p) => src_meta_box($p, src_page_field_schema()), 'page', 'normal');
+    add_meta_box('src-page-content-meta', 'Page Content', 'src_render_page_content_box', 'page', 'normal', 'high');
+    add_meta_box('src-post-content-meta', 'Main Content', 'src_render_post_content_box', ['project', 'programme', 'team_member', 'job', 'src_sector_item', 'src_pillar_item', 'src_audience_item', 'src_partner_item', 'src_stat_item', 'src_testimonial', 'src_expert', 'src_project_folder', 'src_publication', 'src_news_item', 'portfolio_company', 'impact_metric'], 'normal', 'high');
 }
 add_action('add_meta_boxes', 'src_add_meta_boxes');
+
+/**
+ * Theme-managed content uses straightforward WordPress form fields. Remove the block
+ * canvas and the legacy editor pane, then expose post_content as a normal textarea.
+ */
+function src_admin_plain_content_types() {
+    return ['page', 'project', 'programme', 'team_member', 'job', 'src_sector_item', 'src_pillar_item', 'src_audience_item', 'src_partner_item', 'src_stat_item', 'src_testimonial', 'src_expert', 'src_project_folder', 'src_publication', 'src_news_item', 'portfolio_company', 'impact_metric'];
+}
+function src_disable_content_editor_canvas() {
+    foreach (src_admin_plain_content_types() as $post_type) remove_post_type_support($post_type, 'editor');
+}
+add_action('init', 'src_disable_content_editor_canvas', 100);
+add_filter('use_block_editor_for_post_type', static function ($use, $post_type) {
+    return in_array($post_type, src_admin_plain_content_types(), true) ? false : $use;
+}, 100, 2);
+function src_render_post_content_box($post) {
+    wp_nonce_field('src_plain_content_save', 'src_plain_content_nonce');
+    echo '<p><label for="src-post-content"><strong>Content</strong></label></p>';
+    echo '<textarea id="src-post-content" name="src_post_content" rows="12" class="large-text">' . esc_textarea($post->post_content) . '</textarea>';
+    echo '<p class="description">Enter the content shown on this item. Basic HTML is allowed.</p>';
+}
+function src_render_page_content_box($post) {
+    wp_nonce_field('src_plain_content_save', 'src_plain_content_nonce');
+    wp_nonce_field('src_meta_save', 'src_meta_nonce');
+    if (in_array((string) $post->post_name, ['shop', 'cart', 'checkout', 'my-account'], true)) {
+        echo '<p>This page is managed by WooCommerce. Configure its store function in the WooCommerce admin screens. The page block content is preserved here.</p>';
+        return;
+    }
+    echo '<p><label for="src-post-content"><strong>Page body</strong></label></p>';
+    echo '<textarea id="src-post-content" name="src_post_content" rows="8" class="large-text">' . esc_textarea($post->post_content) . '</textarea>';
+    echo '<p class="description">This is the standard page body. Branded page sections are managed below.</p>';
+    $schema = src_page_field_schema();
+    foreach (src_page_fields_for_page($post, $schema) as $key) {
+        if (!isset($schema[$key])) continue;
+        $field = $schema[$key];
+        $type = in_array($key, ['page_hero_image_url', 'page_story_image_url'], true) ? 'image' : $field[1];
+        src_meta_box_field($post->ID, $key, $field[0], $type);
+    }
+}
+function src_page_fields_for_page($post, $schema) {
+    $slug = (string) $post->post_name;
+    $groups = [
+        'about' => ['page_hero_title','page_hero_emphasis','page_hero_eyebrow','page_hero_intro','page_hero_image_url','page_story_eyebrow','page_story_heading','page_story_body','page_story_image_url','page_story_image_alt','page_story_stat','page_story_stat_label','page_pillars','page_values_eyebrow','page_values_heading','page_values','page_theory_eyebrow','page_theory_heading','page_theory_steps','page_about_stats','page_about_cta_eyebrow','page_about_cta_heading','page_about_cta_button','page_about_cta_url'],
+        'what-we-do' => ['page_hero_title','page_hero_emphasis','page_hero_eyebrow','page_hero_intro','page_hero_image_url','page_service_pillars','page_service_pillar_aria_label','page_service_who_label','page_service_explore_label','page_service_overview_label','page_service_pillar_programmes_label','page_service_audience_label','page_service_duration_label','page_service_delivery_label','page_service_journey_label','page_service_journey_empty_label','page_service_close_label','page_service_view_programme_label','page_service_all_programmes_label','page_service_current_programmes_label','page_service_get_notified_label','page_service_register_label','page_service_partner_label','page_service_get_involved_label','page_service_status_enrolling','page_service_status_upcoming','page_service_status_delivery','page_service_status_completed','page_service_delivery_eyebrow','page_service_delivery_heading','page_service_delivery_methods','page_service_cta_eyebrow','page_service_cta_heading','page_service_cta_button','page_service_cta_url'],
+        'contact' => ['page_hero_title','page_hero_emphasis','page_hero_eyebrow','page_hero_intro','page_hero_image_url','page_contact_eyebrow','page_contact_heading','page_contact_intro','page_contact_email','page_contact_city','page_contact_coverage','page_contact_form_eyebrow','page_contact_name_placeholder','page_contact_organisation_placeholder','page_contact_email_placeholder','page_contact_subject_placeholder','page_contact_message_placeholder','page_contact_offices_eyebrow','page_contact_offices','page_contact_social_eyebrow','page_contact_socials','page_contact_subject_options','page_contact_submit_label','page_contact_success_heading','page_contact_success_message','page_contact_error_message'],
+        'careers' => ['page_hero_title','page_hero_emphasis','page_hero_eyebrow','page_hero_intro','page_hero_image_url','page_careers_eyebrow','page_careers_heading','page_application_email','page_careers_positions_label','page_careers_requirements_label','page_careers_apply_label','page_careers_close_label','page_careers_form_label','page_careers_name_placeholder','page_careers_email_placeholder','page_careers_phone_placeholder','page_careers_cover_placeholder','page_careers_cv_label','page_careers_cv_help','page_careers_submit_label','page_careers_success_heading','page_careers_success_message','page_careers_error_message','page_careers_empty_message','page_careers_eoe_eyebrow','page_careers_eoe_heading','page_careers_eoe_copy','page_careers_stats'],
+        'pool-of-experts' => ['page_hero_title','page_hero_eyebrow','page_hero_intro','page_hero_image_url','page_experts_all_label','page_experts_cta_eyebrow','page_experts_cta_heading','page_experts_cta_copy','page_experts_cta_button','page_experts_cta_url'],
+        'get-involved' => ['page_hero_title','page_hero_eyebrow','page_hero_intro','page_hero_image_url','page_involvement_tracks','page_involvement_capabilities','page_involvement_form_eyebrow','page_involvement_form_heading','page_involvement_form_intro','page_involvement_name_placeholder','page_involvement_role_placeholder','page_involvement_email_placeholder','page_involvement_organisation_placeholder','page_involvement_message_placeholder','page_involvement_submit_label','page_involvement_success_message','page_involvement_error_message','page_involvement_email'],
+        'portfolio' => ['page_hero_title','page_hero_eyebrow','page_hero_intro','page_hero_image_url','page_portfolio_card_link'],
+        'partners' => ['page_hero_title','page_hero_eyebrow','page_hero_intro','page_partners_directory_eyebrow','page_partners_directory_heading','page_partners_directory_intro','page_partners_empty_message'],
+    ];
+    $keys = $groups[$slug] ?? ['page_hero_title','page_hero_emphasis','page_hero_eyebrow','page_hero_intro','page_hero_image_url'];
+    return array_values(array_intersect($keys, array_keys($schema)));
+}
+function src_meta_box_field($post_id, $key, $label, $type = 'text') {
+    $value = get_post_meta($post_id, '_' . $key, true);
+    $id = 'src-field-' . $key;
+    if ($type === 'textarea') {
+        printf('<p><label for="%1$s"><strong>%2$s</strong></label><br><textarea class="large-text" rows="4" id="%1$s" name="%3$s">%4$s</textarea></p>', esc_attr($id), esc_html($label), esc_attr($key), esc_textarea($value));
+    } else {
+        $input_type = in_array($type, ['email','url'], true) ? $type : 'text';
+        printf('<p><label for="%1$s"><strong>%2$s</strong></label><br><span class="src-media-field"><input class="large-text" id="%1$s" name="%3$s" type="%4$s" value="%5$s">%6$s</span></p>', esc_attr($id), esc_html($label), esc_attr($key), esc_attr($input_type), esc_attr($value), $type === 'image' ? '<button type="button" class="button src-select-image">Choose image</button>' : '');
+    }
+}
+function src_admin_media_fields($hook) {
+    if (!in_array($hook, ['post.php', 'post-new.php'], true)) return;
+    $screen = get_current_screen();
+    if (!$screen || !in_array($screen->post_type, src_admin_plain_content_types(), true)) return;
+    wp_enqueue_media();
+    $script = <<<'JS'
+jQuery(function($){$(document).on('click','.src-select-image',function(e){e.preventDefault();var input=$(this).siblings('input');var picker=wp.media({title:'Choose an image',button:{text:'Use image'},library:{type:'image'},multiple:false});picker.on('select',function(){input.val(picker.state().get('selection').first().toJSON().url).trigger('change');});picker.open();});});
+JS;
+    wp_add_inline_script('jquery-core', $script);
+}
+add_action('admin_enqueue_scripts', 'src_admin_media_fields');
 function src_save_meta($post_id) {
+    static $saving_content = false;
+    if ($saving_content) return;
+    if (isset($_POST['src_plain_content_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['src_plain_content_nonce'])), 'src_plain_content_save') && !wp_is_post_autosave($post_id) && !wp_is_post_revision($post_id) && current_user_can('edit_post', $post_id) && isset($_POST['src_post_content'])) {
+        $saving_content = true;
+        wp_update_post(['ID' => $post_id, 'post_content' => wp_kses_post(wp_unslash($_POST['src_post_content']))]);
+        $saving_content = false;
+    }
     if (!isset($_POST['src_meta_nonce']) || !wp_verify_nonce($_POST['src_meta_nonce'], 'src_meta_save') || (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)) return;
     if (!current_user_can('edit_post', $post_id)) return;
-    $keys = array_merge(['project_partner','project_funder','project_location','project_year','project_impact','project_span','project_home_order','project_home_featured','project_external_url','project_modal_description','project_image_url','project_stats','project_impacts','programme_status','programme_partner','programme_duration','programme_start','programme_fee','programme_location','programme_spots','programme_home_order','programme_home_featured','programme_image_url','team_role','team_quote','team_bio_short','team_linkedin','team_county_level','team_order_senior_management','team_order_finance_operations','team_order_data_quality','team_order_strategy_consulting','team_order_programmes_team','team_order_drivers','team_category','team_panel_color','team_home_order','team_home_featured','team_image_url','job_location','job_type','job_department','job_deadline','job_order','job_requirements','sector_number','sector_home_order','sector_image_url','sector_link','pillar_number','pillar_home_order','pillar_link','audience_home_order','audience_link','partner_type','partner_abbreviation','partner_name','partner_color','partner_image_url','partner_span','partner_home_order','partner_link','stat_value','stat_label','stat_home_order','stat_home_enabled'], array_keys(src_page_field_schema()));
+    $keys = array_merge(['project_partner','project_funder','project_location','project_year','project_impact','project_span','project_home_order','project_home_featured','project_detail_eyebrow','project_detail_heading','project_external_url','project_modal_description','project_image_url','project_stats','project_impacts','programme_status','programme_partner','programme_duration','programme_start','programme_fee','programme_location','programme_spots','programme_home_order','programme_home_featured','programme_image_url','team_role','team_quote','team_bio_short','team_linkedin','team_county_level','team_order_senior_management','team_order_finance_operations','team_order_data_quality','team_order_strategy_consulting','team_order_programmes_team','team_order_drivers','team_category','team_panel_color','team_home_order','team_home_featured','team_image_url','job_location','job_type','job_department','job_deadline','job_order','job_requirements','sector_number','sector_home_order','sector_image_url','sector_link','pillar_number','pillar_home_order','pillar_link','audience_home_order','audience_link','partner_type','partner_abbreviation','partner_name','partner_color','partner_image_url','partner_span','partner_home_order','partner_link','stat_value','stat_label','stat_home_order','stat_home_enabled'], array_keys(src_page_field_schema()));
     $checkboxes = ['project_home_featured','programme_home_featured','team_home_featured','stat_home_enabled'];
     foreach ($keys as $key) {
         if (in_array($key, $checkboxes, true)) {
@@ -256,7 +358,7 @@ function src_save_meta($post_id) {
         if (!isset($_POST[$key])) continue;
         $value = wp_unslash($_POST[$key]);
         $textarea_keys = array_keys(array_filter(src_page_field_schema(), static fn($definition) => ($definition[1] ?? '') === 'textarea'));
-        $value = in_array($key, array_merge(['project_stats','project_impacts','project_modal_description','team_bio_short','job_requirements'], $textarea_keys), true) ? sanitize_textarea_field($value) : (in_array($key, ['team_linkedin','page_experts_cta_url'], true) ? esc_url_raw($value) : (in_array($key, ['page_involvement_email','page_application_email'], true) ? sanitize_email($value) : sanitize_text_field($value)));
+        $value = in_array($key, array_merge(['project_stats','project_impacts','project_modal_description','team_bio_short','job_requirements'], $textarea_keys), true) ? sanitize_textarea_field($value) : (in_array($key, ['team_linkedin','page_experts_cta_url','page_about_cta_url','page_service_cta_url','header_cta_url'], true) ? esc_url_raw($value) : (in_array($key, ['page_involvement_email','page_application_email','page_contact_email'], true) ? sanitize_email($value) : sanitize_text_field($value)));
         update_post_meta($post_id, '_' . $key, $value);
     }
 }
@@ -308,14 +410,40 @@ function src_page_field_schema() {
     return [
         'page_hero_title' => ['Hero title', 'text'], 'page_hero_emphasis' => ['Hero title emphasis', 'text'], 'page_hero_eyebrow' => ['Hero eyebrow', 'text'], 'page_hero_intro' => ['Hero introduction', 'textarea'], 'page_hero_image_url' => ['Hero image URL', 'text'],
         'page_story_eyebrow' => ['Story eyebrow', 'text'], 'page_story_heading' => ['Story heading', 'text'], 'page_story_body' => ['Story body, one paragraph per blank line', 'textarea'], 'page_story_image_url' => ['Story image URL', 'text'], 'page_story_stat' => ['Story stat', 'text'], 'page_story_stat_label' => ['Story stat label', 'text'], 'page_pillars' => ['Pillars, one per line as Label | Description', 'textarea'],
+        'page_story_image_alt' => ['Story image alternative text', 'text'],
         'page_values_eyebrow' => ['Values eyebrow', 'text'], 'page_values_heading' => ['Values heading', 'text'], 'page_values' => ['Values, one per line as Title | Description', 'textarea'],
         'page_theory_eyebrow' => ['Theory of Change eyebrow', 'text'], 'page_theory_heading' => ['Theory of Change heading', 'text'], 'page_theory_steps' => ['Theory of Change steps, one per line as Number | Title | Description', 'textarea'],
         'page_about_stats' => ['About impact statistics, one per line as Value | Label', 'textarea'], 'page_about_cta_eyebrow' => ['About team CTA eyebrow', 'text'], 'page_about_cta_heading' => ['About team CTA heading', 'text'], 'page_about_cta_button' => ['About team CTA button', 'text'],
+        'page_about_cta_url' => ['About team CTA destination URL', 'url'],
         'page_service_pillars' => ['What We Do pillars, one per line as taxonomy key | number | title | tagline | description | audience | gradient start hex | gradient end hex | accent hex', 'textarea'],
+        'page_service_pillar_aria_label' => ['What We Do: pillars section accessibility label', 'text'],
+        'page_service_who_label' => ['What We Do: audience label', 'text'],
+        'page_service_explore_label' => ['What We Do: explore programmes action', 'text'],
+        'page_service_overview_label' => ['What We Do: programme cabinet overview tab', 'text'],
+        'page_service_pillar_programmes_label' => ['What We Do: programmes in pillar heading', 'text'],
+        'page_service_audience_label' => ['What We Do: programme audience fact label', 'text'],
+        'page_service_duration_label' => ['What We Do: programme duration fact label', 'text'],
+        'page_service_delivery_label' => ['What We Do: programme delivery fact label', 'text'],
+        'page_service_journey_label' => ['What We Do: learning journey label', 'text'],
+        'page_service_journey_empty_label' => ['What We Do: missing journey message', 'text'],
+        'page_service_close_label' => ['What We Do: close programme cabinet accessibility label', 'text'],
+        'page_service_view_programme_label' => ['What We Do: view programme action', 'text'],
+        'page_service_all_programmes_label' => ['What We Do: all programmes action', 'text'],
+        'page_service_current_programmes_label' => ['What We Do: current programmes action', 'text'],
+        'page_service_get_notified_label' => ['What We Do: get notified action', 'text'],
+        'page_service_register_label' => ['What We Do: registration action', 'text'],
+        'page_service_partner_label' => ['What We Do: partner action', 'text'],
+        'page_service_get_involved_label' => ['What We Do: get involved action', 'text'],
+        'page_service_status_enrolling' => ['What We Do: enrolling status label', 'text'],
+        'page_service_status_upcoming' => ['What We Do: upcoming status label', 'text'],
+        'page_service_status_delivery' => ['What We Do: in-delivery status label', 'text'],
+        'page_service_status_completed' => ['What We Do: completed status label', 'text'],
         'page_service_delivery_eyebrow' => ['What We Do delivery eyebrow', 'text'], 'page_service_delivery_heading' => ['What We Do delivery heading', 'text'], 'page_service_delivery_methods' => ['What We Do delivery methods, one per line', 'textarea'],
         'page_service_cta_eyebrow' => ['What We Do partnership CTA eyebrow', 'text'], 'page_service_cta_heading' => ['What We Do partnership CTA heading', 'text'], 'page_service_cta_button' => ['What We Do partnership CTA button', 'text'],
+        'page_service_cta_url' => ['What We Do partnership CTA destination URL', 'url'],
         'page_contact_eyebrow' => ['Contact eyebrow', 'text'], 'page_contact_heading' => ['Contact heading', 'text'], 'page_contact_intro' => ['Contact introduction', 'textarea'], 'page_contact_email' => ['Contact email', 'email'], 'page_contact_city' => ['Contact city', 'text'], 'page_contact_coverage' => ['Contact coverage line', 'text'],
         'page_contact_form_eyebrow' => ['Contact form eyebrow', 'text'], 'page_contact_offices_eyebrow' => ['Contact offices eyebrow', 'text'], 'page_contact_offices' => ['Contact offices, one per line as Name | Location | Email | Accent (red or grey)', 'textarea'],
+        'page_contact_name_placeholder' => ['Contact name field label', 'text'], 'page_contact_organisation_placeholder' => ['Contact organisation field label', 'text'], 'page_contact_email_placeholder' => ['Contact email field label', 'text'], 'page_contact_subject_placeholder' => ['Contact subject field label', 'text'], 'page_contact_message_placeholder' => ['Contact message field label', 'text'],
         'page_contact_social_eyebrow' => ['Contact social eyebrow', 'text'], 'page_contact_socials' => ['Contact social links, one per line as URL setting key | Label | Handle', 'textarea'],
         'page_contact_subject_options' => ['Contact enquiry choices, one per line as value | label', 'textarea'], 'page_contact_submit_label' => ['Contact submit button label', 'text'], 'page_contact_success_heading' => ['Contact success heading', 'text'], 'page_contact_success_message' => ['Contact success message', 'textarea'], 'page_contact_error_message' => ['Contact error message', 'textarea'],
         'page_careers_eyebrow' => ['Careers eyebrow', 'text'], 'page_careers_heading' => ['Careers heading', 'text'], 'page_application_email' => ['Applications email', 'email'],
@@ -329,6 +457,7 @@ function src_page_field_schema() {
         'page_careers_phone_placeholder' => ['Careers: phone placeholder', 'text'],
         'page_careers_cover_placeholder' => ['Careers: cover letter placeholder', 'text'],
         'page_careers_cv_label' => ['Careers: CV attachment prompt (display only)', 'text'],
+        'page_careers_cv_help' => ['Careers: CV attachment help text', 'text'],
         'page_careers_submit_label' => ['Careers: submit label', 'text'],
         'page_careers_success_heading' => ['Careers: success heading', 'text'],
         'page_careers_success_message' => ['Careers: success message', 'textarea'],
@@ -358,6 +487,11 @@ function src_page_field_schema() {
         'page_involvement_success_message' => ['Get Involved: success message', 'textarea'],
         'page_involvement_error_message' => ['Get Involved: error message', 'textarea'],
         'page_involvement_email' => ['Get Involved: enquiry recipient email', 'email'],
+        'page_partners_directory_eyebrow' => ['Partners directory eyebrow', 'text'],
+        'page_partners_directory_heading' => ['Partners directory heading', 'text'],
+        'page_partners_directory_intro' => ['Partners directory introduction', 'textarea'],
+        'page_partners_empty_message' => ['Partners directory empty message', 'text'],
+        'page_portfolio_card_link' => ['Portfolio card link label', 'text'],
     ];
 }
 function src_page_field($key, $post_id = null, $fallback = '') { return src_field($key, $post_id ?: get_queried_object_id(), $fallback); }
@@ -386,37 +520,107 @@ function src_menu_fallback() {
     echo '</ul>';
 }
 
+function src_registration_copy_fields() {
+    $fields = [
+        'registration_dialog_aria' => ['Registration dialog accessible label', 'text'], 'registration_heading' => ['Registration dialog heading', 'text'], 'registration_close_label' => ['Close registration accessible label', 'text'], 'registration_progress_label' => ['Registration progress accessible label', 'text'],
+        'registration_step_programme' => ['Registration step: programme', 'text'], 'registration_step_details' => ['Registration step: details', 'text'], 'registration_step_payment' => ['Registration step: payment', 'text'], 'registration_step_confirmation' => ['Registration step: confirmation', 'text'],
+        'registration_choose_programme_heading' => ['Choose programme heading', 'text'], 'registration_available_programmes_label' => ['Available programmes accessible label', 'text'], 'registration_continue_label' => ['Continue button label', 'text'], 'registration_details_heading' => ['Registration details heading', 'text'], 'registration_back_to_programme' => ['Back to programme button label', 'text'],
+        'registration_phone_label' => ['Registration phone label', 'text'], 'registration_phone_placeholder' => ['Registration phone placeholder', 'text'], 'registration_email_label' => ['Registration email label', 'text'], 'registration_email_placeholder' => ['Registration email placeholder', 'text'], 'registration_consent_copy' => ['Registration consent statement', 'textarea'], 'registration_continue_payment' => ['Continue to payment button label', 'text'],
+        'registration_payment_heading' => ['Payment step heading', 'text'], 'registration_ready_copy' => ['Ready for checkout message', 'textarea'], 'registration_programme_label' => ['Registration programme summary label', 'text'], 'registration_fee_label' => ['Registration fee label', 'text'], 'registration_continue_checkout' => ['Continue to secure checkout label', 'text'], 'registration_payment_pending_copy' => ['Unpriced programme message', 'textarea'], 'registration_ask_about_label' => ['Ask about programme link label', 'text'], 'registration_back_to_details' => ['Back to details button label', 'text'],
+        'registration_confirmation_kicker' => ['Payment confirmation eyebrow', 'text'], 'registration_checking_payment' => ['Checking payment message', 'text'], 'registration_waiting_payment_copy' => ['Payment pending message', 'textarea'], 'registration_order_label' => ['Order number label', 'text'], 'registration_receipt_label' => ['Payment receipt label', 'text'], 'registration_retry_label' => ['Retry payment link label', 'text'], 'registration_return_home_label' => ['Return home link label', 'text'], 'registration_rolling_dates_label' => ['Rolling applications date label', 'text'], 'registration_fee_tbc_label' => ['Unconfirmed fee label', 'text'],
+        'registration_paid_heading' => ['Payment success heading', 'text'], 'registration_paid_message' => ['Payment success message', 'textarea'], 'registration_paid_email_message' => ['Payment success email message (use %s for email)', 'text'], 'registration_failed_heading' => ['Payment failure heading', 'text'], 'registration_failed_message' => ['Payment failure message', 'text'], 'registration_pending_email_message' => ['Payment pending email message', 'text'], 'registration_waiting_heading' => ['Waiting payment heading', 'text'], 'registration_waiting_message' => ['Waiting payment instructions', 'textarea'], 'registration_waiting_email_message' => ['Waiting email message (use %s for email)', 'text'], 'registration_phone_error' => ['Phone validation message', 'text'], 'registration_email_error' => ['Email validation message', 'text'], 'registration_consent_error' => ['Consent validation message', 'text'], 'registration_preparing_checkout' => ['Checkout preparation status', 'text'], 'registration_checkout_error' => ['Checkout error message', 'text'],
+    ];
+    return $fields;
+}
+function src_registration_copy_defaults() {
+    return [
+        'registration_dialog_aria' => 'Programme registration', 'registration_heading' => 'Programme registration', 'registration_close_label' => 'Close registration', 'registration_progress_label' => 'Registration progress',
+        'registration_step_programme' => 'Select Programme', 'registration_step_details' => 'Your Details', 'registration_step_payment' => 'Payment', 'registration_step_confirmation' => 'Confirmation',
+        'registration_choose_programme_heading' => 'Choose your programme', 'registration_available_programmes_label' => 'Available programmes', 'registration_continue_label' => 'Continue', 'registration_details_heading' => 'Tell us about you', 'registration_back_to_programme' => 'Back',
+        'registration_phone_label' => 'Phone number', 'registration_phone_placeholder' => '7XXXXXXXX', 'registration_email_label' => 'Email address', 'registration_email_placeholder' => 'you@example.com', 'registration_consent_copy' => 'I consent to SRC processing my information for programme registration and communication.', 'registration_continue_payment' => 'Continue to payment',
+        'registration_payment_heading' => 'Complete payment', 'registration_ready_copy' => 'Your registration is ready for secure checkout. Available payment methods, including M-Pesa when enabled, will appear there.', 'registration_programme_label' => 'Programme', 'registration_fee_label' => 'Fee', 'registration_continue_checkout' => 'Continue to secure checkout', 'registration_payment_pending_copy' => 'The programme fee is still being confirmed. Checkout will open once SRC publishes a payable fee for this programme.', 'registration_ask_about_label' => 'Ask SRC about this programme', 'registration_back_to_details' => 'Back to your details',
+        'registration_confirmation_kicker' => 'Programme registration', 'registration_checking_payment' => 'Checking your payment', 'registration_waiting_payment_copy' => 'We are waiting for your payment provider to confirm the transaction. Please complete the M-PESA prompt on your phone.', 'registration_order_label' => 'Order', 'registration_receipt_label' => 'M-PESA receipt', 'registration_retry_label' => 'Retry payment', 'registration_return_home_label' => 'Return to homepage', 'registration_rolling_dates_label' => 'Rolling applications', 'registration_fee_tbc_label' => '[TBC]',
+        'registration_paid_heading' => 'Your payment is confirmed', 'registration_paid_message' => 'Thank you for registering. Your place has been confirmed and our team will follow up with programme details.', 'registration_paid_email_message' => 'We have sent your order confirmation to %s. Please check your inbox and spam folder.', 'registration_failed_heading' => 'Payment was not completed', 'registration_failed_message' => 'Your payment was not completed. You can try again.', 'registration_pending_email_message' => 'Your confirmation email will be sent after the payment is confirmed.', 'registration_waiting_heading' => 'Waiting for payment confirmation', 'registration_waiting_message' => 'Complete the M-PESA prompt on your phone. This window will update when your payment is confirmed.', 'registration_waiting_email_message' => 'Your confirmation email will be sent to %s after payment.', 'registration_phone_error' => 'Enter 9 digits starting with 7 or 1.', 'registration_email_error' => 'Enter a valid email address.', 'registration_consent_error' => 'Consent is required to continue.', 'registration_preparing_checkout' => 'Preparing checkout…', 'registration_checkout_error' => 'Checkout could not be started. Please try again.',
+    ];
+}
 function src_settings_fields() {
     return array_merge([
-        'hero_meta' => ['Hero meta line', 'text'], 'hero_title' => ['Hero title, use a new line for each line', 'textarea'], 'hero_accent_line' => ['Hero accent line', 'text'], 'hero_copy' => ['Hero description', 'textarea'], 'hero_image_url' => ['Hero image URL', 'text'], 'header_cta_kicker' => ['Header CTA kicker', 'text'], 'header_cta_label' => ['Header CTA label', 'text'],
+        'hero_meta' => ['Hero meta line', 'text'], 'hero_title' => ['Hero title, use a new line for each line', 'textarea'], 'hero_accent_line' => ['Hero accent line', 'text'], 'hero_copy' => ['Hero description', 'textarea'], 'hero_image_url' => ['Hero image URL', 'url'], 'header_cta_kicker' => ['Header CTA kicker', 'text'], 'header_cta_label' => ['Header CTA label', 'text'], 'header_cta_url' => ['Header CTA destination URL', 'url'],
+        'hero_programmes_label' => ['Homepage primary action', 'text'], 'hero_story_label' => ['Homepage story action', 'text'], 'hero_enrolment_label' => ['Homepage enrolment strip label', 'text'], 'hero_enrolling_badge' => ['Enrolment badge label', 'text'], 'hero_enrolment_action' => ['Enrolment action label', 'text'], 'hero_dates_tbc_label' => ['Undated cohort label', 'text'], 'hero_countdown_days_label' => ['Countdown days label', 'text'], 'hero_countdown_hours_label' => ['Countdown hours label', 'text'], 'hero_countdown_minutes_label' => ['Countdown minutes label', 'text'], 'hero_countdown_seconds_label' => ['Countdown seconds label', 'text'],
+        'impact_eyebrow' => ['Impact section eyebrow', 'text'], 'impact_heading' => ['Impact section heading', 'text'], 'impact_details_label' => ['Impact tile detail action', 'text'], 'impact_programmes_label' => ['Impact programmes link label', 'text'],
+        'footprint_intro' => ['Footprint introduction', 'textarea'], 'map_view_aria' => ['Map view accessible label', 'text'], 'map_africa_label' => ['Africa map tab label', 'text'], 'map_kenya_label' => ['Kenya map tab label', 'text'], 'map_hq_label' => ['Map headquarters label', 'text'], 'map_country_programmes_label' => ['Map country action label (use %s for the country)', 'text'], 'map_county_count_label' => ['County count label (use %d for the count)', 'text'],
+        'projects_all_label' => ['Projects list link label', 'text'], 'projects_open_label' => ['Project tile action label', 'text'], 'projects_count_label' => ['Project programme count (use %d for count)', 'text'], 'project_folder_goals_label' => ['Project folder goals tab description', 'text'], 'project_folder_stories_label' => ['Project folder stories tab label', 'text'], 'project_folder_involve_label' => ['Project folder involvement tab label', 'text'], 'project_folder_close_label' => ['Project folder close accessible label', 'text'], 'project_folder_view_programme_label' => ['Project folder programme link label', 'text'], 'project_folder_learn_label' => ['Project folder learn more label', 'text'],
+        'home_partners_eyebrow' => ['Homepage partners eyebrow', 'text'], 'home_partners_heading' => ['Homepage partners heading', 'text'], 'home_programmes_eyebrow' => ['Homepage programmes eyebrow', 'text'], 'home_programmes_heading' => ['Homepage programmes heading', 'text'], 'home_all_programmes_label' => ['Homepage all programmes link', 'text'], 'home_programme_register_label' => ['Homepage programme registration label', 'text'], 'home_programme_coming_soon_label' => ['Homepage upcoming programme label', 'text'],
+        'home_testimonial_eyebrow' => ['Homepage testimonial eyebrow', 'text'], 'home_testimonial_video_coming_label' => ['Testimonial video fallback label', 'text'], 'home_testimonial_story_label' => ['Testimonial story action label', 'text'], 'home_testimonial_prev_label' => ['Previous testimonial label', 'text'], 'home_testimonial_next_label' => ['Next testimonial label', 'text'],
+        'home_news_eyebrow' => ['Homepage news eyebrow', 'text'], 'home_news_heading' => ['Homepage news heading', 'text'], 'home_all_news_label' => ['Homepage all news link', 'text'], 'home_news_card_link_label' => ['Homepage news card link', 'text'],
+        'home_report_eyebrow' => ['Homepage report eyebrow', 'text'], 'home_report_download_label' => ['Homepage report download label', 'text'], 'home_report_cover_label' => ['Homepage report cover label', 'text'], 'home_report_cover_caption' => ['Homepage report cover caption', 'text'],
+        'newsletter_intro' => ['Homepage newsletter introduction', 'textarea'], 'newsletter_link_label' => ['Homepage newsletter link label', 'text'], 'footer_story_title' => ['Footer Our Story column heading', 'text'], 'footer_programmes_title' => ['Footer Programmes column heading', 'text'], 'footer_more_title' => ['Footer More column heading', 'text'], 'footer_legal_title' => ['Footer Legal column heading', 'text'], 'footer_contact_title' => ['Footer contact column heading', 'text'], 'footer_company_name' => ['Footer company name', 'text'],
+        'footer_leadership_label' => ['Footer Leadership archive link label', 'text'],
+        'commerce_hero_eyebrow' => ['Shop and checkout brand eyebrow', 'text'], 'checkout_step_label' => ['Checkout step label', 'text'], 'checkout_step_intro' => ['Checkout instructions', 'textarea'], 'checkout_confirmation_label' => ['Registration confirmation label', 'text'], 'checkout_confirmation_intro' => ['Registration confirmation instructions', 'textarea'],
+        'shop_catalog_eyebrow' => ['Shop catalogue eyebrow', 'text'], 'shop_catalog_heading' => ['Shop catalogue heading', 'text'], 'shop_catalog_intro' => ['Shop catalogue introduction', 'textarea'], 'shop_empty_heading' => ['Shop empty state heading', 'text'], 'shop_empty_intro' => ['Shop empty state introduction', 'textarea'], 'shop_empty_action' => ['Shop empty state link label', 'text'],
         'sector_eyebrow' => ['Sectors eyebrow', 'text'], 'sector_heading' => ['Sectors heading', 'text'], 'sector_intro' => ['Sectors introduction', 'textarea'],
         'audience_eyebrow' => ['Audience eyebrow', 'text'], 'audience_heading' => ['Audience heading', 'text'], 'footprint_eyebrow' => ['Footprint eyebrow', 'text'], 'footprint_heading' => ['Footprint heading', 'text'], 'partners_eyebrow' => ['Partners eyebrow', 'text'], 'partners_heading' => ['Partners heading', 'text'],
-        'projects_eyebrow' => ['Projects eyebrow', 'text'], 'projects_heading' => ['Projects heading', 'text'], 'team_eyebrow' => ['Team eyebrow', 'text'], 'team_heading' => ['Team heading', 'text'],
+        'projects_eyebrow' => ['Projects eyebrow', 'text'], 'projects_heading' => ['Projects heading', 'text'], 'project_archive_eyebrow' => ['Our Work archive eyebrow', 'text'], 'project_archive_heading' => ['Our Work archive heading', 'text'], 'project_archive_intro' => ['Our Work archive introduction', 'textarea'], 'team_eyebrow' => ['The Team archive eyebrow', 'text'], 'team_heading' => ['The Team archive heading', 'text'],
         'programmes_eyebrow' => ['Programmes eyebrow', 'text'], 'programmes_heading' => ['Programmes heading', 'text'], 'quote_eyebrow' => ['Quote eyebrow', 'text'], 'quote_text' => ['Quote text', 'textarea'], 'quote_attribution' => ['Quote attribution', 'text'], 'quote_summary' => ['Quote summary', 'textarea'],
+        'programmes_archive_image_url' => ['Programmes archive hero image URL', 'url'], 'programmes_archive_eyebrow' => ['Programmes archive hero eyebrow', 'text'], 'programmes_archive_heading' => ['Programmes archive hero heading', 'text'], 'programmes_archive_emphasis' => ['Programmes archive heading emphasis', 'text'], 'programmes_archive_intro' => ['Programmes archive introduction', 'textarea'], 'programmes_archive_primary_action' => ['Programmes archive primary action', 'text'], 'programmes_archive_secondary_action' => ['Programmes archive secondary action', 'text'],
+        'programmes_filter_aria' => ['Programme filter navigation label', 'text'], 'programmes_filter_status_aria' => ['Programme status filter label', 'text'], 'programmes_filter_all' => ['All programmes filter label', 'text'], 'programmes_filter_current' => ['Current programmes filter label', 'text'], 'programmes_filter_upcoming' => ['Upcoming programmes filter label', 'text'], 'programmes_filter_past' => ['Past programmes filter label', 'text'], 'programmes_filter_signature' => ['Signature programme filter label', 'text'],
+        'programmes_current_eyebrow' => ['Current programmes section eyebrow', 'text'], 'programmes_current_heading' => ['Current programmes section heading', 'text'], 'programmes_current_intro' => ['Current programmes section introduction', 'textarea'], 'programmes_upcoming_eyebrow' => ['Upcoming programmes section eyebrow', 'text'], 'programmes_upcoming_heading' => ['Upcoming programmes section heading', 'text'], 'programmes_upcoming_intro' => ['Upcoming programmes section introduction', 'textarea'], 'programmes_past_eyebrow' => ['Past programmes section eyebrow', 'text'], 'programmes_past_heading' => ['Past programmes section heading', 'text'], 'programmes_past_intro' => ['Past programmes section introduction', 'textarea'], 'programmes_empty_message' => ['No matching programmes message', 'text'],
+        'news_archive_eyebrow' => ['News archive eyebrow', 'text'], 'news_archive_heading' => ['News archive heading', 'text'], 'news_archive_emphasis' => ['News archive heading emphasis', 'text'], 'news_archive_intro' => ['News archive introduction', 'textarea'], 'news_archive_action' => ['News archive action label', 'text'], 'news_archive_index_label' => ['News archive side label', 'text'], 'news_archive_empty_message' => ['News archive empty message', 'text'], 'news_card_link_label' => ['News card link label', 'text'],
         'newsletter_eyebrow' => ['Newsletter eyebrow', 'text'], 'newsletter_heading' => ['Newsletter heading', 'text'], 'newsletter_email_label' => ['Newsletter email label', 'text'], 'newsletter_placeholder' => ['Newsletter email placeholder', 'text'], 'newsletter_button_label' => ['Newsletter button label', 'text'], 'site_description' => ['Footer description', 'textarea'], 'county_footprint' => ['County footprint', 'textarea'], 'contact_city' => ['Contact city', 'text'], 'contact_email' => ['Contact email', 'email'], 'contact_phone' => ['Contact phone', 'text'],
         'social_linkedin' => ['LinkedIn URL', 'url'], 'social_x' => ['X URL', 'url'], 'social_facebook' => ['Facebook URL', 'url'], 'social_youtube' => ['YouTube URL', 'url'],
-    ], src_leadership_settings_schema());
+    ], src_registration_copy_fields(), src_leadership_settings_schema());
 }
 function src_settings_defaults() {
     return array_merge([
-        'hero_meta' => 'Est. 2012 · Nairobi, Kenya · 15+ Counties', 'hero_title' => "Building Enterprises\nFrom Good\nto Great.", 'hero_accent_line' => 'From Good', 'hero_copy' => 'SRC partners with donors, financial institutions and commercial enterprises to unlock growth for SMEs and cooperatives across Kenya and East Africa.', 'hero_image_url' => 'https://images.unsplash.com/photo-1687422808311-a776f467a468?w=1800&h=1000&fit=crop&auto=format', 'header_cta_kicker' => 'Start a conversation', 'header_cta_label' => 'Partner with us',
+        'hero_meta' => 'Est. 2012 · Nairobi, Kenya · 15+ Counties', 'hero_title' => "Building Enterprises\nFrom Good\nto Great.", 'hero_accent_line' => 'From Good', 'hero_copy' => 'SRC partners with donors, financial institutions and commercial enterprises to unlock growth for SMEs and cooperatives across Kenya and East Africa.', 'hero_image_url' => 'https://images.unsplash.com/photo-1687422808311-a776f467a468?w=1800&h=1000&fit=crop&auto=format', 'header_cta_kicker' => 'Start a conversation', 'header_cta_label' => 'Partner with us', 'header_cta_url' => '/get-involved/',
+        'hero_programmes_label' => 'Our Programmes', 'hero_story_label' => 'Watch Our Story', 'hero_enrolment_label' => 'Now Enrolling', 'hero_enrolling_badge' => 'Enrolling now', 'hero_enrolment_action' => 'Enroll now', 'hero_dates_tbc_label' => 'Dates to be announced', 'hero_countdown_days_label' => 'Days', 'hero_countdown_hours_label' => 'Hrs', 'hero_countdown_minutes_label' => 'Min', 'hero_countdown_seconds_label' => 'Sec',
+        'impact_eyebrow' => 'Our Impact', 'impact_heading' => "Growth you can see.\nChange you can measure.", 'impact_details_label' => 'More about %s', 'impact_programmes_label' => 'See the programmes →',
+        'footprint_intro' => 'SRC is headquartered in Nairobi with active programmes across Kenya and six other African countries.', 'map_view_aria' => 'Map view', 'map_africa_label' => 'Africa', 'map_kenya_label' => 'Kenya', 'map_hq_label' => 'HQ', 'map_country_programmes_label' => 'View %s programmes', 'map_county_count_label' => '%d counties',
+        'projects_all_label' => 'See all case studies →', 'projects_open_label' => 'Open project →', 'projects_count_label' => '%d programmes', 'project_folder_goals_label' => 'Goals, results and stories', 'project_folder_stories_label' => 'See more about this project', 'project_folder_involve_label' => 'Get involved', 'project_folder_close_label' => 'Close programme details', 'project_folder_view_programme_label' => 'View programme →', 'project_folder_learn_label' => 'Learn more →',
+        'home_partners_eyebrow' => 'Trusted By', 'home_partners_heading' => 'Our Partners', 'home_programmes_eyebrow' => 'Applications Open', 'home_programmes_heading' => 'Now Enrolling', 'home_all_programmes_label' => 'All programmes', 'home_programme_register_label' => 'Register', 'home_programme_coming_soon_label' => 'Coming soon',
+        'home_testimonial_eyebrow' => 'Voices From Our Entrepreneurs', 'home_testimonial_video_coming_label' => 'Story video coming soon', 'home_testimonial_story_label' => 'See their story', 'home_testimonial_prev_label' => '← Prev', 'home_testimonial_next_label' => 'Next →',
+        'home_news_eyebrow' => 'From SRC', 'home_news_heading' => 'Latest News & Updates', 'home_all_news_label' => 'All news', 'home_news_card_link_label' => 'Read more',
+        'home_report_eyebrow' => 'Annual Publication', 'home_report_download_label' => 'Download PDF', 'home_report_cover_label' => 'Impact report', 'home_report_cover_caption' => 'Enterprises · Partnerships · Growth',
+        'newsletter_intro' => 'Stories, updates and practical insights from our work with enterprises across the region.', 'newsletter_link_label' => 'Explore latest news', 'footer_story_title' => 'Our Story', 'footer_programmes_title' => 'Programmes', 'footer_more_title' => 'More', 'footer_legal_title' => 'Legal', 'footer_contact_title' => 'Contact', 'footer_company_name' => 'Smart Regional Consultants Ltd.',
+        'footer_leadership_label' => 'Leadership',
+        'commerce_hero_eyebrow' => 'Smart Regional Consultants', 'checkout_step_label' => 'Registration · Final step', 'checkout_step_intro' => 'Confirm your contact details, review the programme, and complete your payment securely.', 'checkout_confirmation_label' => 'Registration · Confirmation', 'checkout_confirmation_intro' => 'Your payment status is shown in the registration window. Keep this page open while you complete the M-PESA prompt.',
+        'shop_catalog_eyebrow' => 'Open enrolment', 'shop_catalog_heading' => 'Choose a programme', 'shop_catalog_intro' => 'Explore current programmes and start your registration. Programme fees and payment options are confirmed in the registration flow.', 'shop_empty_heading' => 'There are no programmes open for enrolment right now.', 'shop_empty_intro' => 'Browse all programmes to see what is running, coming soon or recently completed.', 'shop_empty_action' => 'Browse all programmes',
         'sector_eyebrow' => 'Value chains', 'sector_heading' => 'Sectors We\nWork Across', 'sector_intro' => "From dairy and poultry to livestock markets — SRC brings deep sector knowledge to enterprise development across Kenya's arid and semi-arid counties.",
-        'audience_eyebrow' => 'Thematic focus', 'audience_heading' => 'Who We Serve', 'footprint_eyebrow' => 'Where we work', 'footprint_heading' => 'Our Footprint', 'partners_eyebrow' => 'Trusted by', 'partners_heading' => 'Leading donors, NGOs and enterprises', 'projects_eyebrow' => 'Impact in action', 'projects_heading' => 'Our Projects', 'team_eyebrow' => 'The people behind SRC', 'team_heading' => 'Meet the Team', 'programmes_eyebrow' => 'Build your business', 'programmes_heading' => "Ongoing & Upcoming\nProgrammes", 'quote_eyebrow' => 'From our programmes', 'quote_text' => '“SRC helped us go from a struggling cooperative to a bankable enterprise — in 18 months.”', 'quote_attribution' => 'Women-led dairy cooperative, Isiolo County', 'quote_summary' => 'SRC has supported 2,500+ women entrepreneurs, unlocked $2M+ in SME financing, and operated across 5 African countries.',
-        'newsletter_eyebrow' => 'Stay connected', 'newsletter_heading' => 'News worth opening.', 'newsletter_email_label' => 'Email address', 'newsletter_placeholder' => 'you@example.com', 'newsletter_button_label' => 'Subscribe', 'site_description' => 'Nairobi-based enterprise support organisation. Building SMEs from Good to Great across Kenya and East Africa.', 'county_footprint' => 'Nairobi · Mombasa · Kisumu · Nakuru · Garissa · Marsabit · Turkana · Wajir · Mandera · Isiolo · Samburu · Laikipia · Tana River · Kwale · Kajiado', 'contact_city' => 'Nairobi, Kenya', 'contact_email' => 'info@srctech.co.ke', 'contact_phone' => '+254 (0) 20 000 0000', 'social_linkedin' => '', 'social_x' => '', 'social_facebook' => '', 'social_youtube' => '',
-    ], src_leadership_settings_defaults());
+        'audience_eyebrow' => 'Thematic focus', 'audience_heading' => 'Who We Serve', 'footprint_eyebrow' => 'Where we work', 'footprint_heading' => 'Our Footprint', 'partners_eyebrow' => 'Trusted by', 'partners_heading' => 'Leading donors, NGOs and enterprises', 'projects_eyebrow' => 'Impact in action', 'projects_heading' => 'Our Projects', 'project_archive_eyebrow' => 'Smart Regional Consultants', 'project_archive_heading' => 'Our work', 'project_archive_intro' => 'Ideas into measurable impact.', 'team_eyebrow' => 'The people behind SRC', 'team_heading' => 'Meet the Team', 'programmes_eyebrow' => 'Build your business', 'programmes_heading' => "Ongoing & Upcoming\nProgrammes", 'quote_eyebrow' => 'From our programmes', 'quote_text' => '“SRC helped us go from a struggling cooperative to a bankable enterprise — in 18 months.”', 'quote_attribution' => 'Women-led dairy cooperative, Isiolo County', 'quote_summary' => 'SRC has supported 2,500+ women entrepreneurs, unlocked $2M+ in SME financing, and operated across 5 African countries.',
+        'newsletter_eyebrow' => 'Stay connected', 'newsletter_heading' => 'News worth opening.', 'newsletter_email_label' => 'Email address', 'newsletter_placeholder' => 'you@example.com', 'newsletter_button_label' => 'Subscribe', 'site_description' => 'Nairobi-based enterprise support organisation. Building SMEs from Good to Great across Kenya and East Africa.', 'county_footprint' => 'Nairobi · Mombasa · Kisumu · Nakuru · Garissa · Marsabit · Turkana · Wajir · Mandera · Isiolo · Samburu · Laikipia · Tana River · Kwale · Kajiado', 'contact_city' => 'Nairobi, Kenya', 'contact_email' => 'info@srctech.co.ke', 'contact_phone' => '', 'social_linkedin' => '', 'social_x' => '', 'social_facebook' => '', 'social_youtube' => '',
+        'programmes_archive_image_url' => 'https://images.unsplash.com/photo-1776039325240-02916820bfeb?w=2000&q=85&auto=format', 'programmes_archive_eyebrow' => 'Enrolling Now · Upcoming', 'programmes_archive_heading' => 'Grow your business', 'programmes_archive_emphasis' => 'with us.', 'programmes_archive_intro' => 'Training, bootcamps and advisory designed for entrepreneurs ready for their next stage.', 'programmes_archive_primary_action' => 'View Programmes', 'programmes_archive_secondary_action' => 'How registration works',
+        'programmes_filter_aria' => 'Programme filters', 'programmes_filter_status_aria' => 'Filter by status', 'programmes_filter_all' => 'All', 'programmes_filter_current' => 'Current', 'programmes_filter_upcoming' => 'Upcoming', 'programmes_filter_past' => 'Past', 'programmes_filter_signature' => 'SRC Signature only',
+        'programmes_current_eyebrow' => 'Active Now', 'programmes_current_heading' => 'Current Programmes', 'programmes_current_intro' => 'Programmes currently enrolling or being delivered with our partners.', 'programmes_upcoming_eyebrow' => 'Returning Soon', 'programmes_upcoming_heading' => 'Upcoming', 'programmes_upcoming_intro' => 'Proven programmes preparing for their next cohort.', 'programmes_past_eyebrow' => 'Our Track Record', 'programmes_past_heading' => 'Past Programmes', 'programmes_past_intro' => 'Programmes SRC has delivered with its partners.', 'programmes_empty_message' => 'No programmes match these filters.',
+        'news_archive_eyebrow' => 'Ideas from the field', 'news_archive_heading' => 'Latest News', 'news_archive_emphasis' => '& Updates', 'news_archive_intro' => 'Stories, practical insights and programme updates from SRC’s work with enterprises and cooperatives across the region.', 'news_archive_action' => 'Explore stories', 'news_archive_index_label' => 'SRC / JOURNAL', 'news_archive_empty_message' => 'There are no news stories to show yet.', 'news_card_link_label' => 'Read more',
+    ], src_registration_copy_defaults(), src_leadership_settings_defaults());
 }
 function src_register_settings() { register_setting('src_settings', 'src_settings', ['sanitize_callback' => static function ($input) { $clean = []; foreach (src_settings_fields() as $key => $definition) { $value = isset($input[$key]) ? wp_unslash($input[$key]) : ''; $clean[$key] = in_array($definition[1], ['textarea'], true) ? sanitize_textarea_field($value) : ($definition[1] === 'url' ? esc_url_raw($value) : sanitize_text_field($value)); } return $clean; }]); }
 add_action('admin_init', 'src_register_settings');
 function src_add_settings_page() { add_theme_page('SRC Content Settings', 'SRC Content Settings', 'manage_options', 'src-content-settings', 'src_render_settings_page'); }
 add_action('admin_menu', 'src_add_settings_page');
+function src_settings_media_picker($hook) {
+    if ($hook !== 'appearance_page_src-content-settings') return;
+    wp_enqueue_media();
+    $script = <<<'JS'
+jQuery(function($){$(document).on('click','.src-select-setting-image',function(e){e.preventDefault();var input=$(this).siblings('input');var picker=wp.media({title:'Choose an image',button:{text:'Use image'},library:{type:'image'},multiple:false});picker.on('select',function(){input.val(picker.state().get('selection').first().toJSON().url).trigger('change');});picker.open();});});
+JS;
+    wp_add_inline_script('jquery-core', $script);
+}
+add_action('admin_enqueue_scripts', 'src_settings_media_picker');
 function src_render_settings_page() {
     if (!current_user_can('manage_options')) return;
     $fields = src_settings_fields(); $settings = array_merge(src_settings_defaults(), get_option('src_settings', []));
-    echo '<div class="wrap"><h1>SRC Content Settings</h1><p>Manage homepage and Leadership page copy, newsletter content, footer contact details, and social links. Team profiles are managed under Team; profile departments and county assignments are managed with the team taxonomies.</p><form method="post" action="options.php">';
+    echo '<div class="wrap"><h1>SRC Content Settings</h1><p>Manage homepage, archive, registration dialog and footer copy here. Page-specific content is on each Page form; Team, Programme, Partner, Expert, Job and News records are managed in their own WordPress admin screens.</p><form method="post" action="options.php">';
     settings_fields('src_settings');
-    foreach (array_merge([['Homepage hero and header', ['hero_meta','hero_title','hero_accent_line','hero_copy','hero_image_url','header_cta_kicker','header_cta_label']], ['Homepage section headings', ['sector_eyebrow','sector_heading','sector_intro','audience_eyebrow','audience_heading','footprint_eyebrow','footprint_heading','partners_eyebrow','partners_heading','projects_eyebrow','projects_heading','team_eyebrow','team_heading','programmes_eyebrow','programmes_heading']], ['Homepage quote', ['quote_eyebrow','quote_text','quote_attribution','quote_summary']], ['Newsletter and footer', ['newsletter_eyebrow','newsletter_heading','newsletter_email_label','newsletter_placeholder','newsletter_button_label','site_description','county_footprint','contact_city','contact_email','contact_phone','social_linkedin','social_x','social_facebook','social_youtube']]], src_leadership_settings_groups()) as [$heading, $keys]) {
+    echo '<h2>Registration dialog copy</h2><table class="form-table" role="presentation">';
+    foreach (array_keys(src_registration_copy_fields()) as $key) { [$label, $type] = $fields[$key]; $value = $settings[$key] ?? ''; echo '<tr><th scope="row"><label for="src-setting-' . esc_attr($key) . '">' . esc_html($label) . '</label></th><td>'; if ($type === 'textarea') printf('<textarea class="large-text" rows="3" id="src-setting-%1$s" name="src_settings[%1$s]">%2$s</textarea>', esc_attr($key), esc_textarea($value)); else printf('<input class="regular-text" type="text" id="src-setting-%1$s" name="src_settings[%1$s]" value="%2$s">', esc_attr($key), esc_attr($value)); echo '</td></tr>'; }
+    echo '</table>';
+    echo '<h2>Our Work archive</h2><table class="form-table" role="presentation">';
+    foreach (['project_archive_eyebrow','project_archive_heading','project_archive_intro'] as $key) { [$label, $type] = $fields[$key]; $value = $settings[$key] ?? ''; echo '<tr><th scope="row"><label for="src-setting-' . esc_attr($key) . '">' . esc_html($label) . '</label></th><td>'; if ($type === 'textarea') printf('<textarea class="large-text" rows="3" id="src-setting-%1$s" name="src_settings[%1$s]">%2$s</textarea>', esc_attr($key), esc_textarea($value)); else printf('<input class="regular-text" type="text" id="src-setting-%1$s" name="src_settings[%1$s]" value="%2$s">', esc_attr($key), esc_attr($value)); echo '</td></tr>'; }
+    echo '</table>';
+    foreach (array_merge([['Homepage hero and header', ['hero_meta','hero_title','hero_accent_line','hero_copy','hero_image_url','header_cta_kicker','header_cta_label','header_cta_url','hero_programmes_label','hero_story_label']], ['Homepage section headings', ['sector_eyebrow','sector_heading','sector_intro','audience_eyebrow','audience_heading','footprint_eyebrow','footprint_heading','partners_eyebrow','partners_heading','projects_eyebrow','projects_heading','team_eyebrow','team_heading','programmes_eyebrow','programmes_heading']], ['Homepage enrolment strip', ['hero_enrolment_label','hero_enrolling_badge','hero_enrolment_action','hero_dates_tbc_label','hero_countdown_days_label','hero_countdown_hours_label','hero_countdown_minutes_label','hero_countdown_seconds_label']], ['Homepage impact section', ['impact_eyebrow','impact_heading','impact_details_label','impact_programmes_label']], ['Homepage footprint map', ['footprint_intro','map_view_aria','map_africa_label','map_kenya_label','map_hq_label','map_country_programmes_label','map_county_count_label']], ['Homepage project folders', ['projects_all_label','projects_open_label','projects_count_label','project_folder_goals_label','project_folder_stories_label','project_folder_involve_label','project_folder_close_label','project_folder_view_programme_label','project_folder_learn_label']], ['Homepage partners and programmes', ['home_partners_eyebrow','home_partners_heading','home_programmes_eyebrow','home_programmes_heading','home_all_programmes_label','home_programme_register_label','home_programme_coming_soon_label']], ['Homepage testimonials, news and report', ['home_testimonial_eyebrow','home_testimonial_video_coming_label','home_testimonial_story_label','home_testimonial_prev_label','home_testimonial_next_label','home_news_eyebrow','home_news_heading','home_all_news_label','home_news_card_link_label','home_report_eyebrow','home_report_download_label','home_report_cover_label','home_report_cover_caption']], ['Homepage quote', ['quote_eyebrow','quote_text','quote_attribution','quote_summary']], ['Programmes archive hero and filters', ['programmes_archive_image_url','programmes_archive_eyebrow','programmes_archive_heading','programmes_archive_emphasis','programmes_archive_intro','programmes_archive_primary_action','programmes_archive_secondary_action','programmes_filter_aria','programmes_filter_status_aria','programmes_filter_all','programmes_filter_current','programmes_filter_upcoming','programmes_filter_past','programmes_filter_signature']], ['Programmes archive sections', ['programmes_current_eyebrow','programmes_current_heading','programmes_current_intro','programmes_upcoming_eyebrow','programmes_upcoming_heading','programmes_upcoming_intro','programmes_past_eyebrow','programmes_past_heading','programmes_past_intro','programmes_empty_message']], ['News archive', ['news_archive_eyebrow','news_archive_heading','news_archive_emphasis','news_archive_intro','news_archive_action','news_archive_index_label','news_archive_empty_message','news_card_link_label']], ['Shop and checkout', ['commerce_hero_eyebrow','checkout_step_label','checkout_step_intro','checkout_confirmation_label','checkout_confirmation_intro','shop_catalog_eyebrow','shop_catalog_heading','shop_catalog_intro','shop_empty_heading','shop_empty_intro','shop_empty_action']], ['Newsletter and footer', ['newsletter_eyebrow','newsletter_heading','newsletter_intro','newsletter_link_label','newsletter_email_label','newsletter_placeholder','newsletter_button_label','site_description','county_footprint','contact_city','contact_email','contact_phone','footer_story_title','footer_programmes_title','footer_more_title','footer_legal_title','footer_contact_title','footer_company_name','footer_leadership_label','social_linkedin','social_x','social_facebook','social_youtube']]], src_leadership_settings_groups()) as [$heading, $keys]) {
         echo '<h2>' . esc_html($heading) . '</h2><table class="form-table" role="presentation">';
-        foreach ($keys as $key) { [$label, $type] = $fields[$key]; $value = $settings[$key] ?? ''; echo '<tr><th scope="row"><label for="src-setting-' . esc_attr($key) . '">' . esc_html($label) . '</label></th><td>'; if ($type === 'textarea') printf('<textarea class="large-text" rows="3" id="src-setting-%1$s" name="src_settings[%1$s]">%2$s</textarea>', esc_attr($key), esc_textarea($value)); else printf('<input class="regular-text" type="%1$s" id="src-setting-%2$s" name="src_settings[%2$s]" value="%3$s">', esc_attr($type), esc_attr($key), esc_attr($value)); echo '</td></tr>'; }
+        foreach ($keys as $key) { [$label, $type] = $fields[$key]; $value = $settings[$key] ?? ''; echo '<tr><th scope="row"><label for="src-setting-' . esc_attr($key) . '">' . esc_html($label) . '</label></th><td>'; if ($type === 'textarea') printf('<textarea class="large-text" rows="3" id="src-setting-%1$s" name="src_settings[%1$s]">%2$s</textarea>', esc_attr($key), esc_textarea($value)); elseif ($type === 'url' && (str_ends_with($key, '_image_url') || $key === 'hero_image_url')) printf('<span class="src-media-field"><input class="regular-text" type="url" id="src-setting-%1$s" name="src_settings[%1$s]" value="%2$s"><button type="button" class="button src-select-setting-image">Choose image</button></span>', esc_attr($key), esc_attr($value)); else printf('<input class="regular-text" type="%1$s" id="src-setting-%2$s" name="src_settings[%2$s]" value="%3$s">', esc_attr($type), esc_attr($key), esc_attr($value)); echo '</td></tr>'; }
         echo '</table>';
     }
     submit_button('Save SRC Content Settings'); echo '</form></div>';
@@ -869,10 +1073,10 @@ function src_seed_v3_reference_records() {
     $partners = [
         ['cbf', 'Cherie Blair Foundation for Women', 'cherie-blair-foundation.png'], ['dhl', 'DHL', 'dhl.png'],
         ['boma', 'BOMA Project', 'boma-project.png'], ['herventure', 'HerVenture', 'her-venture-transparent.svg'],
-        ['care', 'CARE', ''], ['mastercard-foundation', 'Mastercard Foundation', ''], ['ande', 'ANDE', ''],
+        ['care', 'CARE', 'care.svg'], ['mastercard-foundation', 'Mastercard Foundation', ''], ['ande', 'ANDE', 'ande.png'],
         ['graca-machel-trust', 'Graça Machel Trust', ''], ['afrishela', 'Afrishela', ''], ['sheconnects', 'SheConnects', ''],
-        ['fcdo', 'FCDO', ''], ['fao', 'FAO', ''], ['kcb-foundation', 'KCB Foundation', ''], ['snv', 'SNV', ''],
-        ['ilri', 'ILRI', ''], ['village-enterprise', 'Village Enterprise', ''], ['giz', 'GIZ', 'giz.png'],
+        ['fcdo', 'FCDO', ''], ['fao', 'FAO', 'fao.svg'], ['kcb-foundation', 'KCB Foundation', ''], ['snv', 'SNV', 'snv.svg'],
+        ['ilri', 'ILRI', ''], ['village-enterprise', 'Village Enterprise', 'village-enterprise.svg'], ['giz', 'GIZ', 'giz.png'],
         ['goal', 'GOAL', 'goal.png'], ['kcdf', 'KCDF', 'kcdf.png'], ['united-nations', 'United Nations', 'united-nations.png'],
         ['usaid', 'USAID', 'usaid.png'], ['village-capital', 'Village Capital', 'village-capital.png'],
         ['world-bank', 'World Bank', 'world-bank.png'], ['wwf', 'WWF', 'wwf.png'],
@@ -911,7 +1115,7 @@ function src_seed_v3_reference_records() {
 add_action('init', 'src_seed_v3_reference_records', 33);
 
 function src_seed_page_content() {
-    if (get_option('src_page_content_seed_version') === '15') return;
+    if (get_option('src_page_content_seed_version') === '20') return;
     $pages = [
         'about' => [
             'page_hero_title' => "Built in Kenya, for Africa's enterprises.", 'page_hero_emphasis' => 'for', 'page_hero_eyebrow' => 'About SRC', 'page_hero_intro' => 'For over a decade, SRC has helped SMEs and cooperatives grow from good to great through strategy, finance and markets.', 'page_hero_image_url' => 'https://images.unsplash.com/photo-1637149014802-d917e6255c2d?auto=format&fit=crop&w=2000&q=85', 'page_story_eyebrow' => 'Our Story', 'page_story_heading' => 'A firm built on proximity to the entrepreneur.', 'page_story_body' => "SRC was founded in 2012 by Catherine Gitonga, a development professional with more than 20 years of enterprise development experience across Kenya and East Africa. The firm grew from a conviction that SMEs — particularly in agriculture, livestock and cooperatives — were underserved by both the market and the donor system.\n\nOver 12 years, SRC has grown from a boutique advisory firm into a 51-strong team operating across 15+ Kenyan counties and 5 additional African countries, delivering multi-million-dollar programmes for some of the world's leading development funders.\n\nBut the mission has never changed: unlock real growth, for real businesses, in real communities.", 'page_story_image_url' => 'https://images.unsplash.com/photo-1776039213401-f95bfd9c516a?w=800&h=1000&fit=crop&auto=format', 'page_story_stat' => '2012', 'page_story_stat_label' => 'Founded', 'page_pillars' => "Vision | A thriving SME ecosystem across Kenya and East Africa — inclusive, innovative and globally competitive.\nMission | To provide high-quality, context-specific business support services that enable SMEs and cooperatives to achieve sustainable growth.\nPurpose | Building Enterprises from Good to Great — every intervention, every county, every entrepreneur.", 'page_values_eyebrow' => 'What We Stand For', 'page_values_heading' => 'Core Values', 'page_values' => "Integrity & Safeguarding | We hold ourselves to the highest ethical standards in all our work with clients, partners and communities.\nExcellence | We deliver measurable, lasting results — not outputs. Quality is non-negotiable in every engagement.\nInnovation | We bring creative, context-specific solutions to enterprise development challenges across diverse geographies.\nTeaming | We believe the best outcomes emerge from genuine collaboration — with clients, partners and the communities we serve.", 'page_theory_eyebrow' => 'How Change Happens', 'page_theory_heading' => 'Theory of Change', 'page_theory_steps' => "01 | Diagnosis | Assess enterprise health, market position and growth barriers\n02 | Intervention Design | Co-design bespoke support programmes with clients and donors\n03 | Delivery | Deploy technical assistance, training and market linkage services\n04 | Linkage to Finance | Connect investable enterprises to appropriate capital sources\n05 | Market Access | Facilitate off-take agreements and formal market entry\n06 | Scale & Sustain | Embed systems and skills for long-term enterprise growth", 'page_about_stats' => "51 | Staff\n15+ | Kenyan Counties\n25+ | Associate Consultants\n5 | African Countries\n12+ | Years of Impact", 'page_about_cta_eyebrow' => 'Meet the team', 'page_about_cta_heading' => 'The people behind SRC', 'page_about_cta_button' => 'Meet Our Leadership',
@@ -990,7 +1194,8 @@ function src_seed_page_content() {
             'page_experts_cta_button' => 'Engage Our Experts',
             'page_experts_cta_url' => '',
         ],
-        'partners' => ['page_hero_title' => 'Clients & Partners', 'page_hero_eyebrow' => 'Smart Regional Consultants', 'page_hero_intro' => 'Leading donors, NGOs and enterprises building stronger ecosystems with SRC.'],
+        'partners' => ['page_hero_title' => 'Clients & Partners', 'page_hero_eyebrow' => 'Smart Regional Consultants', 'page_hero_intro' => 'Leading donors, NGOs and enterprises building stronger ecosystems with SRC.', 'page_partners_directory_eyebrow' => 'Working together', 'page_partners_directory_heading' => 'A shared commitment to enterprise growth', 'page_partners_directory_intro' => '', 'page_partners_empty_message' => 'Partner profiles will be added here.'],
+        'portfolio' => ['page_hero_title' => 'Our Portfolio', 'page_hero_eyebrow' => 'Our Work', 'page_hero_intro' => 'Programmes designed to help enterprises and cooperatives grow across Kenya and East Africa.', 'page_portfolio_card_link' => 'Explore programme'],
     ];
     $legacy_seed_values = [
         'what-we-do' => [
@@ -1034,9 +1239,62 @@ function src_seed_page_content() {
             if ($current === '' || $can_migrate_legacy) update_post_meta($page->ID, '_' . $key, $value);
         }
     }
-    update_option('src_page_content_seed_version', '15');
+    $new_fields = [
+        'about' => ['page_story_image_alt' => 'SRC team training session', 'page_about_cta_url' => '/leadership/'],
+        'what-we-do' => ['page_service_cta_url' => '/get-involved/'],
+        'contact' => ['page_contact_name_placeholder' => 'Full name', 'page_contact_organisation_placeholder' => 'Organisation', 'page_contact_email_placeholder' => 'Email address', 'page_contact_subject_placeholder' => 'Subject / Enquiry type', 'page_contact_message_placeholder' => 'Your message...'],
+        'careers' => ['page_careers_cv_help' => 'Click to browse or drag and drop a PDF, DOC or DOCX file (max 10 MB)'],
+    ];
+    foreach ($new_fields as $slug => $fields) {
+        $page = get_page_by_path($slug);
+        if (!$page) continue;
+        foreach ($fields as $key => $value) {
+            if (get_post_meta($page->ID, '_' . $key, true) === '') update_post_meta($page->ID, '_' . $key, $value);
+        }
+    }
+    $service_page = get_page_by_path('what-we-do');
+    if ($service_page) {
+        $service_defaults = [
+            'page_service_pillar_aria_label' => 'Three pillars of enterprise growth',
+            'page_service_who_label' => "Who it's for",
+            'page_service_explore_label' => 'Explore programmes',
+            'page_service_overview_label' => 'Overview',
+            'page_service_pillar_programmes_label' => 'Programmes in this pillar',
+            'page_service_audience_label' => 'Audience',
+            'page_service_duration_label' => 'Duration',
+            'page_service_delivery_label' => 'Delivery',
+            'page_service_journey_label' => 'Learning journey',
+            'page_service_journey_empty_label' => 'Journey details coming soon.',
+            'page_service_close_label' => 'Close programme cabinet',
+            'page_service_view_programme_label' => 'View programme',
+            'page_service_all_programmes_label' => 'See all programmes',
+            'page_service_current_programmes_label' => 'Explore current programmes',
+            'page_service_get_notified_label' => 'Get notified',
+            'page_service_register_label' => 'Register',
+            'page_service_partner_label' => 'Partner with us',
+            'page_service_get_involved_label' => 'Get involved',
+            'page_service_status_enrolling' => 'Enrolling now',
+            'page_service_status_upcoming' => 'Upcoming',
+            'page_service_status_delivery' => 'In delivery',
+            'page_service_status_completed' => 'Completed',
+        ];
+        foreach ($service_defaults as $key => $value) {
+            if (get_post_meta($service_page->ID, '_' . $key, true) === '') update_post_meta($service_page->ID, '_' . $key, $value);
+        }
+    }
+    update_option('src_page_content_seed_version', '20');
 }
 add_action('init', 'src_seed_page_content', 32);
+
+function src_seed_project_detail_copy_fields() {
+    if (get_option('src_project_detail_copy_seeded') === '1') return;
+    foreach (get_posts(['post_type' => 'project', 'post_status' => 'publish', 'posts_per_page' => -1]) as $project) {
+        if (get_post_meta($project->ID, '_project_detail_eyebrow', true) === '') update_post_meta($project->ID, '_project_detail_eyebrow', 'Selected work');
+        if (get_post_meta($project->ID, '_project_detail_heading', true) === '') update_post_meta($project->ID, '_project_detail_heading', 'The work behind the outcome.');
+    }
+    update_option('src_project_detail_copy_seeded', '1');
+}
+add_action('init', 'src_seed_project_detail_copy_fields', 35);
 
 function src_seed_programme_pillar_order() {
     if (get_option('src_programme_pillar_order_seeded') === '1') return;

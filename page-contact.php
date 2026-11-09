@@ -43,12 +43,12 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
             <input type="hidden" name="action" value="src_contact">
             <?php wp_nonce_field('src_contact_submit', 'src_contact_nonce'); ?>
             <div class="contact-v3-name-row">
-              <label class="screen-reader-text" for="contact-name">Full name</label><input id="contact-name" name="name" type="text" placeholder="Full name" required autocomplete="name">
-              <label class="screen-reader-text" for="contact-organisation">Organisation</label><input id="contact-organisation" name="organisation" type="text" placeholder="Organisation" autocomplete="organization">
+              <label class="screen-reader-text" for="contact-name"><?php echo esc_html(src_page_field('page_contact_name_placeholder', $page_id, 'Full name')); ?></label><input id="contact-name" name="name" type="text" placeholder="<?php echo esc_attr(src_page_field('page_contact_name_placeholder', $page_id, 'Full name')); ?>" required autocomplete="name">
+              <label class="screen-reader-text" for="contact-organisation"><?php echo esc_html(src_page_field('page_contact_organisation_placeholder', $page_id, 'Organisation')); ?></label><input id="contact-organisation" name="organisation" type="text" placeholder="<?php echo esc_attr(src_page_field('page_contact_organisation_placeholder', $page_id, 'Organisation')); ?>" autocomplete="organization">
             </div>
-            <label class="screen-reader-text" for="contact-email">Email address</label><input id="contact-email" name="email" type="email" placeholder="Email address" required autocomplete="email">
-            <div class="contact-v3-select-wrap"><label class="screen-reader-text" for="contact-subject">Subject / Enquiry type</label><select id="contact-subject" name="subject"><option value="">Subject / Enquiry type</option><?php foreach ($subject_options as [$value, $label]) : ?><option value="<?php echo esc_attr($value); ?>"<?php selected($requested_subject, $value); ?>><?php echo esc_html($label); ?></option><?php endforeach; ?></select><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
-            <label class="screen-reader-text" for="contact-message">Your message</label><textarea id="contact-message" name="message" rows="5" placeholder="Your message..." required></textarea>
+            <label class="screen-reader-text" for="contact-email"><?php echo esc_html(src_page_field('page_contact_email_placeholder', $page_id, 'Email address')); ?></label><input id="contact-email" name="email" type="email" placeholder="<?php echo esc_attr(src_page_field('page_contact_email_placeholder', $page_id, 'Email address')); ?>" required autocomplete="email">
+            <div class="contact-v3-select-wrap"><label class="screen-reader-text" for="contact-subject"><?php echo esc_html(src_page_field('page_contact_subject_placeholder', $page_id, 'Subject / Enquiry type')); ?></label><select id="contact-subject" name="subject"><option value=""><?php echo esc_html(src_page_field('page_contact_subject_placeholder', $page_id, 'Subject / Enquiry type')); ?></option><?php foreach ($subject_options as [$value, $label]) : ?><option value="<?php echo esc_attr($value); ?>"<?php selected($requested_subject, $value); ?>><?php echo esc_html($label); ?></option><?php endforeach; ?></select><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+            <label class="screen-reader-text" for="contact-message"><?php echo esc_html(src_page_field('page_contact_message_placeholder', $page_id, 'Your message...')); ?></label><textarea id="contact-message" name="message" rows="5" placeholder="<?php echo esc_attr(src_page_field('page_contact_message_placeholder', $page_id, 'Your message...')); ?>" required></textarea>
             <button type="submit"><?php echo esc_html(src_page_field('page_contact_submit_label', $page_id, 'Send Message')); ?></button>
           </form>
         <?php endif; ?>
@@ -70,14 +70,14 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
           </div>
         </section>
 
-        <section class="contact-v3-social" aria-labelledby="contact-social-title">
+        <?php $configured_socials = array_values(array_filter($socials, static function ($row) { return !empty($row[0]) && src_option(sanitize_key($row[0]), '') && !empty($row[1]); })); if ($configured_socials) : ?><section class="contact-v3-social" aria-labelledby="contact-social-title">
           <h2 id="contact-social-title" class="contact-v3-section-eyebrow"><?php echo esc_html(src_page_field('page_contact_social_eyebrow', $page_id, 'Follow SRC')); ?></h2>
           <div class="contact-v3-social-list">
-            <?php foreach ($socials as [$setting, $label, $handle]) : $setting = sanitize_key($setting); if ($label === '') continue; $href = src_option($setting, '#'); ?>
-              <a href="<?php echo esc_url($href); ?>"><span><?php echo esc_html($label); ?></span><span><?php echo esc_html($handle ?? ''); ?></span></a>
+            <?php foreach ($configured_socials as [$setting, $label, $handle]) : $href = src_option(sanitize_key($setting), ''); ?>
+              <a href="<?php echo esc_url($href); ?>" target="_blank" rel="noopener noreferrer"><span><?php echo esc_html($label); ?></span><span><?php echo esc_html($handle ?? ''); ?></span></a>
             <?php endforeach; ?>
           </div>
-        </section>
+        </section><?php endif; ?>
       </aside>
     </div>
   </section>

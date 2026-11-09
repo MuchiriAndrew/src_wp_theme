@@ -1,1 +1,1 @@
-<?php get_template_part('template-parts/commerce-page', null, ['title' => __('Programmes & Enrolment', 'src')]); ?>
+<?php get_template_part('template-parts/commerce-page', null, ['title' => get_the_title()]); ?>
