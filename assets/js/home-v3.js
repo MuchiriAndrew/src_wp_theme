@@ -1,4 +1,26 @@
 (() => {
+  const programmeRing = document.querySelector('.home-programmes-ring');
+  if (programmeRing) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    const updateRing = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (reducedMotion.matches) {
+          programmeRing.style.setProperty('--ring-parallax', '0px');
+          return;
+        }
+        const sectionTop = programmeRing.parentElement.getBoundingClientRect().top + window.scrollY;
+        programmeRing.style.setProperty('--ring-parallax', `${(window.scrollY - sectionTop) * 0.15}px`);
+      });
+    };
+    updateRing();
+    window.addEventListener('scroll', updateRing, { passive: true });
+    reducedMotion.addEventListener('change', updateRing);
+  }
+})();
+
+(() => {
   const tiles = [...document.querySelectorAll('.impact-tile')];
 
   const closeTile = (tile) => {

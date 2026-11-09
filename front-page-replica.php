@@ -141,6 +141,7 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
     <?php foreach ($project_groups as $index => [$term, $programmes]) :
       $lead = $programmes[0];
       $image = src_image_url($lead->ID, 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=900&h=600&fit=crop&auto=format&q=82');
+      $tile_image = src_project_tile_image_url($image);
       $funders = [];
       $impact_links = [];
       foreach ($programmes as $programme) {
@@ -152,7 +153,7 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
       $project_title = $term->slug === 'womens-enterprise' ? 'Cherie Blair Foundation for Women' : html_entity_decode($term->name, ENT_QUOTES | ENT_HTML5, 'UTF-8');
       $project_modal_data[] = ['title' => $project_title, 'shortName' => html_entity_decode($term->name, ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'partner' => $funder_label, 'funder' => $funder_label, 'image' => $image, 'location' => src_field('programme_reach', $lead->ID, 'Across Africa'), 'description' => $summary, 'result' => count($programmes) . ' programmes in this theme', 'url' => home_url('/portfolio/'), 'folders' => array_map(static function ($programme) { return ['title' => html_entity_decode(src_field('programme_hero_title', $programme->ID, get_the_title($programme)), ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'slug' => $programme->post_name, 'description' => src_field('programme_audience', $programme->ID, wp_trim_words(wp_strip_all_tags($programme->post_content), 32)), 'outcomes' => src_field('programme_outcomes', $programme->ID, ''), 'status' => src_field('programme_status', $programme->ID, 'past'), 'fee' => src_field('programme_fee', $programme->ID, ''), 'duration' => src_field('programme_duration', $programme->ID, ''), 'dates' => src_field('programme_dates', $programme->ID, src_field('programme_start', $programme->ID, '')), 'reach' => src_field('programme_reach', $programme->ID, ''), 'url' => get_permalink($programme)]; }, $programmes)];
     ?>
-      <button class="project-tile <?php echo in_array($index, [0, 3], true) ? 'span-2' : ''; ?>" type="button" data-project-index="<?php echo esc_attr(count($project_modal_data) - 1); ?>" aria-haspopup="dialog" aria-label="Open <?php echo esc_attr($project_title); ?>"><img src="<?php echo esc_url($image); ?>" alt=""><span class="project-tile-overlay" aria-hidden="true"></span><span class="project-tile-content"><span class="project-tile-partner"><?php echo esc_html($funder_label); ?></span><strong><?php echo esc_html(count($programmes) . ' programmes'); ?></strong><span class="project-theme-name"><?php echo esc_html($project_title); ?></span></span><span class="project-open-label">Open project →</span></button>
+      <button class="project-tile <?php echo in_array($index, [0, 3], true) ? 'span-2' : ''; ?>" type="button" data-project-index="<?php echo esc_attr(count($project_modal_data) - 1); ?>" aria-haspopup="dialog" aria-label="Open <?php echo esc_attr($project_title); ?>"><img src="<?php echo esc_url($tile_image); ?>" alt=""><span class="project-tile-overlay" aria-hidden="true"></span><span class="project-tile-content"><span class="project-tile-partner"><?php echo esc_html($funder_label); ?></span><strong><?php echo esc_html(count($programmes) . ' programmes'); ?></strong><span class="project-theme-name"><?php echo esc_html($project_title); ?></span></span><span class="project-open-label">Open project →</span></button>
     <?php endforeach; ?>
   </div></div><a class="project-ref-mobile-link" href="<?php echo esc_url(home_url('/programmes/')); ?>">See all case studies →</a></div></section>
 
@@ -196,7 +197,9 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
     </div><?php endif; ?>
   </section>
 
-  <section id="programmes" class="home-programmes-ref"><div class="home-programmes-inner">
+  <section id="programmes" class="home-programmes-ref">
+    <svg class="home-programmes-ring" viewBox="0 0 600 600" aria-hidden="true" focusable="false"><circle cx="300" cy="300" r="264" fill="none" stroke="currentColor" stroke-width="72" pathLength="100" stroke-dasharray="70 30" stroke-linecap="round"></circle></svg>
+    <div class="home-programmes-inner">
     <div class="home-programmes-heading"><div><p class="eyebrow">Applications Open</p><h2 class="display">Now Enrolling</h2></div><a href="<?php echo esc_url(get_post_type_archive_link('programme')); ?>">All programmes <span aria-hidden="true">→</span></a></div>
     <div class="home-programme-grid">
       <?php foreach (array_slice($open_programmes, 0, 4) as $programme) : $img = src_image_url($programme->ID, ''); $audience = src_field('programme_audience', $programme->ID, wp_trim_words(wp_strip_all_tags($programme->post_excerpt ?: $programme->post_content), 24)); $fee = src_field('programme_fee', $programme->ID, '[TBC]'); $dates = src_field('programme_dates', $programme->ID, 'TBC'); $reach = src_field('programme_reach', $programme->ID, 'Kenya'); ?>
@@ -216,7 +219,8 @@ $programme_logo_url = static function ($post_id) use ($asset_uri) {
       <?php endforeach; ?>
     </div>
     <?php if ($road_programmes) : ?><div class="home-coming-soon"><span>Coming soon</span><?php foreach ($road_programmes as $programme) : ?><a href="<?php echo esc_url(get_permalink($programme)); ?>"><?php echo esc_html(src_field('programme_hero_title', $programme->ID, get_the_title($programme))); ?> <span aria-hidden="true">→</span></a><?php endforeach; ?></div><?php endif; ?>
-  </div></section>
+    </div>
+  </section>
 
   <?php $stories = array_values(array_filter(src_ordered_posts('src_testimonial', 'story_order'), static fn($post) => src_field('story_featured', $post->ID, '0') === '1')); ?>
   <?php if ($stories) : ?><section id="testimonials" class="home-testimonials-ref" data-testimonial-carousel>

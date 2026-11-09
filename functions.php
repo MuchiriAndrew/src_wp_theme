@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.136');
+define('SRC_VERSION', '3.5.178');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -260,6 +260,12 @@ function src_image_url($post_id, $fallback) {
         if ($url !== '') return preg_match('#^https?://#i', $url) ? esc_url_raw($url) : get_theme_file_uri(ltrim($url, '/'));
     }
     return $fallback;
+}
+function src_project_tile_image_url($image_url) {
+    $parts = wp_parse_url($image_url);
+    if (!is_array($parts) || empty($parts['host']) || strtolower($parts['host']) !== 'images.unsplash.com') return $image_url;
+    $image_url = remove_query_arg(['w', 'h', 'fit', 'crop', 'auto', 'q'], $image_url);
+    return add_query_arg(['w' => 900, 'h' => 800, 'fit' => 'crop', 'crop' => 'center', 'auto' => 'format', 'q' => 82], $image_url);
 }
 function src_page_url($slug) { $page = get_page_by_path($slug); return $page ? get_permalink($page) : home_url('/' . trim($slug, '/') . '/'); }
 function src_field($key, $post_id = null, $fallback = '') { $value = get_post_meta($post_id ?: get_the_ID(), '_' . $key, true); return $value !== '' ? $value : $fallback; }

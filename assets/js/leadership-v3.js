@@ -81,22 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let activeModal = null;
-  let returnFocus = null;
   const closeModal = () => {
     if (!activeModal) return;
     const previousOverflow = activeModal.dataset.previousOverflow || '';
+    const previousRootOverflow = activeModal.dataset.previousRootOverflow || '';
     activeModal.remove();
     document.removeEventListener('keydown', handleModalKeydown);
     activeModal = null;
     document.body.style.overflow = previousOverflow;
-    returnFocus?.focus({ preventScroll: true });
-    returnFocus = null;
+    document.documentElement.style.overflow = previousRootOverflow;
   };
 
   const openModal = (card) => {
     if (!card.dataset.bio) return;
     closeModal();
-    returnFocus = card.querySelector('[data-open-team-bio]') || card;
     const modal = document.createElement('div');
     modal.className = 'leadership-bio-modal-backdrop';
     modal.setAttribute('role', 'dialog');
@@ -104,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.setAttribute('aria-label', `${card.dataset.name} biography`);
     modal.tabIndex = -1;
     modal.dataset.previousOverflow = document.body.style.overflow;
+    modal.dataset.previousRootOverflow = document.documentElement.style.overflow;
 
     const shell = document.createElement('div');
     shell.className = 'leadership-bio-modal-shell';
@@ -188,8 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', handleModalKeydown);
     document.body.append(modal);
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     activeModal = modal;
-    close.focus();
   };
 
   function handleModalKeydown(event) {

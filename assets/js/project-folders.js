@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let closeTimer = 0;
   let folderTimer = 0;
   let touchStartY = null;
-  let pageScrollBeforeOpen = 0;
   let originBounds = null;
   let activeFolderIndex = null;
 
@@ -28,20 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     dialog.style.top = `${bounds.top}px`;
     dialog.style.width = `${bounds.width}px`;
     dialog.style.height = `${bounds.height}px`;
-  }
-
-  function restorePageScroll() {
-    const root = document.documentElement;
-    const body = document.body;
-    const rootBehavior = root.style.scrollBehavior;
-    const bodyBehavior = body.style.scrollBehavior;
-    root.style.scrollBehavior = 'auto';
-    body.style.scrollBehavior = 'auto';
-    window.scrollTo(0, pageScrollBeforeOpen);
-    requestAnimationFrame(() => {
-      root.style.scrollBehavior = rootBehavior;
-      body.style.scrollBehavior = bodyBehavior;
-    });
   }
 
   function getOpenBounds() {
@@ -149,11 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.clearTimeout(folderTimer);
     detail.hidden = false;
     detailStage?.classList.add('project-stage--folder-open');
-    if (window.innerWidth >= 1024 && !dialog.classList.contains('project-folder--programme-open')) {
-      dialog.classList.add('project-folder--programme-open');
-      const bounds = getOpenBounds();
-      window.scrollTo({ top: bounds.top, behavior: reduceMotion ? 'auto' : 'smooth' });
-    }
     renderProgramme(programme, position);
     detail.classList.remove('programme-folder-layer--open', 'programme-folder-layer--closing');
     animateProgrammeOpen();
@@ -162,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderProject(project) {
     activeProject = project;
     activeFolderIndex = null;
-    dialog.classList.remove('project-folder--programme-open');
     dialog.style.setProperty('--folder-image', `url("${project.image}")`);
     const photo = dialog.querySelector('.project-folder-photo');
     photo.style.backgroundImage = `url("${project.image}")`;
@@ -204,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     activeTrigger = trigger;
     window.clearTimeout(closeTimer);
     window.clearTimeout(folderTimer);
-    pageScrollBeforeOpen = window.scrollY;
     const tileRect = trigger.getBoundingClientRect();
     originBounds = {
       left: tileRect.left + window.scrollX,
@@ -217,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     area.classList.add('projects-stage--open');
 
     if (window.innerWidth >= 1024) setBounds(originBounds);
-    dialog.classList.remove('project-folder--open', 'project-folder--opening', 'project-folder--closing', 'project-folder--programme-open');
+    dialog.classList.remove('project-folder--open', 'project-folder--opening', 'project-folder--closing');
     dialog.classList.add('project-folder--primed');
     dialog.show();
 
@@ -248,11 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
     detailStage?.classList.remove('project-stage--folder-open');
     detail.classList.remove('programme-folder-layer--open', 'programme-folder-layer--opening', 'programme-folder-layer--closing');
     if (window.innerWidth >= 1024 && originBounds) setBounds(originBounds);
-    dialog.classList.remove('project-folder--open', 'project-folder--opening', 'project-folder--primed', 'project-folder--programme-open');
+    dialog.classList.remove('project-folder--open', 'project-folder--opening', 'project-folder--primed');
     dialog.classList.add('project-folder--closing');
-    if (window.innerWidth >= 768) {
-      restorePageScroll();
-    }
     window.clearTimeout(closeTimer);
     closeTimer = window.setTimeout(() => {
       dialog.close();
@@ -273,9 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
       detailStage?.classList.remove('project-stage--folder-open');
       activeFolderIndex = null;
       updateDividerButtons(-1);
-      if (window.innerWidth >= 1024) {
-        restorePageScroll();
-      }
       activeFolderButton?.focus({ preventScroll: true });
     }, reduceMotion ? 1 : 650);
   }
@@ -304,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     detailStage?.classList.remove('project-stage--folder-open');
     area.classList.remove('projects-stage--open');
     triggers.forEach((tile) => tile.classList.remove('project-tile--dimmed'));
-    dialog.classList.remove('project-folder--open', 'project-folder--opening', 'project-folder--primed', 'project-folder--closing', 'project-folder--programme-open');
+    dialog.classList.remove('project-folder--open', 'project-folder--opening', 'project-folder--primed', 'project-folder--closing');
     ['left', 'top', 'width', 'height'].forEach((property) => dialog.style.removeProperty(property));
     const triggerToRestore = activeTrigger;
     activeTrigger = null;

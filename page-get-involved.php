@@ -53,13 +53,15 @@ $ring_rotation = [0, 35, 70, 110, 150][$pagehero_hash % 5];
   </section>
 
   <nav class="src-involvement-v3-tabs" aria-label="Ways to work with SRC" data-involvement-tabs>
-    <div class="src-involvement-v3-tab-row" role="tablist" aria-label="Partnership pathways">
-      <?php foreach ($tracks as $track) : $is_active = $track['id'] === $active_track; ?>
-        <button type="button" role="tab" id="src-involvement-tab-<?php echo esc_attr($track['id']); ?>" aria-controls="src-involvement-panel-<?php echo esc_attr($track['id']); ?>" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" tabindex="<?php echo $is_active ? '0' : '-1'; ?>" class="src-involvement-v3-tab<?php echo $is_active ? ' is-active' : ''; ?>" data-involvement-tab="<?php echo esc_attr($track['id']); ?>">
-          <span><?php echo esc_html($track['label']); ?></span>
-          <small><?php echo esc_html($track['subtitle']); ?></small>
-        </button>
-      <?php endforeach; ?>
+    <div class="src-involvement-v3-tab-shell">
+      <div class="src-involvement-v3-tab-row" aria-label="Partnership pathways">
+        <?php foreach ($tracks as $track) : $is_active = $track['id'] === $active_track; ?>
+          <button type="button" id="src-involvement-tab-<?php echo esc_attr($track['id']); ?>" class="src-involvement-v3-tab<?php echo $is_active ? ' is-active' : ''; ?>" data-involvement-tab="<?php echo esc_attr($track['id']); ?>">
+            <span><?php echo esc_html($track['label']); ?></span>
+            <small><?php echo esc_html($track['subtitle']); ?></small>
+          </button>
+        <?php endforeach; ?>
+      </div>
     </div>
   </nav>
 

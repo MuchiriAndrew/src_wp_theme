@@ -419,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const section = document.querySelector('.src-v3-programme-detail-hero');
+  const section = document.querySelector('.src-v3-programme-detail-hero, .src-v3-programmes-hero');
   const ring = section?.querySelector('.src-v3-programmes-ring');
   if (!section || !ring) return;
 

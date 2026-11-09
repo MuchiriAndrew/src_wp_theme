@@ -90,7 +90,7 @@ $hero_ring_rotation = [0, 35, 70, 110, 150][$hero_ring_hash % 5];
                 <div class="leadership-featured-bio">
                   <?php foreach (preg_split('/\n\s*\n/', $featured_member['bio']) as $paragraph) : if (trim($paragraph) !== '') : ?><p><?php echo esc_html(trim($paragraph)); ?></p><?php endif; endforeach; ?>
                 </div>
-                <?php if ($featured_member['linkedin'] !== '') : ?><a href="<?php echo esc_url($featured_member['linkedin']); ?>" target="_blank" rel="noreferrer" class="leadership-featured-link"><span aria-hidden="true">in</span> LinkedIn</a><?php endif; ?>
+                <?php if ($featured_member['linkedin'] !== '') : ?><a href="<?php echo esc_url($featured_member['linkedin']); ?>" target="_blank" rel="noreferrer" class="leadership-featured-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 1 1 0-4.123 2.062 2.062 0 0 1 0 4.123ZM7.119 20.452H3.555V9h3.564v11.452Z" /></svg> LinkedIn</a><?php endif; ?>
               </div>
             </article>
           <?php endif; ?>

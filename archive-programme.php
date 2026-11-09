@@ -32,7 +32,9 @@ $group_labels = [
 <main class="src-v3-programmes">
     <section class="page-hero src-v3-programmes-hero">
         <img class="src-v3-programmes-backdrop" src="https://images.unsplash.com/photo-1776039325240-02916820bfeb?auto=format&amp;fit=crop&amp;w=2000&amp;q=85" alt="Entrepreneurs attending a business training session" fetchpriority="high">
-        <div class="src-v3-programmes-ring" aria-hidden="true"></div>
+        <div class="src-v3-programmes-ring src-v3-programmes-ring--archive src-experts-v3-ring" style="--ring-rotate:70deg;--ring-parallax:0px" aria-hidden="true">
+            <svg viewBox="0 0 900 900" focusable="false"><circle cx="450" cy="450" r="405" fill="none" stroke="currentColor" stroke-width="90" pathLength="100" stroke-dasharray="70 30" stroke-linecap="round"></circle></svg>
+        </div>
         <div class="container src-v3-programmes-hero-content" data-reveal="left">
             <div class="src-v3-programmes-breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>">Home</a><span>/</span>Programmes</div>
             <p class="eyebrow eyebrow-light">Enrolling Now <span aria-hidden="true">·</span> Upcoming</p>
