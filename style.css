@@ -453,7 +453,7 @@ Text Domain: src
 .src-commerce-main .wc-block-checkout__login-prompt { display:none !important; }
 .src-commerce-main .wc-block-checkout__sidebar .wc-block-components-order-summary { overflow:visible; border:0; background:transparent; }
 .src-commerce-main .wc-block-checkout__sidebar .wc-block-components-order-summary-item {
-  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:10px 16px;
+  display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:6px;
   margin:0; padding:20px 18px; border:0; background:#f7f4ef;
 }
 .src-commerce-main .wc-block-components-order-summary-item__image { display:none; }
@@ -461,7 +461,7 @@ Text Domain: src
 .src-commerce-main .wc-block-components-order-summary-item__description .wc-block-components-product-name { color:#342a29; font-size:14px; font-weight:700; line-height:1.45; }
 .src-commerce-main .wc-block-components-order-summary-item__description .wc-block-components-product-metadata,
 .src-commerce-main .wc-block-components-order-summary-item__description .wc-block-components-order-summary-item__individual-prices { display:none !important; }
-.src-commerce-main .wc-block-components-order-summary-item__total-price { grid-column:2; grid-row:1; white-space:nowrap; color:#342a29; font-size:14px; font-weight:700; }
+.src-commerce-main .wc-block-components-order-summary-item__total-price { grid-column:1; grid-row:2; justify-self:start; white-space:nowrap; color:#8b2027; font-size:13px; font-weight:700; }
 .src-commerce-main .wc-block-components-totals-wrapper { border:0 !important; }
 .src-commerce-main .wc-block-components-order-summary .wc-block-components-order-summary-item + .wc-block-components-order-summary-item { margin-top:8px; }
 
