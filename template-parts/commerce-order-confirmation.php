@@ -23,12 +23,12 @@ $email_message = $state['paid']
 ?>
 <article class="src-order-confirmation" data-src-order-confirmation data-payment-state="<?php echo esc_attr($status); ?>" aria-labelledby="src-order-confirmation-title">
     <div class="src-order-confirmation-head">
-        <span class="src-order-confirmation-icon" aria-hidden="true"></span>
-        <div>
-            <p class="src-order-confirmation-kicker"><?php echo esc_html(src_option('checkout_confirmation_label', 'Registration · Confirmation')); ?></p>
+        <p class="src-order-confirmation-kicker"><?php echo esc_html(src_option('checkout_confirmation_label', 'Registration · Confirmation')); ?></p>
+        <div class="src-order-confirmation-title-row">
+            <span class="src-order-confirmation-icon" aria-hidden="true"></span>
             <h2 id="src-order-confirmation-title" data-register-confirm-heading role="status" aria-live="polite"><?php echo esc_html($heading); ?></h2>
-            <p class="src-order-confirmation-message" data-register-confirm-message><?php echo esc_html($message); ?></p>
         </div>
+        <p class="src-order-confirmation-message" data-register-confirm-message><?php echo esc_html($message); ?></p>
     </div>
 
     <dl class="src-order-confirmation-facts">

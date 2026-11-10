@@ -177,12 +177,12 @@ $related = $theme_ids ? get_posts([
         <?php else : ?>
           <div class="src-v3-programme-facts">
             <?php foreach ($delivery_facts as $fact) : ?>
-              <article><span aria-hidden="true" class="src-v3-programme-fact-icon">
+              <article><div class="src-v3-programme-fact-heading"><span aria-hidden="true" class="src-v3-programme-fact-icon">
                 <?php if ($fact['icon'] === 'duration') : ?><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"></circle><path d="M10 6v4l3 2"></path></svg>
                 <?php elseif ($fact['icon'] === 'cohorts') : ?><svg viewBox="0 0 20 20"><rect x="3" y="5" width="14" height="12"></rect><path d="M6 3v4M14 3v4M3 9h14"></path></svg>
                 <?php elseif ($fact['icon'] === 'fee') : ?><svg viewBox="0 0 20 20"><path d="M3 6h14v10H3zM6 3h8M6 11h8"></path></svg>
                 <?php else : ?><svg viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14"></path></svg><?php endif; ?>
-              </span><div><p><?php echo esc_html($fact['label']); ?></p><strong><?php echo esc_html($fact['value']); ?></strong></div></article>
+              </span><p><?php echo esc_html($fact['label']); ?></p></div><strong><?php echo esc_html($fact['value']); ?></strong></article>
             <?php endforeach; ?>
           </div>
         <?php endif; ?>

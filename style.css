@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.5.203
+Version: 3.5.204
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -384,16 +384,17 @@ Text Domain: src
 .src-commerce-main--confirmation .src-commerce-content { padding-top: 0; }
 .src-order-confirmation { position: relative; z-index: 2; width: min(900px,100%); margin: -68px auto 0; padding: clamp(28px,5vw,56px); background: #fff; box-shadow: 0 22px 64px rgba(28,28,28,.12); }
 .src-order-confirmation [hidden] { display: none !important; }
-.src-order-confirmation-head { display: grid; grid-template-columns: 48px minmax(0,1fr); align-items: start; gap: 20px; }
-.src-order-confirmation-icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; background: #176b52; color: #fff; }
+.src-order-confirmation-head { --status-icon-size: 48px; --status-title-gap: 20px; }
+.src-order-confirmation-title-row { display: flex; min-width: 0; align-items: center; gap: var(--status-title-gap); }
+.src-order-confirmation-icon { display: grid; width: var(--status-icon-size); height: var(--status-icon-size); flex: 0 0 var(--status-icon-size); place-items: center; border-radius: 50%; background: #176b52; color: #fff; }
 .src-order-confirmation[data-payment-state="paid"] .src-order-confirmation-icon::before { content: '✓'; font-size: 28px; font-weight: 700; }
 .src-order-confirmation[data-payment-state="failed"] .src-order-confirmation-icon { background: var(--red); }
 .src-order-confirmation[data-payment-state="failed"] .src-order-confirmation-icon::before { content: '×'; font-size: 32px; }
 .src-order-confirmation[data-payment-state="pending"] .src-order-confirmation-icon { background: #f7e9d7; }
 .src-order-confirmation[data-payment-state="pending"] .src-order-confirmation-icon::before { width: 22px; height: 22px; border: 3px solid rgba(193,39,45,.2); border-top-color: var(--red); border-radius: 50%; animation: srcPaymentSpin .8s linear infinite; content: ''; }
-.src-order-confirmation-kicker { margin: 2px 0 10px; color: var(--red); font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
-.src-order-confirmation h2 { margin: 0; color: var(--charcoal); font-family: var(--serif); font-size: clamp(30px,4vw,44px); line-height: 1.15; }
-.src-order-confirmation-message { max-width: 64ch; margin: 16px 0 0; color: #54504c; font-size: 15px; line-height: 1.65; }
+.src-order-confirmation-kicker { margin: 2px 0 10px calc(var(--status-icon-size) + var(--status-title-gap)); color: var(--red); font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+.src-order-confirmation h2 { min-width: 0; margin: 0; color: var(--charcoal); font-family: var(--serif); font-size: clamp(30px,4vw,44px); line-height: 1.15; }
+.src-order-confirmation-message { max-width: 64ch; margin: 16px 0 0 calc(var(--status-icon-size) + var(--status-title-gap)); color: #54504c; font-size: 15px; line-height: 1.65; }
 .src-order-confirmation-facts { display: flex; flex-wrap: wrap; gap: 20px 32px; margin: 36px 0 0; padding: 24px 0; border-top: 1px solid #ddd7d0; border-bottom: 1px solid #ddd7d0; }
 .src-order-confirmation-facts > div { flex: 1 1 180px; min-width: 0; }
 .src-order-confirmation-facts dt { margin-bottom: 7px; color: #76716c; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
@@ -411,8 +412,8 @@ Text Domain: src
 @media (max-width: 640px) {
   .src-commerce-main--confirmation .src-commerce-hero { min-height: 250px; padding-bottom: 86px; }
   .src-order-confirmation { margin-top: -48px; padding: 28px 22px; }
-  .src-order-confirmation-head { grid-template-columns: 40px minmax(0,1fr); gap: 14px; }
-  .src-order-confirmation-icon { width: 40px; height: 40px; }
+  .src-order-confirmation-head { --status-icon-size: 40px; --status-title-gap: 14px; }
+  .src-order-confirmation-message { margin-left: 0; }
   .src-order-confirmation-facts { margin-top: 28px; }
   .src-order-confirmation-next { padding: 20px; }
   .src-order-confirmation-actions a { width: 100%; }
@@ -4504,11 +4505,12 @@ a.site-footer-social:focus-visible { border-color: #b3262c; background: #b3262c;
 .src-v3-programme-county-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
 .src-v3-programme-county-tags span { padding: 8px 16px; background: #faf7f2; color: #2b2b2b; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .src-v3-programme-facts { display: grid; grid-template-columns: minmax(0,1fr); gap: 12px; margin-top: 28px; }
-.src-v3-programme-facts article { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: #faf7f2; }
-.src-v3-programme-fact-icon { display: flex; width: 20px; height: 20px; flex: 0 0 20px; align-items: center; justify-content: center; color: #b3262c; }
+.src-v3-programme-facts article { min-width: 0; padding: 22px 24px; border: 1px solid #eee7de; background: #faf7f2; }
+.src-v3-programme-facts .src-v3-programme-fact-heading { display: flex; align-items: center; gap: 10px; }
+.src-v3-programme-fact-icon { display: flex; width: 28px; height: 28px; flex: 0 0 28px; align-items: center; justify-content: center; border-radius: 50%; background: #f4e7df; color: #b3262c; }
 .src-v3-programme-fact-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.src-v3-programme-facts article p { margin: 0; color: rgba(43,43,43,.4); font-size: 8px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.src-v3-programme-facts article strong { display: block; margin-top: 4px; color: #2b2b2b; font-size: 12px; font-weight: 600; line-height: 1.5; }
+.src-v3-programme-facts article p { margin: 0; color: #8c7770; font-size: 10px; font-weight: 700; letter-spacing: .12em; line-height: 1.4; text-transform: uppercase; }
+.src-v3-programme-facts article strong { display: block; margin-top: 14px; color: #2b2b2b; font-size: 14px; font-weight: 600; line-height: 1.6; overflow-wrap: break-word; }
 .src-v3-programme-partners { margin-top: 48px; }
 .src-v3-programme-partners > .eyebrow { margin: 0 0 16px; color: #b3262c; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .src-v3-programme-logo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -4532,9 +4534,6 @@ a.site-footer-social:focus-visible { border-color: #b3262c; background: #b3262c;
   .src-v3-programme-steps li { min-height: auto; padding: 40px 16px 0; border-top: 1px solid rgba(28,28,28,.14); border-left: 0; }
   .src-v3-programme-steps li > span { top: -16px; left: 16px; }
   .src-v3-programme-related-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-}
-@media (min-width: 640px) {
-  .src-v3-programme-facts { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (min-width: 1024px) {
   .src-v3-programme-reach-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 48px; }
