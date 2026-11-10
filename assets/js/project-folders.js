@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderProject(project) {
     activeProject = project;
     activeFolderIndex = null;
+    index.style.setProperty('--folder-count', String(project.folders.length));
     dialog.style.setProperty('--folder-image', `url("${project.image}")`);
     const photo = dialog.querySelector('.project-folder-photo');
     photo.style.backgroundImage = `url("${project.image}")`;

@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.5.185
+Version: 3.5.199
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -2629,8 +2629,8 @@ body.src-footprint-open .site-header { z-index:120; }
 .project-profile-description { max-width:440px; margin:0; color:rgba(255,255,255,.9); font-size:clamp(15px,1.1vw,18px); line-height:1.6; }
 .project-result-chip { margin-top:28px; padding:12px 20px; border:1.5px solid #fff; background:rgba(255,255,255,.08); color:#fff; font-size:13px; font-weight:700; letter-spacing:.05em; line-height:1.5; text-transform:uppercase; }
 .project-funder { position:relative; z-index:2; width:140px; flex:none; align-self:flex-end; color:rgba(255,255,255,.75); font-size:9px; font-weight:800; letter-spacing:.1em; line-height:1.5; text-align:right; text-transform:uppercase; }
-.project-index { position:relative; z-index:40; display:flex; width:clamp(144px,13.5vw,216px); flex:none; overflow:visible; }
-.project-divider { position:relative; z-index:var(--divider-z); display:flex; width:clamp(48px,4.5vw,72px); height:100%; flex:none; flex-direction:column; padding:0; border:0; background:var(--divider-color); cursor:pointer; transition:transform .26s ease,filter .26s ease; }
+.project-index { position:relative; z-index:40; display:flex; width:min(35vw,calc(var(--folder-count, 3) * clamp(42px,4vw,64px))); flex:none; overflow:visible; }
+.project-divider { position:relative; z-index:var(--divider-z); display:flex; width:0; min-width:0; height:100%; flex:1; flex-direction:column; padding:0; border:0; background:var(--divider-color); cursor:pointer; transition:transform .26s ease,filter .26s ease; }
 .project-divider:nth-child(1) { justify-content:flex-start; }.project-divider:nth-child(2) { justify-content:center; }.project-divider:nth-child(3) { justify-content:flex-end; }
 .project-divider:hover { transform:translateX(-10px); filter:brightness(1.08); }
 .project-divider-ear { position:relative; left:0; z-index:5; display:flex; width:calc(100% + 30px); min-height:180px; align-items:center; justify-content:center; padding:28px 12px; border-radius:0 14px 14px 0; background:var(--divider-color); box-shadow:0 4px 16px rgba(0,0,0,.25); }
@@ -2686,10 +2686,10 @@ body.src-footprint-open .site-header { z-index:120; }
   .project-folder-profile { order:1; width:100%; min-height:auto; flex:none; padding:40px; }
   .project-profile-copy { max-width:640px; padding-block:20px; }
   .project-funder { width:140px; }
-  .project-index { order:2; width:100%; height:72px; flex:none; overflow:hidden; background:#7a1419; }
-  .project-divider { width:33.333%; height:72px; flex:1; padding:0 8px; }
+  .project-index { order:2; display:grid; width:100%; height:auto; flex:none; grid-template-columns:repeat(4,minmax(0,1fr)); overflow:visible; background:#7a1419; }
+  .project-divider { width:100%; height:84px; flex:none; padding:0 8px; }
   .project-divider:hover { transform:none; }
-  .project-divider-ear { position:absolute; inset:0; width:100%; height:72px; min-height:72px; padding:8px; border-radius:12px 12px 0 0; }
+  .project-divider-ear { position:relative; left:0; width:100%; height:84px; min-height:84px; padding:8px; border-radius:12px 12px 0 0; }
   .project-divider-ear > span { max-width:100%; font-size:9px; writing-mode:horizontal-tb; transform:none; white-space:normal; text-align:center; }
   .project-stage { order:3; width:100%; min-height:216px; flex:none; transition:min-height .65s ease-in-out; }
   .project-stage--folder-open { min-height:clamp(720px,100vh,900px); }
@@ -2719,7 +2719,7 @@ body.src-footprint-open .site-header { z-index:120; }
   .project-profile-copy { padding-block:32px; }
   .project-funder { width:110px; }
   .project-stage--folder-open { min-height:780px; }
-  .project-index { height:72px; }
+  .project-index { height:auto; }
   .programme-folder-copy { padding:64px 20px 20px; }
   .programme-folder-copy .programme-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; }
   .programme-folder-copy h3 { font-size:32px; }
