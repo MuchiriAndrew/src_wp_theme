@@ -85,10 +85,10 @@ $footer_socials = [
           <input type="hidden" name="action" value="src_newsletter_subscribe">
           <?php wp_nonce_field('src_newsletter_subscribe', 'src_newsletter_nonce'); ?>
           <label class="stay-connected-trap" for="newsletter-website">Leave this field empty<input id="newsletter-website" name="website" type="text" tabindex="-1" autocomplete="off"></label>
-          <label class="screen-reader-text" for="newsletter-email"><?php echo esc_html(src_option('newsletter_email_label', 'Email address')); ?></label>
+          <label class="stay-connected-label" for="newsletter-email"><?php echo esc_html(src_option('newsletter_email_label', 'Email address')); ?></label>
           <span class="stay-connected-pill">
             <input id="newsletter-email" name="email" type="email" required autocomplete="email" placeholder="<?php echo esc_attr(src_option('newsletter_placeholder', 'you@example.com')); ?>">
-            <button type="submit"><?php echo esc_html(src_option('newsletter_button_label', 'Subscribe')); ?> <span aria-hidden="true">→</span></button>
+            <button type="submit"><?php echo esc_html(src_option('newsletter_button_label', 'Subscribe')); ?></button>
           </span>
         </form>
         <?php $newsletter_status = isset($_GET['newsletter_status']) && is_scalar($_GET['newsletter_status']) ? sanitize_key(wp_unslash((string) $_GET['newsletter_status'])) : ''; ?>

@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.5.202
+Version: 3.5.203
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -248,7 +248,6 @@ Text Domain: src
 .home-report-cover strong { position: relative; margin-top: 12px; font-family: var(--serif); font-size: clamp(64px,10vw,112px); line-height: .95; }
 .home-report-cover-caption { position: relative; margin-top: 24px; color: rgba(255,255,255,.76); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
 .stay-connected-action > p { max-width: 38ch; margin: 0 0 18px; color: rgba(255,255,255,.75); font-size: 14px; line-height: 1.65; }
-.stay-connected-action .stay-connected-pill { display: flex; width: 100%; min-height: 72px; align-items: center; gap: 0; padding: 0; }
 .site-footer-socials:empty { display: none; }
 .partners-hero { display: flex; min-height: 520px; align-items: center; background: linear-gradient(112deg,rgba(74,14,18,.96),rgba(130,27,33,.84)),url('assets/hero-man-with-camels-poster.png') center 52%/cover; }
 .partners-hero-content { width: min(1200px,calc(100% - 80px)); margin: auto; padding-top: 120px; }
@@ -2885,14 +2884,18 @@ html::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
 .stay-connected-column { display: grid; grid-template-rows: auto auto; gap: 16px; min-width: 0; margin: 0; }
 .stay-connected-kicker { margin: 0; color: rgba(31,31,31,.75); font-size: 12px; font-weight: 700; letter-spacing: .12em; line-height: 1; text-transform: uppercase; }
 .stay-connected-headline { display: block; height: auto; margin: 0; color: #1f1f1f; font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.15; }
-.stay-connected-pill { display: flex; width: 100%; height: 72px; overflow: hidden; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgba(31,31,31,.12); }
-.stay-connected-pill input { min-width: 0; flex: 1 1 auto; padding: 0 24px; border: 0; background: transparent; color: #1f1f1f; font-size: 14px; font-weight: 400; outline: none; }
+.stay-connected-label { display: block; margin: 0 0 14px; color: #1f1f1f; font-size: 12px; font-weight: 700; letter-spacing: .13em; line-height: 1.2; text-transform: uppercase; }
+.stay-connected-pill { display: flex; width: 100%; height: 72px; align-items: stretch; overflow: hidden; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgba(31,31,31,.12); }
+.stay-connected-pill input { min-width: 0; height: 100%; flex: 1 1 auto; padding: 0 24px; border: 0; border-radius: 0; background: #fff; color: #1f1f1f; font-size: 14px; font-weight: 400; outline: none; appearance: none; }
 .stay-connected-pill input::placeholder { color: rgba(31,31,31,.48); opacity: 1; }
-.stay-connected-pill button { flex: 0 0 auto; padding: 0 28px; border: 0; background: #c1272d; color: #fff; cursor: pointer; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.stay-connected-pill input:-webkit-autofill,
+.stay-connected-pill input:-webkit-autofill:hover,
+.stay-connected-pill input:-webkit-autofill:focus { -webkit-text-fill-color: #1f1f1f; box-shadow: 0 0 0 1000px #fff inset; caret-color: #1f1f1f; }
+.stay-connected-pill button { display: grid; height: 100%; min-width: 120px; flex: 0 0 23%; place-items: center; padding: 0 20px; border: 0; border-radius: 0; background: #b5262d; color: #fff; cursor: pointer; font-size: 10px; font-weight: 700; letter-spacing: .09em; line-height: 1; text-transform: uppercase; appearance: none; }
 .stay-connected-pill button:hover { background: #a91f26; }
+.stay-connected-pill button:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
 .stay-connected-form { width: 100%; }
 .stay-connected-trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.stay-connected-pill:focus-within { outline: 3px solid #1f1f1f; outline-offset: 3px; }
 .stay-connected-action > .stay-connected-message { margin: 0; color: #1f1f1f; font-size: 14px; font-weight: 600; }
 .site-footer { position: relative; overflow: hidden; border-top: 1px solid #d9d9d4; background: #ededea; color: #2b2b2b; }
 .site-footer-watermark { position: absolute; bottom: 0; left: 50%; z-index: 0; width: auto; height: 100%; max-width: none; object-fit: contain; opacity: .12; pointer-events: none; transform: translateX(-50%); }
