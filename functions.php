@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.199');
+define('SRC_VERSION', '3.5.200');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -9,6 +9,7 @@ require_once get_template_directory() . '/inc/cli/import-impact.php';
 require_once get_template_directory() . '/inc/commerce/programme-products.php';
 require_once get_template_directory() . '/inc/v3-pool-experts.php';
 require_once get_template_directory() . '/inc/v3-get-involved.php';
+require_once get_template_directory() . '/inc/v3-newsletter.php';
 require_once get_template_directory() . '/inc/v3-careers.php';
 
 function src_setup() {

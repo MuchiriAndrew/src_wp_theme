@@ -70,7 +70,7 @@ $footer_socials = [
 ?>
 
 <?php if (is_front_page()) : ?>
-  <section class="stay-connected brand-decor-section" aria-labelledby="stay-connected-heading">
+  <section class="stay-connected brand-decor-section" id="stay-connected" aria-labelledby="stay-connected-heading">
     <svg class="stay-connected-ring" viewBox="0 0 520 520" aria-hidden="true" focusable="false"><circle cx="260" cy="260" r="228" fill="none" stroke="currentColor" stroke-width="64" pathLength="100" stroke-dasharray="70 30" stroke-linecap="round"></circle></svg>
     <div class="stay-connected-grain" aria-hidden="true"></div>
     <div class="stay-connected-topography" aria-hidden="true"></div>
@@ -79,7 +79,23 @@ $footer_socials = [
         <p class="stay-connected-kicker"><?php echo esc_html(src_option('newsletter_eyebrow', 'Stay connected')); ?></p>
         <h2 id="stay-connected-heading" class="stay-connected-headline"><?php echo esc_html(src_option('newsletter_heading', 'News worth opening.')); ?></h2>
       </div>
-      <div class="stay-connected-column stay-connected-action"><p><?php echo esc_html(src_option('newsletter_intro', 'Stories, updates and practical insights from our work with enterprises across the region.')); ?></p><a class="stay-connected-pill" href="<?php echo esc_url(home_url('/news/')); ?>"<?php echo esc_html(src_option('newsletter_link_label', 'Explore latest news')); ?> <span aria-hidden="true">→</span></a></div>
+      <div class="stay-connected-column stay-connected-action">
+        <p><?php echo esc_html(src_option('newsletter_intro', 'Stories, updates and practical insights from our work with enterprises across the region.')); ?></p>
+        <form class="stay-connected-form" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post">
+          <input type="hidden" name="action" value="src_newsletter_subscribe">
+          <?php wp_nonce_field('src_newsletter_subscribe', 'src_newsletter_nonce'); ?>
+          <label class="stay-connected-trap" for="newsletter-website">Leave this field empty<input id="newsletter-website" name="website" type="text" tabindex="-1" autocomplete="off"></label>
+          <label class="screen-reader-text" for="newsletter-email"><?php echo esc_html(src_option('newsletter_email_label', 'Email address')); ?></label>
+          <span class="stay-connected-pill">
+            <input id="newsletter-email" name="email" type="email" required autocomplete="email" placeholder="<?php echo esc_attr(src_option('newsletter_placeholder', 'you@example.com')); ?>">
+            <button type="submit"><?php echo esc_html(src_option('newsletter_button_label', 'Subscribe')); ?> <span aria-hidden="true">→</span></button>
+          </span>
+        </form>
+        <?php $newsletter_status = isset($_GET['newsletter_status']) && is_scalar($_GET['newsletter_status']) ? sanitize_key(wp_unslash((string) $_GET['newsletter_status'])) : ''; ?>
+        <?php if (in_array($newsletter_status, ['subscribed', 'already', 'error'], true)) : ?>
+          <p class="stay-connected-message" role="status"><?php echo esc_html(['subscribed' => 'Thank you for subscribing.', 'already' => 'This email is already subscribed.', 'error' => 'We could not save your subscription. Please try again.'][$newsletter_status]); ?></p>
+        <?php endif; ?>
+      </div>
     </div>
   </section>
 <?php endif; ?>

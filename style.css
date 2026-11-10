@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.5.199
+Version: 3.5.200
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -248,7 +248,7 @@ Text Domain: src
 .home-report-cover strong { position: relative; margin-top: 12px; font-family: var(--serif); font-size: clamp(64px,10vw,112px); line-height: .95; }
 .home-report-cover-caption { position: relative; margin-top: 24px; color: rgba(255,255,255,.76); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
 .stay-connected-action > p { max-width: 38ch; margin: 0 0 18px; color: rgba(255,255,255,.75); font-size: 14px; line-height: 1.65; }
-.stay-connected-action .stay-connected-pill { display: inline-flex; width: auto; min-height: 48px; align-items: center; gap: 24px; padding: 0 22px; text-decoration: none; }
+.stay-connected-action .stay-connected-pill { display: flex; width: 100%; min-height: 72px; align-items: center; gap: 0; padding: 0; }
 .site-footer-socials:empty { display: none; }
 .partners-hero { display: flex; min-height: 520px; align-items: center; background: linear-gradient(112deg,rgba(74,14,18,.96),rgba(130,27,33,.84)),url('assets/hero-man-with-camels-poster.png') center 52%/cover; }
 .partners-hero-content { width: min(1200px,calc(100% - 80px)); margin: auto; padding-top: 120px; }
@@ -2852,6 +2852,10 @@ html::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
 .stay-connected-pill input::placeholder { color: rgba(31,31,31,.48); opacity: 1; }
 .stay-connected-pill button { flex: 0 0 auto; padding: 0 28px; border: 0; background: #c1272d; color: #fff; cursor: pointer; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .stay-connected-pill button:hover { background: #a91f26; }
+.stay-connected-form { width: 100%; }
+.stay-connected-trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.stay-connected-pill:focus-within { outline: 3px solid #1f1f1f; outline-offset: 3px; }
+.stay-connected-action > .stay-connected-message { margin: 0; color: #1f1f1f; font-size: 14px; font-weight: 600; }
 .site-footer { position: relative; overflow: hidden; border-top: 1px solid #d9d9d4; background: #ededea; color: #2b2b2b; }
 .site-footer-watermark { position: absolute; bottom: 0; left: 50%; z-index: 0; width: auto; height: 100%; max-width: none; object-fit: contain; opacity: .12; pointer-events: none; transform: translateX(-50%); }
 .site-footer-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 36px; padding-top: 56px; padding-bottom: 56px; }
