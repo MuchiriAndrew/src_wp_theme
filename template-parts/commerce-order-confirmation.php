@@ -8,6 +8,7 @@ $programme_id = src_v3_order_programme_id($order);
 $programme_title = get_post_meta($programme_id, '_programme_hero_title', true) ?: get_the_title($programme_id);
 $programme_url = get_permalink($programme_id) ?: (get_post_type_archive_link('programme') ?: home_url('/programmes/'));
 $programmes_url = get_post_type_archive_link('programme') ?: home_url('/programmes/');
+$contact_url = home_url('/contact/');
 $state = src_v3_registration_payment_state($order);
 $status = $state['paid'] ? 'paid' : ($state['failed'] ? 'failed' : 'pending');
 $waiting_message = str_replace('This window will', 'This page will', src_option('registration_waiting_message', 'Complete the M-PESA prompt on your phone. This page will update when your payment is confirmed.'));
@@ -19,7 +20,11 @@ $message = $state['paid']
     : ($state['failed'] ? ($state['failureMessage'] ?: src_option('registration_failed_message', 'Your payment was not completed. You can try again.')) : $waiting_message);
 $email_message = $state['paid']
     ? sprintf(src_option('registration_paid_email_message', 'We have sent your order confirmation to %s. Please check your inbox and spam folder.'), $order->get_billing_email())
-    : ($state['failed'] ? src_option('registration_pending_email_message', 'Your confirmation email will be sent after the payment is confirmed.') : sprintf(src_option('registration_waiting_email_message', 'Your confirmation email will be sent to %s after payment.'), $order->get_billing_email()));
+    : ($state['failed']
+        ? ($state['retryable']
+            ? __('Your registration details are saved. On the next page, confirm your M-PESA number before requesting a new payment prompt.', 'src')
+            : __('Have your order number ready when you contact SRC. Please do not start another payment until the order is checked.', 'src'))
+        : sprintf(src_option('registration_waiting_email_message', 'Your confirmation email will be sent to %s after payment.'), $order->get_billing_email()));
 ?>
 <article class="src-order-confirmation" data-src-order-confirmation data-payment-state="<?php echo esc_attr($status); ?>" aria-labelledby="src-order-confirmation-title">
     <div class="src-order-confirmation-head">
@@ -43,7 +48,8 @@ $email_message = $state['paid']
     </div>
 
     <div class="src-order-confirmation-actions">
-        <a class="src-order-confirmation-primary" data-register-confirm-retry href="<?php echo esc_url($order->get_checkout_payment_url()); ?>"<?php echo $status === 'failed' ? '' : ' hidden'; ?>><?php echo esc_html(src_option('registration_retry_label', 'Retry payment')); ?> <span aria-hidden="true">→</span></a>
+        <a class="src-order-confirmation-primary" data-register-confirm-retry href="<?php echo esc_url($order->get_checkout_payment_url()); ?>"<?php echo $status === 'failed' && $state['retryable'] ? '' : ' hidden'; ?>><?php echo esc_html(src_option('registration_retry_label', 'Retry payment')); ?> <span aria-hidden="true">→</span></a>
+        <a class="src-order-confirmation-primary" data-register-confirm-contact href="<?php echo esc_url($contact_url); ?>"<?php echo $status === 'failed' && !$state['retryable'] ? '' : ' hidden'; ?>><?php esc_html_e('Contact SRC for help', 'src'); ?> <span aria-hidden="true">→</span></a>
         <a class="src-order-confirmation-primary" data-register-confirm-refresh href="<?php echo esc_url($order->get_checkout_order_received_url()); ?>"<?php echo $status === 'pending' ? '' : ' hidden'; ?>><?php esc_html_e('Refresh payment status', 'src'); ?> <span aria-hidden="true">↻</span></a>
         <a class="src-order-confirmation-primary" data-register-confirm-programme href="<?php echo esc_url($programme_url); ?>"<?php echo $status === 'paid' ? '' : ' hidden'; ?>><?php esc_html_e('View your programme', 'src'); ?> <span aria-hidden="true">→</span></a>
         <a class="src-order-confirmation-secondary" href="<?php echo esc_url($programmes_url); ?>"><?php esc_html_e('Explore all programmes', 'src'); ?> <span aria-hidden="true">↗</span></a>

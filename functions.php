@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.204');
+define('SRC_VERSION', '3.5.205');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -113,6 +113,8 @@ function src_assets() {
             'paidEmail' => src_option('registration_paid_email_message', 'We have sent your order confirmation to %s. Please check your inbox and spam folder.'),
             'failedHeading' => src_option('registration_failed_heading', 'Payment was not completed'),
             'failedMessage' => src_option('registration_failed_message', 'Your payment was not completed. You can try again.'),
+            'retryGuide' => __('Your registration details are saved. On the next page, confirm your M-PESA number before requesting a new payment prompt.', 'src'),
+            'contactGuide' => __('Have your order number ready when you contact SRC. Please do not start another payment until the order is checked.', 'src'),
             'pendingEmail' => src_option('registration_pending_email_message', 'Your confirmation email will be sent after the payment is confirmed.'),
             'waitingHeading' => src_option('registration_waiting_heading', 'Waiting for payment confirmation'),
             'waitingMessage' => str_replace('This window will', 'This page will', src_option('registration_waiting_message', 'Complete the M-PESA prompt on your phone. This page will update when your payment is confirmed.')),

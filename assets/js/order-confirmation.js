@@ -11,10 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const receiptRow = card.querySelector('[data-register-confirm-receipt-row]');
   const receiptValue = card.querySelector('[data-register-confirm-receipt]');
   const retry = card.querySelector('[data-register-confirm-retry]');
+  const contact = card.querySelector('[data-register-confirm-contact]');
   const refresh = card.querySelector('[data-register-confirm-refresh]');
   const programme = card.querySelector('[data-register-confirm-programme]');
 
-  const paintStatus = ({ paid, failed, receipt, failureMessage }) => {
+  const paintStatus = ({ paid, failed, retryable, receipt, failureMessage }) => {
     const state = paid ? 'paid' : failed ? 'failed' : 'pending';
     card.dataset.paymentState = state;
     heading.textContent = paid
@@ -26,11 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
         : (copy.waitingMessage || 'Complete the M-PESA prompt on your phone. This page will update when your payment is confirmed.');
     emailNote.textContent = paid
       ? (copy.paidEmail || 'We have sent your order confirmation to %s. Please check your inbox and spam folder.').replace('%s', order.email)
-      : failed ? (copy.pendingEmail || 'Your confirmation email will be sent after the payment is confirmed.')
+      : failed ? (retryable
+        ? (copy.retryGuide || 'Your registration details are saved. On the next page, confirm your M-PESA number before requesting a new payment prompt.')
+        : (copy.contactGuide || 'Have your order number ready when you contact SRC. Please do not start another payment until the order is checked.'))
         : (copy.waitingEmail || 'Your confirmation email will be sent to %s after payment.').replace('%s', order.email);
     receiptRow.hidden = !receipt;
     receiptValue.textContent = receipt || '';
-    retry.hidden = state !== 'failed';
+    retry.hidden = state !== 'failed' || !retryable;
+    contact.hidden = state !== 'failed' || !!retryable;
     refresh.hidden = state !== 'pending';
     programme.hidden = state !== 'paid';
   };

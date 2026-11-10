@@ -250,6 +250,24 @@ function src_v3_order_programme_id($order) {
     return 0;
 }
 
+/** An order key is the credential for retrying a programme payment without an account login. */
+function src_v3_allow_keyed_programme_order_payment($allcaps, $caps, $args) {
+    if (($args[0] ?? '') !== 'pay_for_order') return $allcaps;
+    $order_id = absint($args[2] ?? 0);
+    if (!$order_id || !function_exists('is_wc_endpoint_url') || !is_wc_endpoint_url('order-pay')
+        || absint(get_query_var('order-pay')) !== $order_id || !isset($_GET['pay_for_order'])) return $allcaps;
+
+    $key = isset($_GET['key']) && is_string($_GET['key']) ? wc_clean(wp_unslash($_GET['key'])) : '';
+    $order = wc_get_order($order_id);
+    if (!$order || !$key || !hash_equals($order->get_order_key(), $key)
+        || !src_v3_order_programme_id($order) || $order->get_payment_method() !== 'mpesa'
+        || !$order->needs_payment()) return $allcaps;
+
+    $allcaps['pay_for_order'] = true;
+    return $allcaps;
+}
+add_filter('user_has_cap', 'src_v3_allow_keyed_programme_order_payment', 20, 3);
+
 function src_v3_registration_return_order() {
     if (!function_exists('is_wc_endpoint_url') || !is_wc_endpoint_url('order-received')) return null;
     $order_id = absint(get_query_var('order-received'));
@@ -277,15 +295,18 @@ function src_v3_registration_payment_state($order) {
     $paid = $order->is_paid() || $order->get_meta('_mpesa_payment_confirmed') === 'yes';
     $failed = !$paid && ($order->get_meta('_mpesa_payment_attempt_status') === 'failed'
         || in_array($order->get_status(), ['failed', 'cancelled'], true));
+    $retryable = !$paid && $order->needs_payment() && $order->get_payment_method() === 'mpesa';
     $result_code = (string) $order->get_meta('_mpesa_last_result_code');
     $failure_message = $result_code === '1032'
         ? __('The M-PESA request was cancelled on your phone. You can try again.', 'src')
         : ($result_code === '1037'
             ? __('The M-PESA request timed out. You can try again.', 'src')
             : __('Your payment was not completed. You can try again.', 'src'));
+    if ($failed && !$retryable) $failure_message = __('This order can no longer accept payment. Please contact SRC with your order number for help.', 'src');
     return [
         'paid' => $paid,
         'failed' => $failed,
+        'retryable' => $retryable,
         'failureMessage' => $failed ? $failure_message : '',
         'receipt' => (string) $order->get_meta('_mpesa_receipt_number'),
     ];
