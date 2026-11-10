@@ -54,8 +54,8 @@ $archive_emphasis = src_option('programmes_archive_emphasis', 'with us.');
             <div class="src-programme-filter-inner">
                 <div class="src-programme-filter-status" role="group" aria-label="<?php echo esc_attr(src_option('programmes_filter_status_aria', 'Filter by status')); ?>">
                     <?php foreach (['all' => src_option('programmes_filter_all', 'All'), 'current' => src_option('programmes_filter_current', 'Current'), 'upcoming' => src_option('programmes_filter_upcoming', 'Upcoming'), 'past' => src_option('programmes_filter_past', 'Past')] as $value => $label) :
-                        $active = $selected_status === $value || ($selected_status === 'all' && $value === 'current'); ?>
-                        <button type="button" data-programme-status="<?php echo esc_attr($value); ?>" class="src-programme-filter src-programme-filter-status-item <?php echo $active ? 'is-active' : ''; ?>"><?php echo esc_html($label . ' · ' . $counts[$value]); ?></button>
+                        $active = $selected_status === $value; ?>
+                        <button type="button" data-programme-status="<?php echo esc_attr($value); ?>" class="src-programme-filter src-programme-filter-status-item <?php echo $active ? 'is-active' : ''; ?>" aria-pressed="<?php echo $active ? 'true' : 'false'; ?>"><?php echo esc_html($label . ' · ' . $counts[$value]); ?></button>
                     <?php endforeach; ?>
                 </div>
                 <?php if (!is_wp_error($themes)) foreach ($themes as $theme) :

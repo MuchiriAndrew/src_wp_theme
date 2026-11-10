@@ -35,20 +35,11 @@
   let selectedTheme = selectedThemeButton?.dataset.programmeTheme || '';
   let signatureOnly = false;
 
-  const statusAtScroll = () => {
-    const visibleSections = sections.filter((section) => !section.hidden);
-    if (!visibleSections.length) return 'current';
-
-    return visibleSections.reduce((active, section) => (
-      section.getBoundingClientRect().top <= 170 ? section.dataset.programmeSection : active
-    ), visibleSections[0].dataset.programmeSection || 'current');
-  };
-
   const updateStatusSelection = () => {
-    const activeStatus = selectedStatus === 'all' ? statusAtScroll() : selectedStatus;
     statusButtons.forEach((button) => {
-      const active = button.dataset.programmeStatus === activeStatus;
+      const active = button.dataset.programmeStatus === selectedStatus;
       button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
     });
   };
 
@@ -128,12 +119,10 @@
   };
   window.addEventListener('scroll', () => {
     updateDocked();
-    updateStatusSelection();
   }, { passive: true });
   window.addEventListener('resize', () => {
     updateDocked();
     updateScrollFades();
-    updateStatusSelection();
   });
   scrollRow?.addEventListener('scroll', updateScrollFades, { passive: true });
   if (typeof ResizeObserver !== 'undefined' && scrollRow) {
