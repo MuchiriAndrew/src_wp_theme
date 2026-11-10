@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const consent = dialog.querySelector('[data-register-consent]');
   const detailsForm = dialog.querySelector('[data-register-details]');
   const checkoutButton = dialog.querySelector('[data-register-checkout]');
-  const returnedOrder = window.srcRegistrationConfig?.order;
   const copy = window.srcRegistrationConfig?.copy || {};
   let selected = options[0] || null;
   let activeStep = 0;
@@ -49,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const showStep = (step) => {
-    activeStep = Math.max(0, Math.min(3, step));
+    activeStep = Math.max(0, Math.min(2, step));
     steps.forEach((panel) => { panel.hidden = Number(panel.dataset.registerStep) !== activeStep; });
     stepLabels.forEach((label) => {
       const index = Number(label.dataset.registerStepLabel);
@@ -78,70 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!dialog.open) dialog.showModal();
     requestAnimationFrame(() => (selected || options[0])?.focus({ preventScroll: true }));
   };
-
-  if (returnedOrder) {
-    const orderProgramme = options.find((item) => Number(item.dataset.programmeId) === Number(returnedOrder.programmeId));
-    if (orderProgramme) selectProgramme(orderProgramme);
-    else if (title) title.textContent = returnedOrder.programmeTitle || '';
-    const heading = dialog.querySelector('[data-register-confirm-heading]');
-    const indicator = dialog.querySelector('[data-register-confirm-indicator]');
-    const message = dialog.querySelector('[data-register-confirm-message]');
-    const emailNote = dialog.querySelector('[data-register-confirm-email]');
-    const retry = dialog.querySelector('[data-register-confirm-retry]');
-    const done = dialog.querySelector('[data-register-confirm-done]');
-    dialog.querySelector('[data-register-confirm-programme]').textContent = returnedOrder.programmeTitle || '';
-    dialog.querySelector('[data-register-confirm-order]').textContent = `#${returnedOrder.number}`;
-    const paintStatus = (paid, failed, receipt, failureMessage = '') => {
-      indicator.dataset.state = paid ? 'paid' : failed ? 'failed' : 'pending';
-      if (paid) {
-        heading.textContent = copy.paidHeading || 'Your payment is confirmed';
-        message.textContent = copy.paidMessage || 'Thank you for registering. Your place has been confirmed and our team will follow up with programme details.';
-        emailNote.textContent = (copy.paidEmail || 'We have sent your order confirmation to %s. Please check your inbox and spam folder.').replace('%s', returnedOrder.email);
-        if (receipt) {
-          dialog.querySelector('[data-register-confirm-receipt]').textContent = receipt;
-          dialog.querySelector('[data-register-confirm-receipt-row]').hidden = false;
-        }
-        retry.hidden = true;
-        done.hidden = false;
-      } else if (failed) {
-        heading.textContent = copy.failedHeading || 'Payment was not completed';
-        message.textContent = failureMessage || copy.failedMessage || 'Your payment was not completed. You can try again.';
-        emailNote.textContent = copy.pendingEmail || 'Your confirmation email will be sent after the payment is confirmed.';
-        retry.hidden = false;
-        done.hidden = true;
-      } else {
-        heading.textContent = copy.waitingHeading || 'Waiting for payment confirmation';
-        message.textContent = copy.waitingMessage || 'Complete the M-PESA prompt on your phone. This window will update when your payment is confirmed.';
-        emailNote.textContent = (copy.waitingEmail || 'Your confirmation email will be sent to %s after payment.').replace('%s', returnedOrder.email);
-        retry.hidden = true;
-        done.hidden = true;
-      }
-    };
-    retry.href = returnedOrder.retryUrl;
-    paintStatus(returnedOrder.paid, returnedOrder.failed, returnedOrder.receipt, returnedOrder.failureMessage);
-    showStep(3);
-    if (!dialog.open) dialog.showModal();
-    if (!returnedOrder.paid && !returnedOrder.failed) {
-      let attempts = 0;
-      const poll = async () => {
-        if (attempts++ >= 120) return;
-        const payload = new FormData();
-        payload.set('action', 'src_v3_registration_order_status');
-        payload.set('order_id', returnedOrder.id);
-        payload.set('order_key', returnedOrder.key);
-        try {
-          const response = await fetch(window.srcRegistrationConfig.ajaxUrl, { method: 'POST', body: payload, cache: 'no-store', credentials: 'same-origin' });
-          const result = await response.json();
-          if (response.ok && result.success) {
-            paintStatus(result.data.paid, result.data.failed, result.data.receipt, result.data.failureMessage);
-            if (result.data.paid || result.data.failed) return;
-          }
-        } catch (error) { /* A temporary network error should not change payment state. */ }
-        setTimeout(poll, 5000);
-      };
-      setTimeout(poll, 5000);
-    }
-  }
 
   document.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-src-open-registration]');

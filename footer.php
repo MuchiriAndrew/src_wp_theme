@@ -144,4 +144,4 @@ $footer_socials = [
   </div>
 </footer>
 
-<?php get_template_part('template-parts/registration-modal'); wp_footer(); ?></body></html>
+<?php if (!function_exists('src_v3_registration_return_order') || !src_v3_registration_return_order()) get_template_part('template-parts/registration-modal'); wp_footer(); ?></body></html>

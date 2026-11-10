@@ -1,8 +1,9 @@
 <?php
-$commerce_title = $args['title'] ?? get_the_title();
+$registration_order = function_exists('src_v3_registration_return_order') ? src_v3_registration_return_order() : null;
+$commerce_title = $registration_order ? __('Your programme registration', 'src') : ($args['title'] ?? get_the_title());
 get_header();
 ?>
-<main class="src-commerce-main src-commerce-main-blocks">
+<main class="src-commerce-main src-commerce-main-blocks<?php echo $registration_order ? ' src-commerce-main--confirmation' : ''; ?>">
     <section class="src-commerce-hero">
         <div class="container">
             <p class="eyebrow eyebrow-light"><?php echo esc_html(src_option('commerce_hero_eyebrow', 'Smart Regional Consultants')); ?></p>
@@ -16,8 +17,8 @@ get_header();
         <?php if (function_exists('is_shop') && is_shop()) : ?>
             <?php get_template_part('template-parts/commerce-catalog'); ?>
         <?php else : ?>
-            <?php if (function_exists('src_v3_registration_return_order') && src_v3_registration_return_order()) : ?>
-                <div class="src-checkout-intro"><span class="src-checkout-step"><?php echo esc_html(src_option('checkout_confirmation_label', 'Registration · Confirmation')); ?></span><p><?php echo esc_html(src_option('checkout_confirmation_intro', 'Your payment status is shown in the registration window. Keep this page open while you complete the M-PESA prompt.')); ?></p></div>
+            <?php if ($registration_order) : ?>
+                <?php get_template_part('template-parts/commerce-order-confirmation', null, ['order' => $registration_order]); ?>
             <?php else : ?>
                 <?php while (have_posts()) : the_post(); the_content(); endwhile; ?>
             <?php endif; ?>

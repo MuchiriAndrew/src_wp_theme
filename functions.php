@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-define('SRC_VERSION', '3.5.200');
+define('SRC_VERSION', '3.5.202');
 
 require_once get_template_directory() . '/inc/v3-content-model.php';
 require_once get_template_directory() . '/inc/cli/import-programmes.php';
@@ -100,10 +100,11 @@ function src_assets() {
     if (is_post_type_archive('programme')) {
         wp_enqueue_script('src-programmes', get_template_directory_uri() . '/assets/js/programmes.js', [], SRC_VERSION, true);
     }
-    wp_enqueue_script('src-registration', get_template_directory_uri() . '/assets/js/registration.js', [], SRC_VERSION, true);
     $registration_return_order = function_exists('src_v3_registration_return_order') ? src_v3_registration_return_order() : null;
     $registration_payment_state = $registration_return_order ? src_v3_registration_payment_state($registration_return_order) : null;
-    wp_localize_script('src-registration', 'srcRegistrationConfig', [
+    $registration_script = $registration_return_order ? 'src-order-confirmation' : 'src-registration';
+    wp_enqueue_script($registration_script, get_template_directory_uri() . ($registration_return_order ? '/assets/js/order-confirmation.js' : '/assets/js/registration.js'), [], SRC_VERSION, true);
+    wp_localize_script($registration_script, 'srcRegistrationConfig', [
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('src_v3_registration'),
         'copy' => [
@@ -114,7 +115,7 @@ function src_assets() {
             'failedMessage' => src_option('registration_failed_message', 'Your payment was not completed. You can try again.'),
             'pendingEmail' => src_option('registration_pending_email_message', 'Your confirmation email will be sent after the payment is confirmed.'),
             'waitingHeading' => src_option('registration_waiting_heading', 'Waiting for payment confirmation'),
-            'waitingMessage' => src_option('registration_waiting_message', 'Complete the M-PESA prompt on your phone. This window will update when your payment is confirmed.'),
+            'waitingMessage' => str_replace('This window will', 'This page will', src_option('registration_waiting_message', 'Complete the M-PESA prompt on your phone. This page will update when your payment is confirmed.')),
             'waitingEmail' => src_option('registration_waiting_email_message', 'Your confirmation email will be sent to %s after payment.'),
             'phoneError' => src_option('registration_phone_error', 'Enter 9 digits starting with 7 or 1.'),
             'emailError' => src_option('registration_email_error', 'Enter a valid email address.'),

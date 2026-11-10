@@ -34,7 +34,6 @@ $first_image = src_image_url($first_programme->ID, '');
             <li aria-current="step" data-register-step-label="0"><span>01</span> <?php echo esc_html(src_option('registration_step_programme', 'Select Programme')); ?></li>
             <li data-register-step-label="1"><span>02</span> <?php echo esc_html(src_option('registration_step_details', 'Your Details')); ?></li>
             <li data-register-step-label="2"><span>03</span> <?php echo esc_html(src_option('registration_step_payment', 'Payment')); ?></li>
-            <li data-register-step-label="3"><span>04</span> <?php echo esc_html(src_option('registration_step_confirmation', 'Confirmation')); ?></li>
         </ol>
 
         <div class="src-register-content">
@@ -107,18 +106,6 @@ $first_image = src_image_url($first_programme->ID, '');
                 </div>
             </section>
 
-            <section data-register-step="3" hidden>
-                <p class="src-register-confirm-kicker"><?php echo esc_html(src_option('registration_confirmation_kicker', 'Programme registration')); ?></p>
-                <div class="src-register-confirm-status" role="status" aria-live="polite" aria-atomic="true">
-                    <span class="src-register-confirm-indicator" data-register-confirm-indicator data-state="pending" aria-hidden="true"></span>
-                    <h3 data-register-confirm-heading><?php echo esc_html(src_option('registration_checking_payment', 'Checking your payment')); ?></h3>
-                </div>
-                <p data-register-confirm-message><?php echo esc_html(src_option('registration_waiting_payment_copy', 'We are waiting for your payment provider to confirm the transaction. Please complete the M-PESA prompt on your phone.')); ?></p>
-                <dl class="src-register-confirm-facts"><div><dt><?php echo esc_html(src_option('registration_programme_label', 'Programme')); ?></dt><dd data-register-confirm-programme></dd></div><div><dt><?php echo esc_html(src_option('registration_order_label', 'Order')); ?></dt><dd data-register-confirm-order></dd></div><div data-register-confirm-receipt-row hidden><dt><?php echo esc_html(src_option('registration_receipt_label', 'M-PESA receipt')); ?></dt><dd data-register-confirm-receipt></dd></div></dl>
-                <p class="src-register-confirm-email" data-register-confirm-email></p>
-                <a class="src-register-primary" data-register-confirm-retry hidden href="#"><?php echo esc_html(src_option('registration_retry_label', 'Retry payment')); ?></a>
-                <a class="src-register-primary" data-register-confirm-done href="<?php echo esc_url(home_url('/')); ?>"><?php echo esc_html(src_option('registration_return_home_label', 'Return to homepage')); ?></a>
-            </section>
         </div>
     </div>
 </dialog>

@@ -3,7 +3,7 @@ Theme Name: Smart Regional Consultants
 Theme URI: https://smartregionalconsultants.test
 Author: Smart Regional Consultants
 Description: A bold, editorial theme for Smart Regional Consultants.
-Version: 3.5.200
+Version: 3.5.202
 Requires at least: 6.0
 Requires PHP: 8.0
 Text Domain: src
@@ -381,6 +381,43 @@ Text Domain: src
 .src-commerce-hero .container { position: relative; z-index: 1; }
 .src-commerce-hero h1 { margin: 0; }
 .src-commerce-content { padding-top: 64px; }
+.src-commerce-main--confirmation .src-commerce-hero { min-height: 310px; padding-bottom: 112px; background: linear-gradient(115deg,#4a0e12,#802027); }
+.src-commerce-main--confirmation .src-commerce-content { padding-top: 0; }
+.src-order-confirmation { position: relative; z-index: 2; width: min(900px,100%); margin: -68px auto 0; padding: clamp(28px,5vw,56px); background: #fff; box-shadow: 0 22px 64px rgba(28,28,28,.12); }
+.src-order-confirmation [hidden] { display: none !important; }
+.src-order-confirmation-head { display: grid; grid-template-columns: 48px minmax(0,1fr); align-items: start; gap: 20px; }
+.src-order-confirmation-icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; background: #176b52; color: #fff; }
+.src-order-confirmation[data-payment-state="paid"] .src-order-confirmation-icon::before { content: '✓'; font-size: 28px; font-weight: 700; }
+.src-order-confirmation[data-payment-state="failed"] .src-order-confirmation-icon { background: var(--red); }
+.src-order-confirmation[data-payment-state="failed"] .src-order-confirmation-icon::before { content: '×'; font-size: 32px; }
+.src-order-confirmation[data-payment-state="pending"] .src-order-confirmation-icon { background: #f7e9d7; }
+.src-order-confirmation[data-payment-state="pending"] .src-order-confirmation-icon::before { width: 22px; height: 22px; border: 3px solid rgba(193,39,45,.2); border-top-color: var(--red); border-radius: 50%; animation: srcPaymentSpin .8s linear infinite; content: ''; }
+.src-order-confirmation-kicker { margin: 2px 0 10px; color: var(--red); font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+.src-order-confirmation h2 { margin: 0; color: var(--charcoal); font-family: var(--serif); font-size: clamp(30px,4vw,44px); line-height: 1.15; }
+.src-order-confirmation-message { max-width: 64ch; margin: 16px 0 0; color: #54504c; font-size: 15px; line-height: 1.65; }
+.src-order-confirmation-facts { display: flex; flex-wrap: wrap; gap: 20px 32px; margin: 36px 0 0; padding: 24px 0; border-top: 1px solid #ddd7d0; border-bottom: 1px solid #ddd7d0; }
+.src-order-confirmation-facts > div { flex: 1 1 180px; min-width: 0; }
+.src-order-confirmation-facts dt { margin-bottom: 7px; color: #76716c; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.src-order-confirmation-facts dd { margin: 0; color: var(--charcoal); font-size: 15px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
+.src-order-confirmation-next { margin-top: 32px; padding: 24px 28px; background: #f7f2eb; }
+.src-order-confirmation-next h3 { margin: 0 0 8px; color: var(--charcoal); font-family: var(--serif); font-size: 22px; }
+.src-order-confirmation-next p { margin: 0; color: #54504c; font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
+.src-order-confirmation-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 28px; }
+.src-order-confirmation-actions a { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 14px; padding: 12px 20px; font-size: 12px; font-weight: 800; line-height: 1.4; text-decoration: none; }
+.src-order-confirmation-primary { background: var(--red); color: #fff; }
+.src-order-confirmation-primary:hover { background: #8e1b21; color: #fff; }
+.src-order-confirmation-secondary { border: 1px solid var(--red); color: var(--red); }
+.src-order-confirmation-secondary:hover { background: var(--red); color: #fff; }
+.src-order-confirmation-actions a:focus-visible { outline: 3px solid #f58220; outline-offset: 3px; }
+@media (max-width: 640px) {
+  .src-commerce-main--confirmation .src-commerce-hero { min-height: 250px; padding-bottom: 86px; }
+  .src-order-confirmation { margin-top: -48px; padding: 28px 22px; }
+  .src-order-confirmation-head { grid-template-columns: 40px minmax(0,1fr); gap: 14px; }
+  .src-order-confirmation-icon { width: 40px; height: 40px; }
+  .src-order-confirmation-facts { margin-top: 28px; }
+  .src-order-confirmation-next { padding: 20px; }
+  .src-order-confirmation-actions a { width: 100%; }
+}
 .src-commerce-main > .woocommerce { width: min(var(--container),calc(100% - 48px)); margin-inline: auto; }
 .src-commerce-main .woocommerce-products-header__title, .src-commerce-main .entry-title { margin: 0 0 30px; font-family: var(--serif); font-size: clamp(38px,5vw,64px); line-height: 1; }
 .src-commerce-main .woocommerce-notices-wrapper { margin-bottom: 20px; }
@@ -428,6 +465,7 @@ Text Domain: src
 @media (max-width: 767px) { .src-commerce-empty { padding: 32px 24px; } .src-commerce-empty h3 { font-size: 24px; } }
 @media (max-width: 680px) {
   .src-commerce-main { padding: 120px 0 60px; }
+  .src-commerce-main--confirmation { padding-top: 0; }
   .src-commerce-main > .woocommerce { width: calc(100% - 36px); }
   .src-commerce-main .woocommerce-checkout #payment, .src-commerce-main .woocommerce-cart .cart-collaterals, .src-commerce-main .woocommerce-checkout-review-order { padding: 14px; }
   .src-commerce-main table.shop_table th, .src-commerce-main table.shop_table td { padding: 9px 6px; font-size: 9px; }
@@ -2401,7 +2439,7 @@ body.single-src_news_item .news-story { padding-top: 132px; }
 .src-register-close { position: absolute; z-index: 2; top: 16px; right: 16px; display: grid; width: 40px; height: 40px; place-items: center; border: 0; border-radius: 50%; background: rgba(255,255,255,.16); color: #fff; font-size: 24px; line-height: 1; cursor: pointer; backdrop-filter: blur(12px); transition: background .18s,color .18s; }
 .src-register-close:hover, .src-register-close:focus-visible { background: #fff; color: var(--charcoal); }
 .src-register-close:focus-visible, .src-register-option:focus-visible, .src-register-primary:focus-visible, .src-register-back:focus-visible { outline: 3px solid #f58220; outline-offset: 3px; }
-.src-register-steps { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); margin: 0; padding: 0; border-bottom: 1px solid rgba(0,0,0,.05); background: var(--cream); list-style: none; }
+.src-register-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin: 0; padding: 0; border-bottom: 1px solid rgba(0,0,0,.05); background: var(--cream); list-style: none; }
 .src-register-steps li { display: flex; min-height: 0; align-items: center; justify-content: center; gap: 5px; padding: 16px 8px; color: rgba(31,31,31,.38); font-size: 8px; font-weight: 800; letter-spacing: .05em; line-height: 1.5; text-align: center; text-transform: uppercase; }
 .src-register-steps li[aria-current="step"] { background: var(--red); color: #fff; }
 .src-register-steps li.is-complete { color: var(--red); }
