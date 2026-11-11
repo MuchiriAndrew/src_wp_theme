@@ -1596,17 +1596,17 @@ body.nav-locked { overflow: hidden; overscroll-behavior: none; }
   .v3-watermark-mark,.v3-watermark-letters { opacity: .6; }
 }
 @media (max-width: 640px) {
-  .v3-home-hero { height: 100vh; height: 100svh; min-height: 680px; }
-  .v3-home-hero .hero-content { width: 100%; padding: 126px 20px 0; }
+  .v3-home-hero { height: auto; min-height: 100svh; }
+  .v3-home-hero .hero-content { width: 100%; flex: 0 0 auto; padding: 126px 20px 36px; }
   .v3-home-hero h1 { max-width: 100%; font-size: clamp(40px,12vw,54px); }
   .v3-home-hero .hero-meta { max-width: none; line-height: 16px; }
   .v3-home-hero .hero-copy { font-size: 14px; }
   .v3-home-hero .hero-actions .button { min-height: 44px; padding-inline: 18px; font-size: 12px; }
   .v3-home-hero .watch-story { min-height: 44px; padding-inline: 18px; font-size: 12px; }
-  .v3-hero-enrolments { width: 100%; padding: 0 20px 20px; }
+  .v3-hero-enrolments { width: 100%; padding: 0 20px 32px; }
   .v3-enrolment-grid { display: flex; gap: 16px; overflow-x: auto; padding: 0 20px 4px 0; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .v3-enrolment-grid::-webkit-scrollbar { display: none; }
-  .v3-enrol-card { width: 82vw; min-width: 82vw; min-height: 229px; flex: 0 0 82vw; padding: 16px; scroll-snap-align: start; }
+  .v3-enrol-card { width: 82vw; min-width: 82vw; height: auto; min-height: 229px; flex: 0 0 82vw; padding: 16px; scroll-snap-align: start; }
   .site-header:not(.is-scrolled) .header-inner { width: calc(100% - 28px); min-height: 66px; margin-top: 10px; padding: 0 16px; border-radius: 36px; }
 }
 
