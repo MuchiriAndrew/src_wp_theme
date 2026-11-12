@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let activeModal = null;
+  let modalOpener = null;
   const closeModal = () => {
     if (!activeModal) return;
     const previousOverflow = activeModal.dataset.previousOverflow || '';
@@ -90,11 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
     activeModal = null;
     document.body.style.overflow = previousOverflow;
     document.documentElement.style.overflow = previousRootOverflow;
+    modalOpener?.focus();
+    modalOpener = null;
   };
 
-  const openModal = (card) => {
+  const openModal = (card, trigger) => {
     if (!card.dataset.bio) return;
     closeModal();
+    modalOpener = trigger;
     const modal = document.createElement('div');
     modal.className = 'leadership-bio-modal-backdrop';
     modal.setAttribute('role', 'dialog');
@@ -157,6 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollWrap.className = 'leadership-bio-modal-scroll-wrap';
     const scroll = document.createElement('div');
     scroll.className = 'leadership-bio-modal-scroll';
+    scroll.tabIndex = 0;
+    scroll.setAttribute('role', 'region');
+    scroll.setAttribute('aria-label', `${card.dataset.name} full biography`);
     const bioContent = document.createElement('div');
     bioContent.className = 'leadership-modal-bio-copy';
     card.dataset.bio.split(/\n\s*\n/).filter(Boolean).forEach((paragraphText) => {
@@ -189,12 +196,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
     activeModal = modal;
+    close.focus();
   };
 
   function handleModalKeydown(event) {
     if (event.key === 'Escape' && activeModal) {
       event.preventDefault();
       closeModal();
+    } else if (event.key === 'Tab' && activeModal) {
+      const focusable = [...activeModal.querySelectorAll('button, a[href], [tabindex="0"]')];
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   }
 
@@ -203,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trigger) {
       event.preventDefault();
       event.stopPropagation();
-      openModal(trigger.closest('[data-team-card]'));
+      openModal(trigger.closest('[data-team-card]'), trigger);
       return;
     }
     if (event.target.closest('[data-team-linkedin]')) return;

@@ -4070,6 +4070,18 @@ a.site-footer-social:focus-visible { border-color: #b3262c; background: #b3262c;
 .leadership-portrait-bottom--yellow { background: linear-gradient(to bottom,rgba(242,163,58,0),#F2A33A); }
 .leadership-card-copy { transition: opacity .2s ease; }
 .leadership-card-reveal { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; color: #fff; opacity: 0; transform: translateY(100%); transition: transform .4s ease,opacity .4s ease; }
+.leadership-person-card--has-bio .leadership-card-reveal { pointer-events: none; }
+.leadership-person-card--has-bio:focus-within .leadership-card-reveal,
+.leadership-person-card--has-bio.leadership-person-card--open .leadership-card-reveal { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.leadership-person-card--has-bio:focus-within .leadership-card-copy,
+.leadership-person-card--has-bio.leadership-person-card--open .leadership-card-copy { opacity: 0; }
+@media (hover: hover) {
+  .leadership-person-card--has-bio:hover .leadership-card-reveal { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .leadership-person-card--has-bio:hover .leadership-card-copy { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .leadership-card-reveal,.leadership-card-copy { transition: none; }
+}
 .leadership-card-reveal--red { background: rgba(179,38,44,.94); }
 .leadership-card-reveal--grey { background: rgba(138,140,143,.94); }
 .leadership-card-reveal--yellow { background: rgba(242,163,58,.94); }

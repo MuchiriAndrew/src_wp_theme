@@ -245,6 +245,10 @@ function src_leadership_member_data($post) {
     $terms = wp_get_object_terms($post->ID, 'team_department', ['fields' => 'slugs']);
     $county_terms = wp_get_object_terms($post->ID, 'team_county', ['fields' => 'names']);
     $county = is_array($county_terms) && $county_terms ? (string) $county_terms[0] : (string) get_post_meta($post->ID, '_team_county', true);
+    $bio_markup = preg_replace('#</(?:p|div|li|h[1-6])>|<br\s*/?>#i', "\n\n", (string) $post->post_content);
+    $bio = trim(html_entity_decode(wp_strip_all_tags($bio_markup), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    $bio_short = trim((string) get_post_meta($post->ID, '_team_bio_short', true));
+    if ($bio !== '' && $bio_short === '') $bio_short = wp_trim_words($bio, 40, '…');
     return [
         'id' => $post->ID,
         'name' => get_the_title($post),
@@ -252,8 +256,8 @@ function src_leadership_member_data($post) {
         'image' => $image ?: '',
         'county' => $county,
         'county_level' => (string) get_post_meta($post->ID, '_team_county_level', true),
-        'bio_short' => (string) get_post_meta($post->ID, '_team_bio_short', true),
-        'bio' => trim(wp_strip_all_tags($post->post_content)),
+        'bio_short' => $bio_short,
+        'bio' => $bio,
         'linkedin' => esc_url((string) get_post_meta($post->ID, '_team_linkedin', true)),
         'departments' => is_array($terms) ? $terms : [],
     ];
@@ -293,7 +297,7 @@ function src_leadership_render_portrait($member, $tone) {
 }
 
 function src_leadership_render_team_card($member, $tone, $directory_sized = true, $lead = false, $badge = '', $brainstorm = false) {
-    $has_bio = !empty($member['bio_short']);
+    $has_bio = $member['bio'] !== '';
     $classes = ['leadership-person-card', 'leadership-person-card--' . $tone];
     if ($has_bio) $classes[] = 'leadership-person-card--has-bio';
     if ($directory_sized) $classes[] = 'team-directory-card';
